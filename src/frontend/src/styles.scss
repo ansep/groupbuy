@@ -2,3 +2,9 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+
+.page-title {
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1rem;
+}

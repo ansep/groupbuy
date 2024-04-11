@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { BrokerService } from '../services/broker.service';
 
 @Component({
@@ -11,22 +16,36 @@ import { BrokerService } from '../services/broker.service';
 })
 export class LoginBrokerComponent {
   loginBrokerForm = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required),
   });
+  submitted = false;
+  incorrect = false;
 
   constructor(private brokerService: BrokerService) {}
 
   login() {
-    // console.log('Username:', this.loginBrokerForm.value.username);
-    // console.log('Password:', this.loginBrokerForm.value.password);
-    this.brokerService
-      .login(
-        this.loginBrokerForm.value.username || 'ciao',
-        this.loginBrokerForm.value.password || 'ciao'
-      )
-      // .subscribe((data) => {
-      //   console.log(data);
-      // });
+    this.incorrect = false;
+    this.submitted = true;
+    if (
+      this.loginBrokerForm.valid &&
+      this.loginBrokerForm.value.username &&
+      this.loginBrokerForm.value.password
+    ) {
+      this.brokerService
+        .login(
+          this.loginBrokerForm.value.username,
+          this.loginBrokerForm.value.password
+        )
+        .subscribe((data: any) => {
+          console.log(data);
+          if (data.success) {
+            console.log('logged in');
+          } else {
+            console.log(' not logged in');
+            this.incorrect = true;
+          }
+        });
+    }
   }
 }
