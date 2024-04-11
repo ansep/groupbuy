@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class BrokerService {
+export class AuthService {
   // constructor(private https: HttpClient) {}
   constructor() {}
 
@@ -17,11 +17,21 @@ export class BrokerService {
   // }
 
   // simulate http response to subscribe to
-  login(username: string, password: string) {
+  login(username: string, password: string, role: 'broker' | 'buyer') {
     return new Observable((observer) => {
       setTimeout(() => {
-        observer.next({ success: false });
+        observer.next({ success: true });
       }, 100);
     });
+  }
+
+  setLoggedIn(token: string, username: string, role: 'broker' | 'buyer') {
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', role);
+    localStorage.setItem('username', username);
+  }
+
+  getUsername() {
+    return localStorage.getItem('username');
   }
 }

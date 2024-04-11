@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BrokerHomeComponent } from './broker-home.component';
+import { NavbarBuyerComponent } from './navbar-buyer.component';
 
-describe('BrokerHomeComponent', () => {
-  let component: BrokerHomeComponent;
-  let fixture: ComponentFixture<BrokerHomeComponent>;
+describe('NavbarBuyerComponent', () => {
+  let component: NavbarBuyerComponent;
+  let fixture: ComponentFixture<NavbarBuyerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrokerHomeComponent]
+      imports: [NavbarBuyerComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(BrokerHomeComponent);
+    fixture = TestBed.createComponent(NavbarBuyerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
