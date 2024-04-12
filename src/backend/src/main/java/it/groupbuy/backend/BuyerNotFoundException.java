@@ -1,8 +1,10 @@
 package it.groupbuy.backend;
 
-public class BuyerNotFoundException extends RuntimeException {
+class BuyerNotFoundException extends RuntimeException{
+	
+	BuyerNotFoundException(long id) {
+		super("Could not found buyer " + id);
+		
+	}
 
-    public BuyerNotFoundException(Long id) {
-	super("Could not find Buyer " + id);
-    }
 }
