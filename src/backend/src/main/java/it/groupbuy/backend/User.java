@@ -8,27 +8,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Buyer {
+public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private String userName;
+    private String username;
     private String firstName;
     private String lastName;
     private String telephoneNumber;
     private String password;
     private String email;
+    private Strign role;
 
-    protected Buyer() {}
+    protected User() {}
 
-    public Buyer(String userName, String firstName, String lastName, String telephoneNumber, String password, String email) {
-	this.userName = userName;
+    public User(String username, String firstName, String lastName, String telephoneNumber, String password, String email, String role) {
+	this.username = username;
 	this.firstName = firstName;
 	this.lastName = lastName;
 	this.telephoneNumber = telephoneNumber;
 	this.password = password;
 	this.email = email;
+    this.role = role;
     }
 
 
@@ -40,12 +42,12 @@ public class Buyer {
 	this.id = id;
     }
 
-    public String getUserName() {
-	return userName;
+    public String getUsername() {
+	return username;
     }
 
-    public void setUserName(String userName) {
-	this.userName = userName;
+    public void setUsername(String username) {
+	this.username = username;
     }
 
     public String getFirstName() {
@@ -88,19 +90,27 @@ public class Buyer {
 	this.email = email;
     }
 
+    public String getRole() {
+	return role;
+    }
+
+    public void setRole(String role) {
+	this.role = role;
+    }
+
     @Override
     public boolean equals(Object o) {
 	if(this == o)
 	    return true;
-	if(!(o instanceof Buyer))
+	if(!(o instanceof User))
 	    return false;
-	Buyer buyer = (Buyer) o;
-	return Objects.equals(this.id, buyer.id) &&
-	    Objects.equals(this.userName, buyer.userName) &&
-	    Objects.equals(this.firstName, buyer.firstName) &&
-	    Objects.equals(this.lastName, buyer.lastName) &&
-	    Objects.equals(this.telephoneNumber, buyer.telephoneNumber) &&
-	    Objects.equals(this.email, buyer.email);
+	User user = (User) o;
+	return Objects.equals(this.id, user.id) &&
+	    Objects.equals(this.username, user.username) &&
+	    Objects.equals(this.firstName, user.firstName) &&
+	    Objects.equals(this.lastName, user.lastName) &&
+	    Objects.equals(this.telephoneNumber, user.telephoneNumber) &&
+	    Objects.equals(this.email, user.email);
     }
 
     @Override
@@ -116,7 +126,7 @@ public class Buyer {
     @Override
     public String toString() {
 	return String.format(
-			     "Buyer[id=%d, firstName='%s', lastName='%s', telephoneNumber='%s', email='%s']",
+			     "User[id=%d, firstName='%s', lastName='%s', telephoneNumber='%s', email='%s']",
 			     id, firstName, lastName, telephoneNumber, email);
     }
 

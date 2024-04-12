@@ -13,8 +13,7 @@ class RootController { /*provides root routes of the application*/
 	RepresentationModel<?> index () {
 		
 		RepresentationModel<?> rootmodel = new RepresentationModel();
-		rootmodel.add(linkTo(methodOn(BuyerController.class).all()).withRel("buyers"));
-		//rootmodel.add(linkTo(methodOn(BrokerController.class).all()).withRel("brokers"));
+		rootmodel.add(linkTo(methodOn(UserController.class).all()).withRel("users"));
 		return rootmodel;
 	}
 	
