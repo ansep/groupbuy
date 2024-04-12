@@ -4,124 +4,120 @@ import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "BUYER")
-class Buyer {
+public class Buyer {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String telephoneNumber;
+    private String password;
+    private String email;
+
+    protected Buyer() {}
+
+    public Buyer(String userName, String firstName, String lastName, String telephoneNumber, String password, String email) {
+	this.userName = userName;
+	this.firstName = firstName;
+	this.lastName = lastName;
+	this.telephoneNumber = telephoneNumber;
+	this.password = password;
+	this.email = email;
+    }
 
 
-	private @Id @GeneratedValue Long id; // primary key generated automatically by the relational DBMS
-	private String firstName;
-	private String lastName;
-	private String telephoneNumber;
-	private String email;
-	private String Username;
-	private String password;
-	
-	Buyer() {}
+    public Long getId() {
+	return id;
+    }
 
-	Buyer(String firstName, String lastName, String telephoneNumber, String email, String Username, String password) {
+    public void setId(Long id) {
+	this.id = id;
+    }
 
-		this.firstName = firstName;
-	    this.lastName = lastName;
-	    this.telephoneNumber = telephoneNumber;
-	    this.email = email;
-	    this.Username = Username;
-	    this.password = password;
-	 }
+    public String getUserName() {
+	return userName;
+    }
 
-	 public String getName() {
-		 return this.firstName + " " + this.lastName;
-	 }
+    public void setUserName(String userName) {
+	this.userName = userName;
+    }
 
-	 public void setName(String name) {
-		 String[] parts = name.split(" ");
-		 this.firstName = parts[0];
-		 this.lastName = parts[1];
-	  }
+    public String getFirstName() {
+	return firstName;
+    }
 
-	 public Long getId() {
-		 return this.id;
-	 }
-	 
-	 public void setId(Long id) {
-		 this.id = id;
-	 }
+    public void setFirstName(String firstName) {
+	this.firstName = firstName;
+    }
 
-	 public String getFirstName() {
-		 return this.firstName;
-	 }
+    public String getLastName() {
+	return lastName;
+    }
 
-	 public void setFirstName(String firstName) {
-		 this.firstName = firstName;
-	 }
-	 
-	 public String getLastName() {
-		 return this.lastName;
-	 }
+    public void setLastName(String lastName) {
+	this.lastName = lastName;
+    }
 
-	 public void setLastName(String lastName) {
-		 this.lastName = lastName;
-	 }
-	 
-	 public String getTelephoneNumber() {
-		 return this.telephoneNumber;
-	 }
+    public String getTelephoneNumber() {
+	return telephoneNumber;
+    }
 
-	 public void setTelephoneNumber(String telephoneNumber) {
-		 this.telephoneNumber = telephoneNumber;
-	 }
-	 
-	 public String getEmail() {
-		 return this.email;
-	 }
+    public void setTelephoneNumber(String telephoneNumber) {
+	this.telephoneNumber = telephoneNumber;
+    }
 
-	 public void setEmail(String email) {
-		 this.email = email;
-	 }
-	 
-	 public String getUsername() {
-		 return this.Username;
-	 }
+    public String getPassword() {
+	return password;
+    }
 
-	 public void setUsername(String Username) {
-		 this.Username = Username;
-	 }
-	 
-	 public String getPassword() {
-		 return this.password;
-	 }
+    public void setPassword(String password) {
+	this.password = password;
+    }
 
-	 public void setPassword(String password) {
-		 this.password = password;
-	 }
-	 
-	 @Override
-	 public boolean equals(Object o) {
-		 if (this == o)
-			 return true;
-	     if (!(o instanceof Buyer))
-	         return false;
-	     Buyer buyer = (Buyer) o;
-	     return Objects.equals(this.id, buyer.id) && Objects.equals(this.firstName, buyer.firstName)
-	        && Objects.equals(this.lastName, buyer.lastName) && Objects.equals(this.telephoneNumber, buyer.telephoneNumber)
-	        && Objects.equals(this.email, buyer.email) && Objects.equals(this.Username, buyer.Username) 
-	        && Objects.equals(this.password, buyer.password); 
-	 }
+    public String getEmail() {
+	return email;
+    }
 
-	 @Override
-	 public int hashCode() {
-		 return Objects.hash(this.id, this.firstName, this.lastName, this.telephoneNumber, this.email, this.Username,
-				 this.password);
-	 }
+    public void setEmail(String email) {
+	this.email = email;
+    }
 
-	 @Override
-	 public String toString() {
-		 return "Buyer{" + "id=" + this.id + ", firstName=" + this.firstName + '\'' + ", lastName='" + this.lastName + 
-				 "telephoneNumber =" + this.telephoneNumber  + '\'' + ", telephoneNumber='" + this.telephoneNumber  
-				 + '\'' + ", email='" + this.email + '\'' + ", Username='" + this.Username + '}';
-	 }	
-	
+    @Override
+    public boolean equals(Object o) {
+	if(this == o)
+	    return true;
+	if(!(o instanceof Buyer))
+	    return false;
+	Buyer buyer = (Buyer) o;
+	return Objects.equals(this.id, buyer.id) &&
+	    Objects.equals(this.userName, buyer.userName) &&
+	    Objects.equals(this.firstName, buyer.firstName) &&
+	    Objects.equals(this.lastName, buyer.lastName) &&
+	    Objects.equals(this.telephoneNumber, buyer.telephoneNumber) &&
+	    Objects.equals(this.email, buyer.email);
+    }
+
+    @Override
+    public int hashCode() {
+	return Objects.hash(this.id,
+			    this.userName,
+			    this.firstName,
+			    this.lastName,
+			    this.telephoneNumber,
+			    this.email):
+    }
+
+    @Override
+    public String toString() {
+	return String.format(
+			     "Buyer[id=%d, firstName='%s', lastName='%s', telephoneNumber='%s', email='%s']",
+			     id, firstName, lastName, telephoneNumber, email);
+    }
+
 }

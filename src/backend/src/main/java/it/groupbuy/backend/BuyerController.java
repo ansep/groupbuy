@@ -38,6 +38,7 @@ class BuyerController {
 	        linkTo(methodOn(BuyerController.class).all()).withSelfRel()); // creates the hateoas links to the objects
 	}
 	
+	
 	@GetMapping("/buyers/{id}")
 	EntityModel<Buyer> one(@PathVariable Long id) {
 
@@ -45,16 +46,17 @@ class BuyerController {
 	        .orElseThrow(() -> new BuyerNotFoundException(id));
 
 	    return assembler.toModel(buyer);
-	  }
+	}
 
-	/*
-	@PostMapping("buyers")
+	
+	@PostMapping("/buyers/signup")
 	ResponseEntity<EntityModel<Buyer>> newBuyer(@RequestBody Buyer buyer) {
 		Buyer newBuyer =  buyerRepository.save(buyer);
 		return ResponseEntity //
 		        .created(linkTo(methodOn(BuyerController.class).one(newBuyer.getId())).toUri()) //
 		        .body(assembler.toModel(newBuyer)); // creates hateoas link of the new buyer
 	}
+	
 	
 	@PutMapping("/buyers/{id}")
 	Buyer replaceBuyer(@RequestBody Buyer newBuyer, @PathVariable Long id) {
@@ -70,7 +72,8 @@ class BuyerController {
 	        return buyerRepository.save(buyer);
 	      })
 	      .orElseThrow(() -> new BuyerNotFoundException(id));
-	  }
+	 }
+	
 	
 	@DeleteMapping("/buyers/{id}")
 	void deleteBuyer(@PathVariable Long id) {
@@ -78,9 +81,7 @@ class BuyerController {
 						.orElseThrow(() -> new BuyerNotFoundException(id));
 		buyerRepository.deleteById(buyer.getId());
 		
-	}*/
-	
-	
+	}
 	
 }
 
