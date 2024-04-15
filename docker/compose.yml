@@ -1,0 +1,10 @@
+---
+services:
+  database:
+    image: 'postgres:15.2'
+    ports:
+      - '5432'
+    environment:
+      - 'POSTGRES_DB=groupbuy'
+      - 'POSTGRES_USER=gbadmin'
+      - 'POSTGRES_PASSWORD=gbpassword'

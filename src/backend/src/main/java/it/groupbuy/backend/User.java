@@ -19,18 +19,18 @@ public class User {
     private String telephoneNumber;
     private String password;
     private String email;
-    private Strign role;
+    private UserRole role;
 
     protected User() {}
 
-    public User(String username, String firstName, String lastName, String telephoneNumber, String password, String email, String role) {
+    public User(String username, String firstName, String lastName, String telephoneNumber, String password, String email, UserRole role) {
 	this.username = username;
 	this.firstName = firstName;
 	this.lastName = lastName;
 	this.telephoneNumber = telephoneNumber;
 	this.password = password;
 	this.email = email;
-    this.role = role;
+	this.role = role;
     }
 
 
@@ -90,11 +90,11 @@ public class User {
 	this.email = email;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
 	return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
 	this.role = role;
     }
 
@@ -116,11 +116,12 @@ public class User {
     @Override
     public int hashCode() {
 	return Objects.hash(this.id,
-			    this.userName,
+			    this.username,
 			    this.firstName,
 			    this.lastName,
 			    this.telephoneNumber,
-			    this.email):
+			    this.email);
+
     }
 
     @Override
