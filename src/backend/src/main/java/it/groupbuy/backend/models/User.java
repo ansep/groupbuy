@@ -1,41 +1,71 @@
-package it.groupbuy.backend;
+package it.groupbuy.backend.models;
 
-import java.util.Objects;
-
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
-public class UserInfo {
+@Table(name = "users",
+       uniqueConstraints = {
+	   @UniqueConstraint(columnNames = "username"),
+	   @UniqueConstraint(columnNames = "email")
+       })
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private String email;
-    private String password;
-    private String roles;
 
+    @NotBlank
+    @Size(max = 20)
+    private String username;
+
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
+
+    @NotBlank
+    @Size(max = 120)
+    private String password;
+
+    @NotBlank
+    @Size(max = 20)
     private String firstName;
+
+    @NotBlank
+    @Size(max = 20)
     private String lastName;
+
+    @NotBlank
+    @Size(max = 18)
     private String telephoneNumber;
 
-    public UserInfo() {}
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(  name = "user_roles",
+		 joinColumns = @JoinColumn(name = "user_id"),
+		 inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    public UserInfo(String username,
-		    String email,
-		    String password,
-		    String roles,
-		    String firstName,
-		    String lastName,
-		    String telephoneNumber) {
+    public User() {}
+
+    public User(String username, String email, String password, String firstName, String lastName, String telephoneNumber) {
 	this.username = username;
 	this.email = email;
 	this.password = password;
-	this.roles = roles;
 	this.firstName = firstName;
 	this.lastName = lastName;
 	this.telephoneNumber = telephoneNumber;
@@ -73,14 +103,6 @@ public class UserInfo {
 	this.password = password;
     }
 
-    public String getRoles() {
-	return roles;
-    }
-
-    public void setRoles(String roles) {
-	this.roles = roles;
-    }
-
     public String getFirstName() {
 	return firstName;
     }
@@ -105,42 +127,12 @@ public class UserInfo {
 	this.telephoneNumber = telephoneNumber;
     }
 
-    @Override
-    public String toString() {
-	return String.format("UserInfo[id=%d, username=%d, email=%d, roles=%d, firstName=%d, lastName=%d, telephoneNumber=%d]",
-			     this.id,
-			     this.username,
-			     this.email,
-			     this.roles,
-			     this.firstName,
-			     this.lastName,
-			     this.telephoneNumber);
+    public Set<Role> getRoles() {
+	return roles;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-	if(this == obj)
-	    return true;
-	if(!(obj instanceof UserInfo))
-	    return false;
-	UserInfo userInfo = (UserInfo) obj;
-	return Objects.equals(this.id, userInfo.id) &&
-	    Objects.equals(this.username, userInfo.username) &&
-	    Objects.equals(this.email, userInfo.email) &&
-	    Objects.equals(this.roles, userInfo.roles) &&
-	    Objects.equals(this.firstName, userInfo.firstName) &&
-	    Objects.equals(this.lastName, userInfo.lastName) &&
-	    Objects.equals(this.telephoneNumber, userInfo.telephoneNumber);
+    public void setRoles(Set<Role> roles) {
+	this.roles = roles;
     }
 
-    @Override
-    public int hashCode() {
-	return Objects.hash(this.id,
-			    this.username,
-			    this.email,
-			    this.roles,
-			    this.firstName,
-			    this.lastName,
-			    this.telephoneNumber);
-    }
 }
