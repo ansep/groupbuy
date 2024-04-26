@@ -1,0 +1,24 @@
+---
+services:
+  database:
+    image: postgres
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    environment:
+      - 'POSTGRES_DB=groupbuy'
+      - 'POSTGRES_USER=gbadmin'
+      - 'POSTGRES_PASSWORD=gbpassword'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gbadmin -d groupbuy"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  backend:
+    build: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy

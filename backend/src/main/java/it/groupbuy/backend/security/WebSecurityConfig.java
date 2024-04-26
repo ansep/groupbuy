@@ -1,3 +1,5 @@
+package it.groupbuy.backend.security;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import it.groupbuy.backend.security.jwt.AuthEntryPointJwt;
+import it.groupbuy.backend.security.jwt.AuthTokenFilter;
+import it.groupbuy.backend.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableMethodSecurity
@@ -54,7 +60,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 	http.csrf(csrf -> csrf.disable())
 	    .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 	    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	    // FIXME: Da rivedere gli antMatcher
 	    .authorizeHttpRequests(auth ->
 				   auth.requestMatchers("/api/auth/**").permitAll()
 				   .requestMatchers("/api/test/**").permitAll()

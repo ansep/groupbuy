@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import it.groupbuy.backend.models.ERole;
 import it.groupbuy.backend.models.Role;
 import it.groupbuy.backend.models.User;
+import it.groupbuy.backend.payload.request.LoginRequest;
+import it.groupbuy.backend.payload.request.SignupRequest;
+import it.groupbuy.backend.payload.response.JwtResponse;
+import it.groupbuy.backend.payload.response.MessageResponse;
 import it.groupbuy.backend.repository.RoleRepository;
 import it.groupbuy.backend.repository.UserRepository;
 import it.groupbuy.backend.security.jwt.JwtUtils;
@@ -84,7 +88,10 @@ public class AuthController {
 	// Create new user's account
 	User user = new User(signUpRequest.getUsername(),
 			     signUpRequest.getEmail(),
-			     encoder.encode(signUpRequest.getPassword()));
+			     encoder.encode(signUpRequest.getPassword()),
+			     signUpRequest.getFirstName(),
+			     signUpRequest.getLastName(),
+			     signUpRequest.getTelephoneNumber());
 
 	Set<String> strRoles = signUpRequest.getRole();
 	Set<Role> roles = new HashSet<>();
