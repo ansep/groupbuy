@@ -12,8 +12,8 @@ import { Router } from '@angular/router';
   selector: 'app-login-buyer',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './login-buyer.component.html',
-  styleUrl: './login-buyer.component.scss',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
 export class LoginBuyerComponent {
   loginBuyerForm = new FormGroup({
@@ -31,16 +31,23 @@ export class LoginBuyerComponent {
     const username = this.loginBuyerForm.value.username;
     const password = this.loginBuyerForm.value.password;
     if (this.loginBuyerForm.valid && username && password) {
-      this.authService
-        .login(username, password, 'buyer')
-        .subscribe((data: any) => {
-          if (data.success) {
-            this.authService.setLoggedIn(data.token, username, 'buyer');
-            this.router.navigate(['/buyer/home']);
-          } else {
-            this.incorrect = true;
-          }
-        });
+      this.authService.login(username, password).subscribe({
+        next: (data: any) => {
+          console.log(data);
+          const role = data.roles[0] === 'ROLE_BROKER' ? 'broker' : 'buyer';
+          this.authService.setLoggedIn(
+            data.accessToken,
+            data.username,
+            role,
+            data.id,
+            data.email
+          );
+          this.router.navigate(['/' + role + '/home']);
+        },
+        error: (error) => {
+          this.incorrect = true;
+        },
+      });
     }
   }
 }

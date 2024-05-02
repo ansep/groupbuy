@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginBuyerComponent } from './login-buyer.component';
+import { LoginBuyerComponent } from './login.component';
 
 describe('LoginBuyerComponent', () => {
   let component: LoginBuyerComponent;
@@ -8,10 +8,9 @@ describe('LoginBuyerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginBuyerComponent]
-    })
-    .compileComponents();
-    
+      imports: [LoginBuyerComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(LoginBuyerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
