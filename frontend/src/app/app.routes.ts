@@ -3,15 +3,16 @@ import { authBrokerGuard } from './guards/auth-broker.guard';
 import { DashboardUnloggedComponent } from './dashboard-unlogged/dashboard-unlogged.component';
 import { DashboardBrokerComponent } from './dashboard-broker/dashboard-broker.component';
 import { LogoutComponent } from './logout/logout.component';
-import { LoginBuyerComponent } from './login/login.component';
+import { LoginComponent } from './login/login.component';
 import { DashboardBuyerComponent } from './dashboard-buyer/dashboard-buyer.component';
 import { OpenGroupsListComponent } from './open-groups-list/open-groups-list.component';
 import { authBuyerGuard } from './guards/auth-buyer.guard';
-// import { LoginBuyerComponent } from './login-buyer/login-buyer.component';
+import { SignupComponent } from './signup/signup.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
-  { path: 'login', component: LoginBuyerComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
   { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
   {
     path: 'broker',
