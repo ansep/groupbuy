@@ -8,12 +8,14 @@ import { DashboardBuyerComponent } from './dashboard-buyer/dashboard-buyer.compo
 import { OpenGroupsListComponent } from './open-groups-list/open-groups-list.component';
 import { authBuyerGuard } from './guards/auth-buyer.guard';
 import { SignupComponent } from './signup/signup.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
+  { path: 'login', component: LoginComponent, pathMatch: 'full' },
+  { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
+  { path: 'reset', component: ResetPasswordComponent, pathMatch: 'full' },
   {
     path: 'broker',
     component: DashboardBrokerComponent,

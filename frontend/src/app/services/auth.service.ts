@@ -35,6 +35,12 @@ export class AuthService {
     });
   }
 
+  resetPassword(email: string) {
+    return new Observable((observer) => {
+      observer.next({ message: 'Email sent' });
+    });
+  }
+
   setLoggedIn(
     token: string,
     username: string,
