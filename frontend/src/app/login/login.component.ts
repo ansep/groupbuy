@@ -7,11 +7,12 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NavbarComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
