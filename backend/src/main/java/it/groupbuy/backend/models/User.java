@@ -54,6 +54,8 @@ public class User {
     @Size(max = 18)
     private String telephoneNumber;
 
+    private String profilePicturePath;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(  name = "user_roles",
 		 joinColumns = @JoinColumn(name = "user_id"),
@@ -133,6 +135,14 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
 	this.roles = roles;
+    }
+
+    public String getProfilePicturePath() {
+	return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+	this.profilePicturePath = profilePicturePath;
     }
 
 }
