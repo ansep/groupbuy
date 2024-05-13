@@ -66,4 +66,29 @@ export class AuthService {
   getUsername() {
     return localStorage.getItem('username');
   }
+
+  getUserInfo() {
+    return new Observable<any>((observer) => {
+      observer.next({
+        username: localStorage.getItem('username'),
+        email: localStorage.getItem('email'),
+        role: localStorage.getItem('role'),
+        firstName: 'John',
+        lastName: 'Doe',
+        telephoneNumber: '1234567890',
+      });
+    });
+  }
+
+  editUser(
+    password: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    telephoneNumber: string
+  ) {
+    return new Observable((observer) => {
+      observer.next({ message: 'User updated' });
+    });
+  }
 }
