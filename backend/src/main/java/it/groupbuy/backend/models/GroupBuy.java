@@ -27,7 +27,7 @@ public class GroupBuy {
 	 @NotBlank
 	 private Long broker;
 	 
-	 private Set<Integer> buyers = new Set<Integer>();
+	 private Set<Long> buyers = new Set<Long>();
 	 
 	 @NotBlank
 	 private int maxSize;

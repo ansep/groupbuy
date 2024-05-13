@@ -1,7 +1,9 @@
 FROM eclipse-temurin:17-jdk-alpine as build
 WORKDIR /workspace/app
 
+RUN apk add --no-cache dos2unix
 COPY mvnw .
+RUN dos2unix mvnw && chmod +x mvnw
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
