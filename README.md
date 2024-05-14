@@ -47,3 +47,4 @@ and again the command above to reset the containers from scratch
 }
 ```
 - `POST /api/user/picture` as form-data file to post a profile picture (authentication required)
+- `GET /api/user/{id}/picture` to get user profile picture as attachment (unauthenticated)
