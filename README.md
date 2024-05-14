@@ -18,14 +18,14 @@ and again the command above to reset the containers from scratch
 
 
 ## REST API Endpoints
-- `POST /api/auth/signin` for obtaining the JWT Bearer Token to use for authentication
+- `POST /api/auth/signin` for obtaining the JWT Bearer Token to use for authentication (unauthenticated)
 ```
 {
     "username": "leonardo",
     "password": "password123"
 }
 ```
-- `POST /api/auth/signup` for signing up a new user
+- `POST /api/auth/signup` for signing up a new user (unauthenticated)
 ```
 {
     "username": "leonardo",
@@ -37,7 +37,7 @@ and again the command above to reset the containers from scratch
     "role": ["BUYER"]
 }
 ```
-- `PATCH /api/user` to edit a user's information, all fields are optional
+- `PATCH /api/user` to edit a user's information, all fields are optional (authentication required)
 ```
 {
     "email": "newmail@mail.com",
@@ -46,4 +46,4 @@ and again the command above to reset the containers from scratch
     "telephoneNumber": "1234567890"
 }
 ```
-- `POST /api/user/picture` as form-data file to post a profile picture
+- `POST /api/user/picture` as form-data file to post a profile picture (authentication required)
