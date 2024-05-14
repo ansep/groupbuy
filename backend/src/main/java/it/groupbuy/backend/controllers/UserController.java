@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,12 +76,9 @@ public class UserController {
 	}
     }
 
-    @GetMapping("/user/picture")
-    @PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
-    public ResponseEntity<?> getProfilePicture() {
-	UserDetails userDetails =
-	    (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+    @GetMapping("/user/{id}/picture")
+    public ResponseEntity<?> getProfilePicture(@PathVariable("id") Long id) {
+	User user = userRepository.findById(id).get();
 	Resource file = storageService.load(user.getProfilePicturePath());
 	return ResponseEntity.ok()
 	    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
