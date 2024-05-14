@@ -1,7 +1,6 @@
 package it.groupbuy.backend.models;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,7 +28,7 @@ public class GroupBuy {
 	 @NotBlank
 	 private Long broker;
 	 
-	 private Set<Long> buyers = new HashSet<Long>();
+	 private ArrayList<Long> buyers = new ArrayList<Long>();
 	 @NotBlank
 	 private int maxSize;
 	 
@@ -60,7 +59,7 @@ public class GroupBuy {
 	 
 	 public GroupBuy() {}
 
-	    public GroupBuy(Long broker, Set<Long> buyers, int maxSize, int minSize, String description, String category, String product,
+	    public GroupBuy(Long broker, ArrayList<Long> buyers, int maxSize, int minSize, String description, String category, String product,
 	    				float cost, EStatus status, String location) {
 		this.broker = broker;
 		this.buyers = buyers;
@@ -90,7 +89,7 @@ public class GroupBuy {
 	    	this.broker = id;
 	    }
 	    
-	    public Set<Long> getBuyers() {
+	    public ArrayList<Long> getBuyers() {
 	    	return buyers;
 	    }
 

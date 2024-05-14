@@ -1,0 +1,105 @@
+package it.groupbuy.backend.payload.request;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import it.groupbuy.backend.models.EStatus;
+
+public class GroupBuyPatchRequest {
+
+	 private ArrayList<Long> buyers = new ArrayList<Long>();
+
+	 private int maxSize;
+	 
+	 private int minSize;
+	 
+	 private String description;
+	 
+	 private String category;
+
+	 private String product;
+	 
+	 private float cost;
+	 
+	 private EStatus status;
+	 
+	 private String location;
+	    
+	 public ArrayList<Long> getBuyers() {
+	    return buyers;
+	 }
+
+	 public void addBuyer(Long id) {
+		 buyers.add(id);
+	 }
+	    
+	 public void delBuyer(Long id) {
+		 buyers.remove(id);
+	 }
+	    
+	 public int getMinSize() {
+		 return minSize;
+	 }
+
+	 public void setMinSize(int size) {
+		 this.minSize = size;
+	 }
+	    
+	 public int getMaxSize() {
+		 return maxSize;
+	 }
+
+	 public void setMaxSize(int size) {
+		 this.maxSize = size;
+	 }
+	    
+	 public String getDescription() {
+		 return description;
+	 }
+
+	 public void setDescription(String desc) {
+		 this.description = desc;
+	 }
+	    
+	 public String getCategory() {
+		 return category;
+	 }
+
+	 public void setCategory(String cat) {
+		 this.category = cat;
+	 }
+	    
+	 public String getProduct() {
+		 return product;
+	 }
+
+	 public void setProduct(String prod) {
+		 this.product = prod;
+	 }
+	    
+	 public String getLocation() {
+		 return location;
+	 }
+
+	 public void setLocation(String loc) {
+		 this.location = loc;
+	 }
+	    
+	 public EStatus getStatus() {
+		 return status;
+	 }
+
+	 public void setStatus(EStatus status) {
+		 this.status = status;
+	 }
+	    
+	 public float getCost() {
+		 return cost;
+	 }
+
+	 public void setCost(float cost) {
+		 this.cost = cost;
+	 }
+	
+}

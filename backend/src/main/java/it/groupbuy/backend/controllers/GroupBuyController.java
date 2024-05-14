@@ -1,7 +1,9 @@
 package it.groupbuy.backend.controllers;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+
 
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -44,6 +46,7 @@ import it.groupbuy.backend.security.jwt.JwtUtils;
 import it.groupbuy.backend.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import it.groupbuy.backend.models.GroupBuy;
+import it.groupbuy.backend.payload.request.GroupBuyPatchRequest;
 
 
 @RestController
@@ -80,15 +83,15 @@ public class GroupBuyController {
 	
 	@PatchMapping("api/auth/groupbuy/{id}")
     @PreAuthorize("hasRole('BROKER')")
-	ResponseEntity<?> patchGroupBuy(@Valid @RequestBody PathRequest patchRequest, @PathVariable Long id) {
+	ResponseEntity<?> patchGroupBuy(@Valid @RequestBody GroupBuyPatchRequest patchRequest, @PathVariable Long id) {
 		
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userRepository.findByUsername(userDetails.getUsername()).get();
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 		
-		if(patchRequest.getMinSize() != null)
+		if(patchRequest.getMinSize() != 0)
 			groupbuy.setMinSize(patchRequest.getMinSize());
-		if(patchRequest.getMaxSize() != null)
+		if(patchRequest.getMaxSize() != 0)
 			groupbuy.setMaxSize(patchRequest.getMaxSize());
 		if(patchRequest.getDescription() != null)
 			groupbuy.setDescription(patchRequest.getDescription());
@@ -98,14 +101,27 @@ public class GroupBuyController {
 			groupbuy.setLocation(patchRequest.getLocation());
 		if(patchRequest.getStatus() != null)
 			groupbuy.setStatus(patchRequest.getStatus());
-		if(patchRequest.getCost() != null)
+		if(patchRequest.getCost() != 0)
 			groupbuy.setCost(patchRequest.getCost());
 		if(patchRequest.getCategory() != null)
 			groupbuy.setCategory(patchRequest.getCategory());
 		
+		ArrayList<Long> newbuyers = patchRequest.getBuyers();
+		ArrayList<Long> buyers = groupbuy.getBuyers();
+		for (int i = 0; i <= buyers.size(); i = i + 1) {
+				Long b = newbuyers.get(i);
+				if (buyers.contains(b)) {
+					groupbuy.delBuyer(b);
+				}
+				else {
+					groupbuy.addBuyer(b);
+				}
+						
+		}
+		
 		repository.save(groupbuy);
 		return ResponseEntity.ok(new MessageResponse("Groupbuy patched successfully"));
-	    }
+	}
 	
 	
 	@DeleteMapping("/groupbuy/{id}")
