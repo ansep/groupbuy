@@ -1,5 +1,8 @@
 package it.groupbuy.backend.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +22,6 @@ import jakarta.validation.constraints.Size;
 @Table(name = "GroupBuy")
 
 public class GroupBuy {
-
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private Long id;
@@ -27,8 +29,7 @@ public class GroupBuy {
 	 @NotBlank
 	 private Long broker;
 	 
-	 private Set<Long> buyers = new Set<Long>();
-	 
+	 private Set<Long> buyers = new HashSet<Long>();
 	 @NotBlank
 	 private int maxSize;
 	 
@@ -59,12 +60,12 @@ public class GroupBuy {
 	 
 	 public GroupBuy() {}
 
-	    public GroupBuy(Long broker, Set<Integer> buyers, int maxSize, int minSize, String description, String category, String product,
-	    				float cost, Estatus status, String location) {
+	    public GroupBuy(Long broker, Set<Long> buyers, int maxSize, int minSize, String description, String category, String product,
+	    				float cost, EStatus status, String location) {
 		this.broker = broker;
 		this.buyers = buyers;
 		this.maxSize = maxSize;
-		this.firstName = minSize;
+		this.minSize = minSize;
 		this.description = description;
 		this.category = category;
 		this.product = product;
@@ -89,7 +90,7 @@ public class GroupBuy {
 	    	this.broker = id;
 	    }
 	    
-	    public Set<Integer> getBuyers() {
+	    public Set<Long> getBuyers() {
 	    	return buyers;
 	    }
 
