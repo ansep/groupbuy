@@ -15,11 +15,9 @@ public class GroupBuyModelAssembler implements RepresentationModelAssembler<Grou
 
 	  @Override
 	  public EntityModel<GroupBuy> toModel(GroupBuy groupbuy) {
-		  
 		  EntityModel<GroupBuy> groupbuy_model = EntityModel.of(groupbuy, //
 			        linkTo(methodOn(GroupBuyController.class).one(groupbuy.getId())).withSelfRel(),
 			        linkTo(methodOn(GroupBuyController.class).all()).withRel("api/auth/groupbuy"));
-		  
 		  return groupbuy_model;
 	  }
 	  

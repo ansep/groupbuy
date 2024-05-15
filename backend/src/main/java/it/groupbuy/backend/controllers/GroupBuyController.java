@@ -56,32 +56,53 @@ public class GroupBuyController {
 	private final GroupBuyModelAssembler assembler;
 	private final UserRepository userRepository;
 
+	
 	GroupBuyController(GroupbuyRepository repository, GroupBuyModelAssembler assembler, UserRepository userRepository) {
 		this.repository = repository;
 		this.userRepository = userRepository;
 	    this.assembler = assembler;
 	}
 	
+	
 	@GetMapping("api/auth/groupbuy")
 	public CollectionModel<EntityModel<GroupBuy>> all() { // load one by one the buyers
-
 		List<EntityModel<GroupBuy>> groupbuy = repository.findAll().stream() // load one by one the groupbuys and put them in a list
 		        .map(assembler::toModel).collect(Collectors.toList());
-
 		 return CollectionModel.of(groupbuy, //
 			        linkTo(methodOn(GroupBuyController.class).all()).withSelfRel()); // creates the hateoas links to the objects
 	}
 	
+	
 	@GetMapping("api/auth/groupbuy/{id}")
 	public EntityModel<GroupBuy> one(@PathVariable Long id) {
-
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-
 	    return assembler.toModel(groupbuy);
 	}
 	
 	
-	@PatchMapping("api/auth/groupbuy/{id}")
+	@GetMapping("/groupbuy")
+	@PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
+	public CollectionModel<EntityModel<GroupBuy>> all_auth() { // load one by one the buyers
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		List<EntityModel<GroupBuy>> groupbuy = repository.findAll().stream() // load one by one the groupbuys and put them in a list
+		        .map(assembler::toModel).collect(Collectors.toList());
+		 return CollectionModel.of(groupbuy, //
+			        linkTo(methodOn(GroupBuyController.class).all()).withSelfRel()); // creates the hateoas links to the objects
+	}
+	
+	
+	@GetMapping("/groupbuy/{id}")
+	@PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
+	public EntityModel<GroupBuy> one_auth(@PathVariable Long id) {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+	    return assembler.toModel(groupbuy);
+	}
+	
+	
+	@PatchMapping("groupbuy/{id}")
     @PreAuthorize("hasRole('BROKER')")
 	ResponseEntity<?> patchGroupBuy(@Valid @RequestBody GroupBuyPatchRequest patchRequest, @PathVariable Long id) {
 		
@@ -115,8 +136,7 @@ public class GroupBuyController {
 				}
 				else {
 					groupbuy.addBuyer(b);
-				}
-						
+				}		
 		}
 		
 		repository.save(groupbuy);
@@ -129,7 +149,6 @@ public class GroupBuyController {
 	ResponseEntity<?> deleteGroupBuy(@PathVariable Long id) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userRepository.findByUsername(userDetails.getUsername()).get();
-		
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 		repository.deleteById(groupbuy.getId());
 		
