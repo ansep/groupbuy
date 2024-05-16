@@ -1,0 +1,82 @@
+<app-navbar></app-navbar>
+<div
+  class="card mb-3 single-list"
+  style="max-width: 90%; height: auto; margin: 0 auto"
+>
+  <div class="text-center">
+    <h4>Listing details</h4>
+  </div>
+  <p></p>
+  <div class="clearfix m-2">
+    <img
+      [src]="items.image"
+      class="col-md-5 float-md-start mb-3 me-md-3 rounded"
+      alt="..."
+      style="margin-right: 10px; margin-left: 10px"
+    />
+
+    <div>
+      <h3 class="card-title">{{ items.title }}</h3>
+    </div>
+
+    <div class="card-body">
+      <p class="card-text text-break">{{ items.description }}</p>
+    </div>
+
+    <table class="table table-bordered text-center mb-3">
+      <tr>
+        <th scope="col">Owner</th>
+        <th scope="col">Location</th>
+        <th scope="col">Unit Price</th>
+        <th scope="col">Group Participants</th>
+        <th scope="col">
+          <div><a href="#" (click)="handleClick()">Add to wishlist</a></div>
+        </th>
+      </tr>
+      <tr class="">
+        <td class="text-center">
+          <a href="#" (click)="handleClick()">{{ items.brokerName }}</a>
+        </td>
+        <td>
+          <div>{{ items.location }}</div>
+        </td>
+        <td>
+          <div>{{ items.unitPrice }} €</div>
+        </td>
+        <td
+          [ngClass]="{
+            'bg-green': items.subscribedPeople < items.requiredPeople,
+            'bg-red': items.subscribedPeople >= items.requiredPeople,
+            'bg-yellow':
+              items.requiredPeople - items.subscribedPeople <=
+              items.requiredPeople * 0.2
+          }"
+        >
+          <div class="bg-green bg-red bg-yellow rounded">
+            {{ items.subscribedPeople }} / {{ items.requiredPeople }}
+          </div>
+        </td>
+        <td>
+          <a
+            class="btn"
+            href="#"
+            role="button"
+            style="background-color: aquamarine"
+            >Join Group Buy
+          </a>
+        </td>
+      </tr>
+
+    </table>
+    @if (role === 'broker'){
+    <div class="text-center">
+      <div class="text-center">
+        <app-broker-module-single-group
+          class="text-center"
+        ></app-broker-module-single-group>
+      </div>
+    </div>
+  }
+  </div>
+
+</div>

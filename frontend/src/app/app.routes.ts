@@ -9,6 +9,7 @@ import { OpenGroupsListComponent } from './open-groups-list/open-groups-list.com
 import { authBuyerGuard } from './guards/auth-buyer.guard';
 import { SignupComponent } from './signup/signup.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { SingleGroupListingComponent } from './single-group-listing/single-group-listing.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
   { path: 'reset', component: ResetPasswordComponent, pathMatch: 'full' },
+  { path: 'buyer/group/:id', component: SingleGroupListingComponent, pathMatch: 'full'},
   {
     path: 'broker',
     component: DashboardBrokerComponent,

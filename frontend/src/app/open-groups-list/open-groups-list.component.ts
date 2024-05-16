@@ -19,7 +19,9 @@ export class OpenGroupsListComponent {
     this.items = this.apiservice.getOpenGroups()
   }
 
+  // Function to load the product details page
   loadProduct(arg0: any) {
-    this.router.navigate(arg0)
+    this.router.navigate(['/buyer/group', arg0])
+    console.log("Product Clicked : ", arg0)
 }
 }
