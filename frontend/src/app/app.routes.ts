@@ -10,6 +10,7 @@ import { authBuyerGuard } from './guards/auth-buyer.guard';
 import { SignupComponent } from './signup/signup.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { SingleGroupListingComponent } from './single-group-listing/single-group-listing.component';
+import { AccountComponent } from './account/account.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
@@ -24,6 +25,7 @@ export const routes: Routes = [
     canActivate: [authBrokerGuard],
     children: [
       { path: 'home', component: OpenGroupsListComponent },
+      { path: 'account', component: AccountComponent, pathMatch: 'full' },
       { path: '**', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
@@ -33,6 +35,7 @@ export const routes: Routes = [
     canActivate: [authBuyerGuard],
     children: [
       { path: 'home', component: OpenGroupsListComponent },
+      { path: 'account', component: AccountComponent, pathMatch: 'full' },
       { path: '**', redirectTo: 'home', pathMatch: 'full' },
     ],
   },

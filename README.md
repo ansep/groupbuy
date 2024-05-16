@@ -18,5 +18,33 @@ and again the command above to reset the containers from scratch
 
 
 ## REST API Endpoints
-
-STUB: at the moment we only have ```/api/auth/signin``` and ```/api/auth/signup``` for registration and login.
+- `POST /api/auth/signin` for obtaining the JWT Bearer Token to use for authentication (unauthenticated)
+```
+{
+    "username": "leonardo",
+    "password": "password123"
+}
+```
+- `POST /api/auth/signup` for signing up a new user (unauthenticated)
+```
+{
+    "username": "leonardo",
+    "email": "leonardo.idone@gmail.com",
+    "password": "password123",
+    "firstName": "Leonardo",
+    "lastName": "Idone",
+    "telephoneNumber": "3468553816",
+    "role": ["BUYER"]
+}
+```
+- `PATCH /api/user` to edit a user's information, all fields are optional (authentication required)
+```
+{
+    "email": "newmail@mail.com",
+    "firstName": "Mario",
+    "lastName": "Rossi",
+    "telephoneNumber": "1234567890"
+}
+```
+- `POST /api/user/picture` as form-data file to post a profile picture (authentication required)
+- `GET /api/user/{id}/picture` to get user profile picture as attachment (unauthenticated)
