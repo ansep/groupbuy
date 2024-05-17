@@ -144,6 +144,16 @@ public class GroupBuyController {
 	}
 	
 	
+	@PostMapping("/groupbuy")
+	@PreAuthorize("hasRole('BROKER')")
+	ResponseEntity<?> newGroupBuy(@RequestBody GroupBuy newgroupbuy) {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		repository.save(newgroupbuy);
+		return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully"));
+	}
+
+
 	@DeleteMapping("/groupbuy/{id}")
 	@PreAuthorize("hasRole('BROKER')")
 	ResponseEntity<?> deleteGroupBuy(@PathVariable Long id) {
