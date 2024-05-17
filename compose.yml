@@ -1,9 +1,7 @@
 ---
 services:
   database:
-    image: postgres
-    volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    build: postgres
     ports:
       - "5432:5432"
     environment:
@@ -29,4 +27,3 @@ services:
     depends_on:
       database:
         condition: service_healthy
-
