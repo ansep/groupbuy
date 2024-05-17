@@ -82,7 +82,7 @@ public class GroupBuyController {
 	
 	@GetMapping("/groupbuy")
 	@PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
-	public CollectionModel<EntityModel<GroupBuy>> all_auth() { // load one by one the buyers
+	CollectionModel<EntityModel<GroupBuy>> all_auth() { // load one by one the buyers
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userRepository.findByUsername(userDetails.getUsername()).get();
 		List<EntityModel<GroupBuy>> groupbuy = repository.findAll().stream() // load one by one the groupbuys and put them in a list
@@ -94,11 +94,21 @@ public class GroupBuyController {
 	
 	@GetMapping("/groupbuy/{id}")
 	@PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
-	public EntityModel<GroupBuy> one_auth(@PathVariable Long id) {
+	EntityModel<GroupBuy> one_auth(@PathVariable Long id) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userRepository.findByUsername(userDetails.getUsername()).get();
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 	    return assembler.toModel(groupbuy);
+	}
+	
+	
+	@PostMapping("/groupbuy")
+	@PreAuthorize("hasRole('BROKER')")
+	ResponseEntity<?> newGroupBuy(@RequestBody GroupBuy newgroupbuy) {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		repository.save(newgroupbuy);
+		return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully"));
 	}
 	
 	
@@ -129,7 +139,7 @@ public class GroupBuyController {
 		
 		ArrayList<Long> newbuyers = patchRequest.getBuyers();
 		ArrayList<Long> buyers = groupbuy.getBuyers();
-		for (int i = 0; i <= buyers.size(); i = i + 1) {
+		for (int i = 0; i <= newbuyers.size(); i = i + 1) {
 				Long b = newbuyers.get(i);
 				if (buyers.contains(b)) {
 					groupbuy.delBuyer(b);
@@ -150,8 +160,8 @@ public class GroupBuyController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userRepository.findByUsername(userDetails.getUsername()).get();
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-		repository.deleteById(groupbuy.getId());
 		
+		repository.deleteById(groupbuy.getId());
 		return ResponseEntity.ok(new MessageResponse("Groupbuy deleted successfully"));
 	}
 	
