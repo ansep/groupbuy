@@ -1,6 +1,5 @@
 package it.groupbuy.backend.controllers;
 
-import java.util.ArrayList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import it.groupbuy.backend.models.User;
@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 import it.groupbuy.backend.models.GroupBuy;
 import it.groupbuy.backend.payload.request.GroupBuyPatchRequest;
 
-
 @RestController
 public class GroupBuyController {
 
@@ -34,13 +33,11 @@ public class GroupBuyController {
     private final GroupBuyModelAssembler assembler;
     private final UserRepository userRepository;
 
-
     GroupBuyController(GroupbuyRepository repository, GroupBuyModelAssembler assembler, UserRepository userRepository) {
 	this.repository = repository;
 	this.userRepository = userRepository;
 	this.assembler = assembler;
     }
-
 
     @GetMapping("/api/auth/groupbuy")
     public CollectionModel<EntityModel<GroupBuy>> all() { // load one by one the buyers
@@ -127,6 +124,16 @@ public class GroupBuyController {
 	repository.deleteById(groupbuy.getId());
 
 	return ResponseEntity.ok(new MessageResponse("Groupbuy deleted successfully"));
+    }
+
+
+    @PostMapping("/groupbuy")
+    @PreAuthorize("hasRole('BROKER')")
+    ResponseEntity<?> newGroupBuy(@RequestBody GroupBuy newgroupbuy) {
+	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	repository.save(newgroupbuy);
+	return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully"));
     }
 
 }
