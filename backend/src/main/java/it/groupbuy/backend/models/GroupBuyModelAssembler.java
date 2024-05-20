@@ -16,7 +16,9 @@ public class GroupBuyModelAssembler implements RepresentationModelAssembler<Grou
 	  public EntityModel<GroupBuy> toModel(GroupBuy groupbuy) {
 		  EntityModel<GroupBuy> groupbuy_model = EntityModel.of(groupbuy, //
 			        linkTo(methodOn(GroupBuyController.class).one(groupbuy.getId())).withSelfRel(),
-			        linkTo(methodOn(GroupBuyController.class).all()).withRel("/api/auth/groupbuy"));
+			        linkTo(methodOn(GroupBuyController.class).oneAuth(groupbuy.getId())).withSelfRel(),
+				    linkTo(methodOn(GroupBuyController.class).all()).withSelfRel(),
+				    linkTo(methodOn(GroupBuyController.class).allAuth()).withSelfRel());
 		  return groupbuy_model;
 	  }
 

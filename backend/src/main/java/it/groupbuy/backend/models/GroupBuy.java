@@ -16,15 +16,16 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "GroupBuy")
 public class GroupBuy {
-    @Id
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private Long broker;
-
     private ArrayList<Long> buyers = new ArrayList<Long>();
 
+    @NotNull
+    private Long broker;
+    
     @NotNull
     private Integer maxSize;
 
@@ -55,112 +56,110 @@ public class GroupBuy {
 
     public GroupBuy() {}
 
-    public GroupBuy(Long broker, ArrayList<Long> buyers, Integer maxSize,
-		    Integer minSize, String description, String category,
-		    String product, Float cost, EStatus status, String location)
-    {
-	this.broker = broker;
-	this.buyers = buyers;
-	this.maxSize = maxSize;
-	this.minSize = minSize;
-	this.description = description;
-	this.category = category;
-	this.product = product;
-	this.cost = cost;
-	this.status = status;
-	this.location = location;
+    public GroupBuy(Long broker, ArrayList<Long> buyers, Integer maxSize, Integer minSize, String description, String category,
+		    String product, Float cost, EStatus status, String location) {
+    	this.broker = broker;
+    	this.buyers = buyers;
+    	this.maxSize = maxSize;
+    	this.minSize = minSize;
+    	this.description = description;
+    	this.category = category;
+    	this.product = product;
+    	this.cost = cost;
+    	this.status = status;
+    	this.location = location;
     }
 
     public Long getId() {
-	return id;
+    	return id;
     }
 
     public void setId(Long id) {
-	this.id = id;
+    	this.id = id;
     }
 
     public Long getBroker() {
-	return id;
+    	return broker;
     }
 
-    public void setBroker(Long id) {
-	this.broker = id;
+    public void setBroker(Long broker) {
+    	this.broker = broker;
     }
 
     public ArrayList<Long> getBuyers() {
-	return buyers;
+    	return buyers;
     }
 
-    public void addBuyer(Long id) {
-	buyers.add(id);
+    public void addBuyer(Long buyer) {
+    	buyers.add(buyer);
     }
 
-    public void delBuyer(Long id) {
-	buyers.remove(id);
+    public void delBuyer(Long buyer) {
+    	buyers.remove(buyer);
     }
 
     public Integer getMinSize() {
-	return minSize;
+    	return minSize;
     }
 
     public void setMinSize(int size) {
-	this.minSize = size;
+    	this.minSize = size;
     }
 
     public Integer getMaxSize() {
-	return maxSize;
+    	return maxSize;
     }
 
     public void setMaxSize(int size) {
-	this.maxSize = size;
+    	this.maxSize = size;
     }
 
     public String getDescription() {
-	return description;
+    	return description;
     }
 
     public void setDescription(String desc) {
-	this.description = desc;
+    	this.description = desc;
     }
 
     public String getCategory() {
-	return category;
+    	return category;
     }
 
     public void setCategory(String cat) {
-	this.category = cat;
+    	this.category = cat;
     }
 
     public String getProduct() {
-	return product;
+    	return product;
     }
 
     public void setProduct(String prod) {
-	this.product = prod;
+    	this.product = prod;
     }
 
     public String getLocation() {
-	return location;
+    	return location;
     }
 
     public void setLocation(String loc) {
-	this.location = loc;
+    	this.location = loc;
     }
 
     public EStatus getStatus() {
-	return status;
+    	return status;
     }
 
     public void setStatus(EStatus status) {
-	this.status = status;
+    	this.status = status;
     }
 
     public Float getCost() {
-	return cost;
+    	return cost;
     }
 
     public void setCost(float cost) {
-	this.cost = cost;
+    	this.cost = cost;
     }
 
 }
