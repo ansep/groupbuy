@@ -81,13 +81,6 @@ public class GroupBuyController {
     @PreAuthorize("hasRole('BROKER')")
     ResponseEntity<?> patchGroupBuy(@Valid @RequestBody GroupBuyPatchRequest patchRequest, @PathVariable Long id) {
 
-	//UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	//User user = userRepository.findByUsername(userDetails.getUsername()).get();
-
-	// FIXME: Gestire 403 Unauthorized nel momento in cui un
-	// broker tenta di interagire con una groupbuy che non gli
-	// appartiene
-
 	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 
 	if(patchRequest.getMinSize() != 0)
@@ -115,11 +108,7 @@ public class GroupBuyController {
     @DeleteMapping("/groupbuy/{id}")
     @PreAuthorize("hasRole('BROKER')")
     ResponseEntity<?> deleteGroupBuy(@PathVariable Long id) {
-	// FIXME: Gestire 403 Unauthorized nel momento in cui un
-	// broker tenta di interagire con una groupbuy che non gli
-	// appartiene
 	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	//User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 	repository.deleteById(groupbuy.getId());
 
@@ -128,10 +117,7 @@ public class GroupBuyController {
 
 
     @PostMapping("/groupbuy")
-    @PreAuthorize("hasRole('BROKER')")
     ResponseEntity<?> newGroupBuy(@RequestBody GroupBuy newgroupbuy) {
-	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	repository.save(newgroupbuy);
 	return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully"));
     }
