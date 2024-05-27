@@ -6,9 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -21,9 +22,11 @@ public class GroupBuy {
     private Long id;
 
     @NotNull
-    private Long broker;
+    @OneToOne
+    private User broker;
 
-    private ArrayList<Long> buyers = new ArrayList<Long>();
+    @OneToMany
+    private User buyer;
 
     @NotNull
     private Integer maxSize;
@@ -55,12 +58,11 @@ public class GroupBuy {
 
     public GroupBuy() {}
 
-    public GroupBuy(Long broker, ArrayList<Long> buyers, Integer maxSize,
+    public GroupBuy(User broker, Integer maxSize,
 		    Integer minSize, String description, String category,
 		    String product, Float cost, EStatus status, String location)
     {
 	this.broker = broker;
-	this.buyers = buyers;
 	this.maxSize = maxSize;
 	this.minSize = minSize;
 	this.description = description;
@@ -83,20 +85,8 @@ public class GroupBuy {
 	return id;
     }
 
-    public void setBroker(Long id) {
-	this.broker = id;
-    }
-
-    public ArrayList<Long> getBuyers() {
-	return buyers;
-    }
-
-    public void addBuyer(Long id) {
-	buyers.add(id);
-    }
-
-    public void delBuyer(Long id) {
-	buyers.remove(id);
+    public void setBroker(User broker) {
+	this.broker = broker;
     }
 
     public Integer getMinSize() {
