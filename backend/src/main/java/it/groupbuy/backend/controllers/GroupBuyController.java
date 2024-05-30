@@ -2,8 +2,8 @@ package it.groupbuy.backend.controllers;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import it.groupbuy.backend.models.User;
 import it.groupbuy.backend.payload.response.MessageResponse;
@@ -26,7 +25,6 @@ import it.groupbuy.backend.models.GroupBuyModelAssembler;
 import it.groupbuy.backend.models.GroupBuyNotFoundException;
 import it.groupbuy.backend.repository.UserRepository;
 import jakarta.validation.Valid;
-import it.groupbuy.backend.models.EStatus;
 import it.groupbuy.backend.models.GroupBuy;
 import it.groupbuy.backend.payload.request.GroupBuyPatchRequest;
 
@@ -63,32 +61,21 @@ public class GroupBuyController {
     @GetMapping("/groupbuy")
     @PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
     public CollectionModel<EntityModel<GroupBuy>> allAuth() { // load one by one the buyers
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User user = userRepository.findByUsername(userDetails.getUsername()).get();
 		List<EntityModel<GroupBuy>> groupbuy = repository.findAll().stream() // load one by one the groupbuys and put them in a list
 	    .map(assembler::toModel).collect(Collectors.toList());
 		return CollectionModel.of(groupbuy, //
 				  linkTo(methodOn(GroupBuyController.class).allAuth()).withSelfRel()); // creates the hateoas links to the objects
     }
 
-
+    
     @GetMapping("/groupbuy/{id}")
     @PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
     public EntityModel<GroupBuy> oneAuth(@PathVariable Long id) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User user = userRepository.findByUsername(userDetails.getUsername()).get();
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 		return assembler.toModel(groupbuy);
     }
 
-    @GetMapping("/api/auth/groupbuy?={product}")
-   	public CollectionModel<EntityModel<GroupBuy>> oneByProduct(@RequestParam String product) {
-       	List<EntityModel<GroupBuy>> groupbuy = repository.findByProduct(product).stream() // load one by one the groupbuys and put them in a list
-       		    .map(assembler::toModel).collect(Collectors.toList());
-       	return CollectionModel.of(groupbuy, //
-   				 linkTo(methodOn(GroupBuyController.class).oneByProduct(product)).withSelfRel());
-     }
-
+    
     @PatchMapping("/groupbuy/{id}")
     @PreAuthorize("hasRole('BROKER')")
     ResponseEntity<?> patchGroupBuy(@Valid @RequestBody GroupBuyPatchRequest patchRequest, @PathVariable Long id) {
@@ -119,6 +106,11 @@ public class GroupBuyController {
     ResponseEntity<?> deleteGroupBuy(@PathVariable Long id) {
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		if (!user.getOwnedGroupbuy().contains(groupbuy)) {
+			return ResponseEntity.badRequest().body("Groupbuy not owned");
+		}
+		user.removeOwnedGropbuy(groupbuy);
 		repository.deleteById(groupbuy.getId());
 		return ResponseEntity.ok(new MessageResponse("Groupbuy deleted successfully"));
     }
@@ -127,9 +119,12 @@ public class GroupBuyController {
     @PostMapping("/groupbuy")
     @PreAuthorize("hasRole('BROKER')")
     ResponseEntity<?> newGroupBuy(@RequestBody GroupBuyPatchRequest request) {
-    	GroupBuy groupbuy = new GroupBuy(request.getBroker(), request.getBuyers(), request.getMaxSize(), request.getMinSize(), 
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+    	GroupBuy groupbuy = new GroupBuy(request.getBroker(), request.getMaxSize(), request.getMinSize(), 
     			request.getDescription(), request.getCategory(), request.getProduct(), request.getCost(), request.getStatus(), 
     			request.getLocation());
+    	user.addOwnedGropbuy(groupbuy);
     	repository.save(groupbuy);
     	return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully"));
     }

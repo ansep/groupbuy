@@ -1,16 +1,17 @@
 package it.groupbuy.backend.payload.request;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import it.groupbuy.backend.models.EStatus;
+import it.groupbuy.backend.models.User;
 
 public class GroupBuyPatchRequest {
 
-	private Long broker;
+	private User broker;
 	
-	private ArrayList<Long> buyers = new ArrayList<Long>();
+	private Set<User> buyers = new HashSet<>();
 
 	private int maxSize;
 	 
@@ -28,24 +29,16 @@ public class GroupBuyPatchRequest {
 	 
 	private String location;
 	    
-	public Long getBroker() {
+	public User getBroker() {
 		return broker;
 	}
 	
-	public void setBroker(Long broker) {
+	public void setBroker(User broker) {
 		this.broker = broker;
 	}
 	
-	public ArrayList<Long> getBuyers() {
+	public Set<User> getBuyers() {
 		return buyers;
-	}
-
-	public void addBuyer(Long id) {
-		buyers.add(id);
-	}
-	    
-	public void delBuyer(Long id) {
-		buyers.remove(id);
 	}
 	    
 	public int getMinSize() {

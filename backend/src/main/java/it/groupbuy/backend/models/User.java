@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
@@ -61,6 +62,12 @@ public class User {
 		 joinColumns = @JoinColumn(name = "user_id"),
 		 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    
+    @ManyToMany(mappedBy = "buyer")
+    private Set<GroupBuy> subscribed_groupbuy;
+    
+    @OneToMany(mappedBy="user")
+    private Set<GroupBuy> owned_groupbuy;
 
     public User() {}
 
@@ -73,6 +80,18 @@ public class User {
 	this.telephoneNumber = telephoneNumber;
     }
 
+    public Set<GroupBuy> getOwnedGroupbuy() {
+    	return this.subscribed_groupbuy;
+    }
+    
+    public void removeOwnedGropbuy(GroupBuy g) {
+    	this.owned_groupbuy.remove(g);
+    }
+    
+    public void addOwnedGropbuy(GroupBuy g) {
+    	this.owned_groupbuy.add(g);
+    }
+    
     public Long getId() {
 	return id;
     }

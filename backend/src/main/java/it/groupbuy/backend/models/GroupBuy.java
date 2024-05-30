@@ -1,14 +1,19 @@
 package it.groupbuy.backend.models;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -21,10 +26,17 @@ public class GroupBuy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private ArrayList<Long> buyers = new ArrayList<Long>();
+	@ManyToMany
+    @JoinTable(
+      name = "subscriptions", 
+      joinColumns = @JoinColumn(name = "user_id"), 
+      inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
+    private Set<User> buyer = new HashSet<User>();
 
     @NotNull
-    private Long broker;
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    private User broker;
     
     @NotNull
     private Integer maxSize;
@@ -56,10 +68,9 @@ public class GroupBuy {
 
     public GroupBuy() {}
 
-    public GroupBuy(Long broker, ArrayList<Long> buyers, Integer maxSize, Integer minSize, String description, String category,
+    public GroupBuy(User broker, Integer maxSize, Integer minSize, String description, String category,
 		    String product, Float cost, EStatus status, String location) {
     	this.broker = broker;
-    	this.buyers = buyers;
     	this.maxSize = maxSize;
     	this.minSize = minSize;
     	this.description = description;
@@ -78,24 +89,24 @@ public class GroupBuy {
     	this.id = id;
     }
 
-    public Long getBroker() {
+    public User getBroker() {
     	return broker;
     }
 
-    public void setBroker(Long broker) {
+    public void setBroker(User broker) {
     	this.broker = broker;
     }
 
-    public ArrayList<Long> getBuyers() {
-    	return buyers;
+    public Set<User> getBuyers() {
+    	return buyer;
     }
-
-    public void addBuyer(Long buyer) {
-    	buyers.add(buyer);
+    
+    public void addBuyer(User buyer) {
+    	this.buyer.add(buyer);
     }
-
-    public void delBuyer(Long buyer) {
-    	buyers.remove(buyer);
+    
+    public void delBuyer(User buyer) {
+    	this.buyer.remove(buyer);
     }
 
     public Integer getMinSize() {
