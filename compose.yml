@@ -2,6 +2,8 @@
 services:
   database:
     build: postgres
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     environment:
@@ -9,7 +11,7 @@ services:
       - 'POSTGRES_USER=gbadmin'
       - 'POSTGRES_PASSWORD=gbpassword'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gbadmin -d groupbuy"]
+      test: [ "CMD-SHELL", "pg_isready -U gbadmin -d groupbuy" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,10 +22,11 @@ services:
     depends_on:
       database:
         condition: service_healthy
-  frontend:
-    build: frontend
-    ports:
-      - "4200:4200"
-    depends_on:
-      database:
-        condition: service_healthy
+  # TODO: commented for development, starts with npm start in frontend folder
+  # frontend:
+  #   build: frontend
+  #   ports:
+  #     - "4200:4200"
+  #   depends_on:
+  #     database:
+  #       condition: service_healthy
