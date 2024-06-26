@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="buyer/home">Home</a>
+    <a class="navbar-brand" style="cursor: pointer" (click)="openHome()"
+      >Home</a
+    >
     <button
       class="navbar-toggler"
       type="button"
@@ -14,26 +16,46 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" href="buyer/groups">My joined listings</a>
+        <li class="nav-item" (click)="openJoinedListings()">
+          <a
+            class="nav-link"
+            [class.active]="activeTab === 'groups'"
+            style="cursor: pointer"
+            >My joined listings</a
+          >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="buyer/messages">Messages</a>
+        <li class="nav-item" (click)="openMessages()">
+          <a
+            class="nav-link"
+            [class.active]="activeTab === 'messages'"
+            style="cursor: pointer"
+            >Messages</a
+          >
         </li>
       </ul>
       <div class="ms-auto">
         <ul class="navbar-nav">
           <li>
-            <a class="nav-link" href="logout">Logout</a>
+            <a class="nav-link" style="cursor: pointer" (click)="logout()"
+              >Logout</a
+            >
           </li>
-          <li class="nav-item d-flex align-items-center ms-4">
-            <div>Logged in as:</div>
+          <li
+            class="nav-item d-flex align-items-center ms-4"
+            (click)="openProfile()"
+          >
             <a
               class="nav-link"
-              style="color: rgb(0, 101, 217)"
-              href="buyer/account"
+              style="color: rgb(0, 101, 217); cursor: pointer"
               >{{ username }}</a
             >
+            <div class="avatar-container">
+              <div
+                class="image-container"
+                [style.background-image]="'url(' + avatar + ')'"
+              ></div>
+              <div class="icon-wrapper"></div>
+            </div>
           </li>
         </ul>
       </div>

@@ -1,0 +1,16 @@
+.avatar-container {
+    position: relative;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.image-container {
+    height: 40px;
+    width: 40px;
+    z-index: 1;
+    border-radius: 50%;
+    background-color: #fff;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 2px 4px 4px #6c93001a;
+}

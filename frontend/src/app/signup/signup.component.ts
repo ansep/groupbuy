@@ -30,6 +30,7 @@ export class SignupComponent {
       Validators.pattern('^[0-9]*$'),
     ]),
   });
+  avatar = 'assets/default-avatar-lg.png';
   submitted = false;
   incorrect = false;
   errorMessage: string | null = null;
@@ -80,6 +81,19 @@ export class SignupComponent {
             }
           },
         });
+    }
+  }
+
+  onFileChange($event: Event) {
+    const input = $event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.avatar =
+          (e.target && (e.target.result as string)) ||
+          'assets/default-avatar-lg.png';
+      };
+      reader.readAsDataURL(input.files[0]);
     }
   }
 }
