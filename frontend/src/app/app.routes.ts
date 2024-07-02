@@ -11,12 +11,14 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { SingleGroupListingComponent } from './single-group-listing/single-group-listing.component';
 import { AccountComponent } from './account/account.component';
 import { ProfileComponent } from './profile/profile.component';
+import { BuyerChatComponent } from './buyer-chat/buyer-chat.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'reset', component: ResetPasswordComponent, pathMatch: 'full' },
+  { path: 'buyer/messages', component: BuyerChatComponent, pathMatch: 'full'},
   {
     path: 'buyer/group/:id',
     component: SingleGroupListingComponent,

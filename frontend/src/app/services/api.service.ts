@@ -49,6 +49,25 @@ structor() { }
 
   }
 
+  getMessages():any {
+    const messages = [];
+
+    for (let i = 0; i < 100; i++) {
+      const message = {
+        id: i,
+        sender: `sender ${i}`,
+        receiver: `receiver ${i}`,
+        data: `this is a very long and detailed message with the number ${i}`,
+        date: `date ${i}`,
+      };
+      messages.push(message);
+
+    }
+    return messages;
+
+
+  }
+
   //suggest some titles for the bulk buying microelectronics
   titles = ['Bulk buy of microcontrollers', 'Bulk buy of resistors', 'Bulk buy of capacitors'];
   locations = ['Rome (Italy)', 'Milan (Italy)', 'Turin (Italy)', 'Favazzina(Italy)', 'New York (USA)', 'Los Angeles (USA)', 'San Francisco (USA)', 'Tokyo (Japan)', 'Osaka (Japan)', 'Kyoto (Japan)', 'Barcellona Pozzo di Gotto (Italy)'];
