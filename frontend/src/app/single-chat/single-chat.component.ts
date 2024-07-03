@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-single-chat',
@@ -8,5 +9,30 @@ import { Component } from '@angular/core';
   styleUrl: './single-chat.component.scss'
 })
 export class SingleChatComponent {
+  @Input() contact: any;
+
+  messages:any[] = [];
+  constructor(private apiservice:ApiService){
+  }
+  async ngOnInit() {
+    try {
+      this.messages = (await this.apiservice.getMessages()).slice(0,15); // Wait for the promise to resolve
+      console.log(this.messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  }
+
+
+
+  async refreshMessages() {
+    try {
+      this.messages = (await this.apiservice.getMessages()).slice(0,15); // Wait for the promise to resolve
+      console.log(this.messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  }
+
 
 }
