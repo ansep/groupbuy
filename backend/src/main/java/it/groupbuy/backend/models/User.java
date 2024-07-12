@@ -1,8 +1,10 @@
 package it.groupbuy.backend.models;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -63,11 +65,11 @@ public class User {
 		 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
     
-    @ManyToMany(mappedBy = "buyer")
-    private Set<GroupBuy> subscribed_groupbuy;
-    
-    @OneToMany(mappedBy="user")
-    private Set<GroupBuy> owned_groupbuy;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "buyers")
+    private List<GroupBuy> subscribed_groupbuy;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="broker")
+    private List<GroupBuy> owned_groupbuy;
 
     public User() {}
 
@@ -79,10 +81,6 @@ public class User {
 	this.lastName = lastName;
 	this.telephoneNumber = telephoneNumber;
     }
-
-    public Set<GroupBuy> getOwnedGroupbuy() {
-    	return this.subscribed_groupbuy;
-    }
     
     public void removeOwnedGropbuy(GroupBuy g) {
     	this.owned_groupbuy.remove(g);
@@ -91,6 +89,31 @@ public class User {
     public void addOwnedGropbuy(GroupBuy g) {
     	this.owned_groupbuy.add(g);
     }
+    
+    public void addSubscribedGropbuy(GroupBuy g) {
+    	this.subscribed_groupbuy.add(g);
+    }
+    
+    public void deleteSubscribedGropbuy(GroupBuy g) {
+    	this.subscribed_groupbuy.remove(g);
+    }
+    
+    
+    public List<GroupBuy> getSubscribed_groupbuy() {
+		return subscribed_groupbuy;
+	}
+
+	public void setSubscribed_groupbuy(List<GroupBuy> subscribed_groupbuy) {
+		this.subscribed_groupbuy = subscribed_groupbuy;
+	}
+
+	public List<GroupBuy> getOwned_groupbuy() {
+		return owned_groupbuy;
+	}
+
+	public void setOwned_groupbuy(List<GroupBuy> owned_groupbuy) {
+		this.owned_groupbuy = owned_groupbuy;
+	}
     
     public Long getId() {
 	return id;
@@ -155,6 +178,7 @@ public class User {
     public void setRoles(Set<Role> roles) {
 	this.roles = roles;
     }
+    
 
     public String getProfilePicturePath() {
 	return profilePicturePath;

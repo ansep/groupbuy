@@ -16,7 +16,5 @@ import it.groupbuy.backend.models.GroupBuy;
 @Repository
 public interface GroupbuyRepository extends JpaRepository<GroupBuy, Long>{
 	
-	@Query("select g from GroupBuy g where g.product = ?1")
-	List<GroupBuy> findByProduct(String product);
 	
 }

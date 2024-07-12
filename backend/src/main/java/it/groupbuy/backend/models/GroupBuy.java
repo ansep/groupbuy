@@ -1,9 +1,8 @@
 package it.groupbuy.backend.models;
 
-import java.util.HashSet;
+import java.util.List;
 
-import java.util.Set;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,29 +30,25 @@ public class GroupBuy {
       name = "subscriptions", 
       joinColumns = @JoinColumn(name = "user_id"), 
       inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
-    private Set<User> buyer = new HashSet<User>();
+    private List<User> buyers;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+	@ManyToOne
+    @JoinColumn(name="user_id")
     private User broker;
     
     @NotNull
     private Integer maxSize;
-
-    @NotNull
-    private Integer minSize;
 
     @NotBlank
     @Size(max = 100)
     private String description;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
     private String category;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
     private String product;
 
     @NotNull
@@ -68,11 +63,10 @@ public class GroupBuy {
 
     public GroupBuy() {}
 
-    public GroupBuy(User broker, Integer maxSize, Integer minSize, String description, String category,
+    public GroupBuy(User broker, Integer maxSize, String description, String category,
 		    String product, Float cost, EStatus status, String location) {
     	this.broker = broker;
     	this.maxSize = maxSize;
-    	this.minSize = minSize;
     	this.description = description;
     	this.category = category;
     	this.product = product;
@@ -90,35 +84,31 @@ public class GroupBuy {
     }
 
     public User getBroker() {
-    	return broker;
+    	return this.broker;
     }
 
     public void setBroker(User broker) {
     	this.broker = broker;
     }
-
-    public Set<User> getBuyers() {
-    	return buyer;
+    
+    public List<User> getBuyers() {
+    	return this.buyers;
+    }
+    
+    public void setBuyers(List<User> buyers) {
+    	this.buyers = buyers;
     }
     
     public void addBuyer(User buyer) {
-    	this.buyer.add(buyer);
+    	this.buyers.add(buyer);
     }
     
     public void delBuyer(User buyer) {
-    	this.buyer.remove(buyer);
-    }
-
-    public Integer getMinSize() {
-    	return minSize;
-    }
-
-    public void setMinSize(int size) {
-    	this.minSize = size;
+    	this.buyers.remove(buyer);
     }
 
     public Integer getMaxSize() {
-    	return maxSize;
+    	return this.maxSize;
     }
 
     public void setMaxSize(int size) {

@@ -1,21 +1,10 @@
 package it.groupbuy.backend.payload.request;
 
-
-import java.util.HashSet;
-import java.util.Set;
-
 import it.groupbuy.backend.models.EStatus;
-import it.groupbuy.backend.models.User;
 
 public class GroupBuyPatchRequest {
-
-	private User broker;
 	
-	private Set<User> buyers = new HashSet<>();
-
 	private int maxSize;
-	 
-	private int minSize;
 	 
 	private String description;
 	 
@@ -28,26 +17,6 @@ public class GroupBuyPatchRequest {
 	private EStatus status;
 	 
 	private String location;
-	    
-	public User getBroker() {
-		return broker;
-	}
-	
-	public void setBroker(User broker) {
-		this.broker = broker;
-	}
-	
-	public Set<User> getBuyers() {
-		return buyers;
-	}
-	    
-	public int getMinSize() {
-		return minSize;
-	}
-
-	public void setMinSize(int size) {
-		this.minSize = size;
-	}
 	    
 	public int getMaxSize() {
 		return maxSize;
