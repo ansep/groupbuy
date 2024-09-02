@@ -1,13 +1,13 @@
 // import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
 structor() { }
-
+constructor(private https: HttpClient) {}
   getOpenGroups() {
     const openGroups = [];
 
@@ -47,7 +47,23 @@ structor() { }
     return participants;
 
 
+
   }
+
+  addNewGroupBuy(title: string, price: number, minQuantity: number, availablePieces: number, category:string, image:string) { //what about user id????
+    { //TOCHECK THE POST
+      return this.https.post('http://localhost:8080/api/broker/new',  {
+        title,
+        price,
+        minQuantity,
+        availablePieces,
+        category,
+        image,
+
+      });
+  }
+}
+
   async getMessages(): Promise<any[]> {
     const messages = [];
 
