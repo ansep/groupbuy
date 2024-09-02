@@ -12,6 +12,7 @@ import { SingleGroupListingComponent } from './single-group-listing/single-group
 import { AccountComponent } from './account/account.component';
 import { ProfileComponent } from './profile/profile.component';
 import { BuyerChatComponent } from './buyer-chat/buyer-chat.component';
+import { BrokerNewListingComponent } from './broker-new-listing/broker-new-listing.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'reset', component: ResetPasswordComponent, pathMatch: 'full' },
   { path: 'buyer/messages', component: BuyerChatComponent, pathMatch: 'full'},
+  { path: 'broker/new', component: BrokerNewListingComponent, pathMatch: 'full' },//TODO move to authBrokerGuard!!!
   {
     path: 'buyer/group/:id',
     component: SingleGroupListingComponent,
@@ -37,6 +39,7 @@ export const routes: Routes = [
       },
       { path: 'account', component: AccountComponent, pathMatch: 'full' },
       { path: '**', redirectTo: 'home', pathMatch: 'full' },
+
     ],
   },
   {
