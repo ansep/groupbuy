@@ -1,6 +1,8 @@
 package it.groupbuy.backend.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.groupbuy.backend.models.ERole;
+import it.groupbuy.backend.models.GroupBuy;
 import it.groupbuy.backend.models.Role;
 import it.groupbuy.backend.models.User;
 import it.groupbuy.backend.payload.request.LoginRequest;
@@ -92,7 +95,9 @@ public class AuthController {
 			     signUpRequest.getFirstName(),
 			     signUpRequest.getLastName(),
 			     signUpRequest.getTelephoneNumber());
-
+	
+	List<GroupBuy> own_groups = new ArrayList<GroupBuy>();
+	List<GroupBuy> sub_groups = new ArrayList<GroupBuy>();
 	Set<String> strRoles = signUpRequest.getRole();
 	Set<Role> roles = new HashSet<>();
 
@@ -116,7 +121,9 @@ public class AuthController {
 		    }
 		});
 	}
-
+	
+	user.setOwned_groupbuy(own_groups);
+	user.setSubscribed_groupbuy(sub_groups);
 	user.setRoles(roles);
 	userRepository.save(user);
 

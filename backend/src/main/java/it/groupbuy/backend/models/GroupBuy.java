@@ -1,14 +1,18 @@
 package it.groupbuy.backend.models;
 
-import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -16,31 +20,35 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "GroupBuy")
 public class GroupBuy {
-    @Id
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private Long broker;
+	@ManyToMany
+    @JoinTable(
+      name = "subscriptions", 
+      joinColumns = @JoinColumn(name = "user_id"), 
+      inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
+    private List<User> buyers;
 
-    private ArrayList<Long> buyers = new ArrayList<Long>();
-
+	@ManyToOne
+    @JoinColumn(name="user_id")
+    private User broker;
+    
     @NotNull
     private Integer maxSize;
-
-    @NotNull
-    private Integer minSize;
 
     @NotBlank
     @Size(max = 100)
     private String description;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
     private String category;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
     private String product;
 
     @NotNull
@@ -55,112 +63,104 @@ public class GroupBuy {
 
     public GroupBuy() {}
 
-    public GroupBuy(Long broker, ArrayList<Long> buyers, Integer maxSize,
-		    Integer minSize, String description, String category,
-		    String product, Float cost, EStatus status, String location)
-    {
-	this.broker = broker;
-	this.buyers = buyers;
-	this.maxSize = maxSize;
-	this.minSize = minSize;
-	this.description = description;
-	this.category = category;
-	this.product = product;
-	this.cost = cost;
-	this.status = status;
-	this.location = location;
+    public GroupBuy(User broker, Integer maxSize, String description, String category,
+		    String product, Float cost, EStatus status, String location) {
+    	this.broker = broker;
+    	this.maxSize = maxSize;
+    	this.description = description;
+    	this.category = category;
+    	this.product = product;
+    	this.cost = cost;
+    	this.status = status;
+    	this.location = location;
     }
 
     public Long getId() {
-	return id;
+    	return id;
     }
 
     public void setId(Long id) {
-	this.id = id;
+    	this.id = id;
     }
 
-    public Long getBroker() {
-	return id;
+    public User getBroker() {
+    	return this.broker;
     }
 
-    public void setBroker(Long id) {
-	this.broker = id;
+    public void setBroker(User broker) {
+    	this.broker = broker;
     }
-
-    public ArrayList<Long> getBuyers() {
-	return buyers;
+    
+    public List<User> getBuyers() {
+    	return this.buyers;
     }
-
-    public void addBuyer(Long id) {
-	buyers.add(id);
+    
+    public void setBuyers(List<User> buyers) {
+    	this.buyers = buyers;
     }
-
-    public void delBuyer(Long id) {
-	buyers.remove(id);
+    
+    public void addBuyer(User buyer) {
+    	this.buyers.add(buyer);
     }
-
-    public Integer getMinSize() {
-	return minSize;
-    }
-
-    public void setMinSize(int size) {
-	this.minSize = size;
+    
+    public void delBuyer(User buyer) {
+    	this.buyers.remove(buyer);
     }
 
     public Integer getMaxSize() {
-	return maxSize;
+    	return this.maxSize;
     }
 
     public void setMaxSize(int size) {
-	this.maxSize = size;
+    	this.maxSize = size;
     }
 
     public String getDescription() {
-	return description;
+    	return description;
     }
 
     public void setDescription(String desc) {
-	this.description = desc;
+    	this.description = desc;
     }
 
     public String getCategory() {
-	return category;
+    	return category;
     }
 
     public void setCategory(String cat) {
-	this.category = cat;
+    	this.category = cat;
     }
 
     public String getProduct() {
-	return product;
+    	return product;
     }
 
     public void setProduct(String prod) {
-	this.product = prod;
+    	this.product = prod;
     }
 
     public String getLocation() {
-	return location;
+    	return location;
     }
 
     public void setLocation(String loc) {
-	this.location = loc;
+    	this.location = loc;
     }
 
     public EStatus getStatus() {
-	return status;
+    	return status;
     }
 
     public void setStatus(EStatus status) {
-	this.status = status;
+    	this.status = status;
     }
 
     public Float getCost() {
-	return cost;
+    	return cost;
     }
 
     public void setCost(float cost) {
-	this.cost = cost;
+    	this.cost = cost;
     }
 
 }

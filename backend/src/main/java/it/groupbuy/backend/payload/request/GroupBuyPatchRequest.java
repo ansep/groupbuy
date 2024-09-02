@@ -1,105 +1,77 @@
 package it.groupbuy.backend.payload.request;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import it.groupbuy.backend.models.EStatus;
 
 public class GroupBuyPatchRequest {
-
-	 private ArrayList<Long> buyers = new ArrayList<Long>();
-
-	 private int maxSize;
+	
+	private int maxSize;
 	 
-	 private int minSize;
+	private String description;
 	 
-	 private String description;
+	private String category;
+
+	private String product;
 	 
-	 private String category;
-
-	 private String product;
+	private float cost;
 	 
-	 private float cost;
+	private EStatus status;
 	 
-	 private EStatus status;
-	 
-	 private String location;
+	private String location;
 	    
-	 public ArrayList<Long> getBuyers() {
-	    return buyers;
-	 }
+	public int getMaxSize() {
+		return maxSize;
+	}
 
-	 public void addBuyer(Long id) {
-		 buyers.add(id);
-	 }
+	public void setMaxSize(int size) {
+		this.maxSize = size;
+	}
 	    
-	 public void delBuyer(Long id) {
-		 buyers.remove(id);
-	 }
-	    
-	 public int getMinSize() {
-		 return minSize;
-	 }
+	public String getDescription() {
+		return description;
+	}
 
-	 public void setMinSize(int size) {
-		 this.minSize = size;
-	 }
+	public void setDescription(String desc) {
+		this.description = desc;
+	}
 	    
-	 public int getMaxSize() {
-		 return maxSize;
-	 }
+	public String getCategory() {
+		return category;
+	}
 
-	 public void setMaxSize(int size) {
-		 this.maxSize = size;
-	 }
+	public void setCategory(String cat) {
+		this.category = cat;
+	}
 	    
-	 public String getDescription() {
-		 return description;
-	 }
+	public String getProduct() {
+		return product;
+	}
 
-	 public void setDescription(String desc) {
-		 this.description = desc;
-	 }
+	public void setProduct(String prod) {
+		this.product = prod;
+	}
 	    
-	 public String getCategory() {
-		 return category;
-	 }
+	public String getLocation() {
+		return location;
+	}
 
-	 public void setCategory(String cat) {
-		 this.category = cat;
-	 }
+	public void setLocation(String loc) {
+		this.location = loc;
+	}
 	    
-	 public String getProduct() {
-		 return product;
-	 }
+	public EStatus getStatus() {
+		return status;
+	}
 
-	 public void setProduct(String prod) {
-		 this.product = prod;
-	 }
+	public void setStatus(EStatus status) {
+		this.status = status;
+	}
 	    
-	 public String getLocation() {
-		 return location;
-	 }
+	public float getCost() {
+		return cost;
+	}
 
-	 public void setLocation(String loc) {
-		 this.location = loc;
-	 }
-	    
-	 public EStatus getStatus() {
-		 return status;
-	 }
-
-	 public void setStatus(EStatus status) {
-		 this.status = status;
-	 }
-	    
-	 public float getCost() {
-		 return cost;
-	 }
-
-	 public void setCost(float cost) {
-		 this.cost = cost;
-	 }
+	public void setCost(float cost) {
+		this.cost = cost;
+	}
 	
 }
