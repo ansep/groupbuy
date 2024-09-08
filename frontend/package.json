@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "stompjs": "^7.0.0",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
@@ -21,6 +20,7 @@
     "@angular/router": "^17.3.0",
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@popperjs/core": "^2.11.8",
+    "@stomp/stompjs": "^7.0.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "rxjs": "~7.8.0",
