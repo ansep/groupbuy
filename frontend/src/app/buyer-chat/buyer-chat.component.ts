@@ -5,7 +5,10 @@ import { AuthService } from '../services/auth.service';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { SingleChatComponent } from "../single-chat/single-chat.component";
 import { NgClass } from '@angular/common';
-import { Client } from '@stomp/stompjs';
+import { Client, Stomp } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import { connect } from 'rxjs';
+
 @Component({
     selector: 'app-buyer-chat',
     standalone: true,
@@ -15,37 +18,11 @@ import { Client } from '@stomp/stompjs';
 })
 export class BuyerChatComponent {
 data: any;
-stompClient = new Client({
-  brokerURL: 'ws://localhost:15674/ws',
-  onConnect: () => {
-    this.stompClient.subscribe('/topic/test01', message =>
-      console.log(`Received: ${message.body}`)
-    );
-    this.stompClient.publish({ destination: '/topic/test01', body: 'First Message' });
-  },
-  onWebSocketError: (error) => {
-    console.error('Error with websocket', error);
-},
-onDisconnect: (error) => {
-  console.error('Disconnected', error);
-},
-onStompError: (error) => {
-  console.error('STOMP protocol error', error);
-},
-onUnhandledMessage: (message) => {
-  console.error('Unhandled Message', message);
-}
-
-
-});
+stompClient : any;
 
 
 
 
-
-connect() {
-  this.stompClient.activate();
-}
 
 disconnect() {
   this.stompClient.deactivate();
@@ -68,6 +45,7 @@ disconnect() {
 getChat() {
 return this.selectedChat;
 }
+
   selectedChat:any;
   items:any;
   contacts:any;
@@ -75,7 +53,10 @@ return this.selectedChat;
   }
 
   ngOnInit() {
-
+    // if (this.stompClient == null) {
+    // //initiate stompClient
+    // }
+      this.stompClient = this.connect(this.authservice.getUsername(), this.authservice.getToken());
       this.items = this.apiservice.getMessages();
       this.contacts = this.apiservice.getParticipants().slice(0, 15);
     }
@@ -85,6 +66,39 @@ return this.selectedChat;
 
 
   }
+
+  initStomp() {
+    this.stompClient = new Client({
+      brokerURL: 'ws://localhost:15674/ws',
+      onConnect: () => {
+        this.stompClient.subscribe('/topic/test01', message =>
+          console.log(`Received: ${message.body}`)
+        );
+        this.stompClient.publish({ destination: '/topic/test01', body: 'First Message' });
+      },
+      onWebSocketError: (error) => {
+        console.error('Error with websocket', error);
+    },
+    onDisconnect: (error) => {
+      console.error('Disconnected', error);
+    },
+    onStompError: (error) => {
+      console.error('STOMP protocol error', error);
+    },
+    onUnhandledMessage: (message) => {
+      console.error('Unhandled Message', message);
+    }
+
+
+    });
+  }
+
+  connect(username, token){ //1-1
+    return new Promise((resolve, reject) => {
+        let stompClient = Stomp.over(new SockJS('/websocket-chat'))
+        stompClient.connect({Authorization: "Bearer " + token}, (frame) => resolve(stompClient))
+          })
+      }
 
 
     // this.authservice.getRole()?.subscribe((data:any) => { // Change the type of 'data' to 'any[]'
