@@ -7,21 +7,18 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './open-groups-list.component.html',
-  styleUrl: './open-groups-list.component.scss'
+  styleUrl: './open-groups-list.component.scss',
 })
 export class OpenGroupsListComponent {
-
-
-  items:any[] = []
-  constructor(private apiservice:ApiService, private router:Router){
-  }
-  ngOnInit(){
-    this.items = this.apiservice.getOpenGroups()
+  items: any[] = [];
+  constructor(private apiservice: ApiService, private router: Router) {}
+  ngOnInit() {
+    this.items = this.apiservice.getOpenGroups();
   }
 
   // Function to load the product details page
   loadProduct(arg0: any) {
-    this.router.navigate(['/buyer/group', arg0])
-    console.log("Product Clicked : ", arg0)
-}
+    this.router.navigate(['/buyer/group', arg0]);
+    console.log('Product Clicked : ', arg0);
+  }
 }
