@@ -1,5 +1,7 @@
 package it.groupbuy.backend.models;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,11 +67,11 @@ public class User {
 
     // If we have a broker
     @OneToMany
-    private GroupBuy publishedGroupbuy;
+    private List<GroupBuy> publishedGroupbuy = new ArrayList<>();
 
     // If we have a buyer
     @OneToMany
-    private GroupBuy subscribedGroupbuy;
+    private List<GroupBuy> subscribedGroupbuy = new ArrayList<>();
 
     public User() {}
 
@@ -154,19 +156,19 @@ public class User {
 	this.profilePicturePath = profilePicturePath;
     }
 
-    public GroupBuy getSubscribedGroupbuy() {
+    public List<GroupBuy> getSubscribedGroupbuy() {
 	return subscribedGroupbuy;
     }
 
-    public void setSubscribedGroupbuy(GroupBuy subscribedGroupbuy) {
+    public void setSubscribedGroupbuy(List<GroupBuy> subscribedGroupbuy) {
 	this.subscribedGroupbuy = subscribedGroupbuy;
     }
 
-    public GroupBuy getPublishedGroupbuy() {
+    public List<GroupBuy> getPublishedGroupbuy() {
 	return publishedGroupbuy;
     }
 
-    public void setPublishedGroupbuy(GroupBuy publishedGroupbuy) {
+    public void setPublishedGroupbuy(List<GroupBuy> publishedGroupbuy) {
 	this.publishedGroupbuy = publishedGroupbuy;
     }
 }

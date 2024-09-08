@@ -26,7 +26,7 @@ public class GroupBuy {
     private User broker;
 
     @OneToMany
-    private User buyer;
+    private ArrayList<User> buyers;
 
     @NotNull
     private Integer maxSize;
@@ -151,6 +151,14 @@ public class GroupBuy {
 
     public void setCost(float cost) {
 	this.cost = cost;
+    }
+
+    public ArrayList<User> getBuyers() {
+	return buyers;
+    }
+
+    public void setBuyers(ArrayList<User> buyers){
+	this.buyers = buyers;
     }
 
 }

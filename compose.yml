@@ -1,11 +1,18 @@
 ---
 services:
   rabbitmq:
-    image: rabbitmq:management
+    build: rabbitmq
     ports:
+      - "61613:61613"
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 5s
+      retries: 5
   database:
+    tty: true
     build: postgres
     ports:
       - "5432:5432"
@@ -19,13 +26,17 @@ services:
       timeout: 5s
       retries: 5
   backend:
+    tty: true
     build: backend
     ports:
       - "8080:8080"
     depends_on:
       database:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   frontend:
+    tty: true
     build: frontend
     ports:
       - "4200:4200"
