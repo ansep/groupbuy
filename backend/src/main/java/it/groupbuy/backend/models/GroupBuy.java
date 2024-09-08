@@ -25,17 +25,17 @@ public class GroupBuy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	@ManyToMany
+    @ManyToMany
     @JoinTable(
-      name = "subscriptions", 
-      joinColumns = @JoinColumn(name = "user_id"), 
-      inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
+	       name = "subscriptions",
+	       joinColumns = @JoinColumn(name = "user_id"),
+	       inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
     private List<User> buyers;
 
-	@ManyToOne
+    @ManyToOne
     @JoinColumn(name="user_id")
     private User broker;
-    
+
     @NotNull
     private Integer maxSize;
 
@@ -90,19 +90,19 @@ public class GroupBuy {
     public void setBroker(User broker) {
     	this.broker = broker;
     }
-    
+
     public List<User> getBuyers() {
     	return this.buyers;
     }
-    
+
     public void setBuyers(List<User> buyers) {
     	this.buyers = buyers;
     }
-    
+
     public void addBuyer(User buyer) {
     	this.buyers.add(buyer);
     }
-    
+
     public void delBuyer(User buyer) {
     	this.buyers.remove(buyer);
     }

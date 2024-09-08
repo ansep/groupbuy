@@ -139,7 +139,7 @@
 			chatUsersList.push(data.body);
 			displayUserList(chatUsersList.filter(x => x != username), chatList, username, stompClient)
 		    })).then((stompClient) => stompClientSendMessage(stompClient, '/app/register', username)) // 4
-		    .then((stompClient) => stompSubscribe(stompClient, `/queue/${username}/msg`, (data) => {
+		    .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/msg`, (data) => {
 			displayMessage(chatList, stompClient, username, JSON.parse(data.body))
 		    }))
 		    .then((stompClient) => { //5

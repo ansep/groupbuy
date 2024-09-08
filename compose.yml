@@ -37,6 +37,9 @@ services:
   frontend:
     tty: true
     build: frontend
+    # Per dev
+    volumes:
+      - './frontend/src:/home/node/app/src'
     ports:
       - "4200:4200"
     depends_on:
