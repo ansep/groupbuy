@@ -8,13 +8,14 @@ import { NgClass } from '@angular/common';
 import { Client, Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { connect } from 'rxjs';
+import { NavbarBuyerComponent } from "../navbar-buyer/navbar-buyer.component";
 
 @Component({
   selector: 'app-buyer-chat',
   standalone: true,
   templateUrl: './buyer-chat.component.html',
   styleUrl: './buyer-chat.component.scss',
-  imports: [NavbarComponent, SingleChatComponent, NgClass],
+  imports: [NavbarComponent, SingleChatComponent, NgClass, NavbarBuyerComponent],
 })
 export class BuyerChatComponent {
   data: any;
