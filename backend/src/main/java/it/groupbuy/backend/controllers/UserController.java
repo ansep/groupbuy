@@ -51,6 +51,8 @@ public class UserController {
 	UserDetails userDetails =
 	    (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	// FIXME: Sarebbe meglio iterando i field tramite reflection
+	// vedi https://medium.com/@devchopra999/handling-patch-requests-efficiently-in-springboot-3db06e4783e2
 	if(patchRequest.getEmail() != null)
 	    user.setEmail(patchRequest.getEmail());
 	if(patchRequest.getFirstName() != null)

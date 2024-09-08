@@ -1,5 +1,7 @@
 package it.groupbuy.backend.models;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,9 +62,9 @@ public class User {
     private String profilePicturePath;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "user_roles",
-		 joinColumns = @JoinColumn(name = "user_id"),
-		 inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_roles",
+	       joinColumns = @JoinColumn(name = "user_id"),
+	       inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "buyers")
@@ -70,6 +72,14 @@ public class User {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="broker")
     private List<GroupBuy> owned_groupbuy;
+
+    // If we have a broker
+    @OneToMany
+    private List<GroupBuy> publishedGroupbuy = new ArrayList<>();
+
+    // If we have a buyer
+    @OneToMany
+    private List<GroupBuy> subscribedGroupbuy = new ArrayList<>();
 
     public User() {}
 
@@ -188,4 +198,19 @@ public class User {
 	this.profilePicturePath = profilePicturePath;
     }
 
+    public List<GroupBuy> getSubscribedGroupbuy() {
+	return subscribedGroupbuy;
+    }
+
+    public void setSubscribedGroupbuy(List<GroupBuy> subscribedGroupbuy) {
+	this.subscribedGroupbuy = subscribedGroupbuy;
+    }
+
+    public List<GroupBuy> getPublishedGroupbuy() {
+	return publishedGroupbuy;
+    }
+
+    public void setPublishedGroupbuy(List<GroupBuy> publishedGroupbuy) {
+	this.publishedGroupbuy = publishedGroupbuy;
+    }
 }
