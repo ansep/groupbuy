@@ -40,10 +40,16 @@ public class WebSocketController {
 	return webChatUsername;
     }
 
-    @MessageMapping("/message")  //6
+    @MessageMapping("/message")
     public void greeting(WebSocketMessage message){
-	simpMessagingTemplate.convertAndSendToUser(message.getToWhom(), "/msg", message);
+	simpMessagingTemplate.convertAndSendToUser(message.getToWhom(), "/queue/private", message);
     }
+
+    // @MessageMapping("/message")
+    // @SendToUser("/queue/private")
+    // public String greeting(WebSocketMessage message){
+    // 	return message.getMessage();
+    // }
 
     @MessageMapping("/groupbuy/{id}")
     @SendTo("/topic/groupbuy/{id}")

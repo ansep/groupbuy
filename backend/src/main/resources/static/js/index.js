@@ -72,7 +72,7 @@
     }
 
     function stompSubscribe(stompClient, endpoint, callback){ //8
-	stompClient.subscribe(endpoint, callback)
+	stompClient.subscribe(endpoint, callback, {'ack': 'client'})
 	return stompClient
     }
 
@@ -94,7 +94,7 @@
 	return new Promise((resolve, reject) => {
 	    let stompClient = Stomp.over(new SockJS('/websocket-chat'))
 	    stompClient.connect({Authorization: "Bearer " + token}, (frame) => resolve(stompClient))
-			  })
+	})
     }
 
     //To guarantee that our page is completely loaded before we execute anything
@@ -139,7 +139,9 @@
 			chatUsersList.push(data.body);
 			displayUserList(chatUsersList.filter(x => x != username), chatList, username, stompClient)
 		    })).then((stompClient) => stompClientSendMessage(stompClient, '/app/register', username)) // 4
-		    .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/msg`, (data) => {
+		//    .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/queue/private`, (data) => {
+		    .then((stompClient) => stompSubscribe(stompClient, `/user/queue/private`, (data) => {
+			console.log(data)
 			displayMessage(chatList, stompClient, username, JSON.parse(data.body))
 		    }))
 		    .then((stompClient) => { //5

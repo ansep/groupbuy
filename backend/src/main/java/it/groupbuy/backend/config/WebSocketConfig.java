@@ -37,14 +37,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-	config.setApplicationDestinationPrefixes("/app");
-	config.enableSimpleBroker("/user", "/topic", "/queue");
-        config.setUserDestinationPrefix("/user");
-	// config.enableStompBrokerRelay( "/topic", "/queue")
-	//     .setRelayHost("rabbitmq")
-	//     .setRelayPort(61613)
-	//     .setClientLogin("guest")
-	//     .setClientPasscode("guest");
+	//config.setApplicationDestinationPrefixes("/app");
+	//	config.enableSimpleBroker("/user", "/topic", "/queue");
+	config.setApplicationDestinationPrefixes("/app")
+	    .enableStompBrokerRelay("/topic", "/queue", "/exchange", "/amq/queue")
+	    .setAutoStartup(Boolean.TRUE)
+	    .setClientLogin("guest")
+	    .setClientPasscode("guest")
+	    .setSystemLogin("guest")
+	    .setSystemPasscode("guest")
+	    .setUserDestinationBroadcast("/topic/unresolved.user.dest")
+	    .setUserRegistryBroadcast("/topic/registry.broadcast")
+	    .setRelayHost("rabbitmq")
+	    .setRelayPort(61613);
+
+	config.setUserDestinationPrefix("/user");
 
     }
 
