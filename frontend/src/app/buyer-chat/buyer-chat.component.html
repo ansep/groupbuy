@@ -1,54 +1,65 @@
 <!DOCTYPE html>
-<app-navbar></app-navbar>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<app-navbar-buyer></app-navbar-buyer>
+<link
+  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet"
+/>
 
 <div class="container mt-4">
-<div class="row clearfix ">
+  <div class="row clearfix">
     <div class="col-lg-12">
-        <div class="card chat-app">
-            <div id="plist" class="people-list">
-              <div class="input-group mb-2">
-                <input type="text" class="form-control" placeholder="Search...">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">
-                        <i class="fa fa-search"></i>
-                    </span>
-                </div>
-
+      <div class="card chat-app">
+        <div id="plist" class="people-list">
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" placeholder="Search..." />
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fa fa-search"></i>
+              </span>
             </div>
+          </div>
 
-                <ul class="list-unstyled chat-list" style="max-height: 500px; overflow-y: auto">
-
-
-                  @for( contact of contacts; track contact.id){
-                    <li class="clearfix" [ngClass]="{'active': contact === selectedChat}">
-                      <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
-                      <div  class="about" (click)="loadChat(contact)" >
-                          <div class="name">{{contact.name}} {{contact.surname}}</div>
-                          <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>
-                      </div>
-                  </li>
-                  }
-
-
-                </ul>
-            </div> <!-- end chat-list -->
-
-            <!-- this is the single chat component, so should be refactored as a separate component -->
-            <div class="chat" >
-              @if (getChat()){
-                <app-single-chat [contact]="getChat()"></app-single-chat>
-              } @else
-                {
-
-                  <img class = "image-container" src="../../assets/ChatLogoo.png" alt="placeholder" style="display: block; margin: 0 auto;">
-
-                }
-
+          <ul
+            class="list-unstyled chat-list"
+            style="max-height: 500px; overflow-y: auto"
+          >
+            @for( contact of contacts; track contact.id){
+            <li
+              class="clearfix"
+              [ngClass]="{ active: contact === selectedChat }"
+            >
+              <img
+                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                alt="avatar"
+              />
+              <div class="about" (click)="loadChat(contact)">
+                <div class="name">{{ contact.name }} {{ contact.surname }}</div>
+                <div class="status">
+                  <i class="fa fa-circle offline"></i> left 7 mins ago
                 </div>
-
-
+              </div>
+            </li>
+            }
+          </ul>
         </div>
+        <!-- end chat-list -->
+
+        <!-- this is the single chat component, so should be refactored as a separate component -->
+        <div class="chat">
+          @if (getChat()){
+          <app-single-chat [contact]="getChat()"></app-single-chat>
+          } @else {
+
+          <img
+            class="image-container"
+            src="../../assets/ChatLogoo.png"
+            alt="placeholder"
+            style="display: block; margin: 0 auto"
+          />
+
+          }
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 </div>
