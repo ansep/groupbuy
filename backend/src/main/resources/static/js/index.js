@@ -72,7 +72,7 @@
     }
 
     function stompSubscribe(stompClient, endpoint, callback){ //8
-	stompClient.subscribe(endpoint, callback, {'ack': 'client'})
+	stompClient.subscribe(endpoint, callback, {'ack': 'client', 'durable': 'true', 'auto-delete': 'false'})
 	return stompClient
     }
 
@@ -140,9 +140,10 @@
 			displayUserList(chatUsersList.filter(x => x != username), chatList, username, stompClient)
 		    })).then((stompClient) => stompClientSendMessage(stompClient, '/app/register', username)) // 4
 		//    .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/queue/private`, (data) => {
-		    .then((stompClient) => stompSubscribe(stompClient, `/user/queue/private`, (data) => {
+		    .then((stompClient) => stompSubscribe(stompClient, `/queue/${username}`, (data) => {
 			console.log(data)
 			displayMessage(chatList, stompClient, username, JSON.parse(data.body))
+			data.ack()
 		    }))
 		    .then((stompClient) => { //5
 			connectButton.disabled = true;

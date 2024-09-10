@@ -69,6 +69,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				   .requestMatchers("/js/index.js").permitAll()
 				   .requestMatchers("/webjars/**").permitAll()
 				   .requestMatchers("/websocket-chat/**").permitAll()
+				   .requestMatchers("/chat/**").permitAll()
 				   .requestMatchers(HttpMethod.GET, "/api/user/*/picture").permitAll()
 				   .requestMatchers("/error/**").permitAll()
 				   .anyRequest().authenticated()

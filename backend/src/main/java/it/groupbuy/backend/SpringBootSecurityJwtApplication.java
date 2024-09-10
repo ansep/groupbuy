@@ -27,4 +27,5 @@ public class SpringBootSecurityJwtApplication implements CommandLineRunner {
 	storageService.init();
     }
 
+
 }
