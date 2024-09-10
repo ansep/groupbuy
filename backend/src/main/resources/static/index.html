@@ -1,49 +1,199 @@
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Webchat WebSocket</title>
-    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and WebSocket</title>
 
-    <div id="main-content" class="container">
-      <div class="row text-center">
-        <h2>WebChat WebSocket</h2>
-      </div>
+    <!-- Include sockjs and stompjs libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-      <br/>
+    <style>
+        #messageDisplay {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+    </style>
 
-      <div class="row text-center">
-        <div class="col-md-4">
-          <label for="webchat_username">Username:</label>
-          <input type="text" id="webchat_username" placeholder="Put your username here..."/>
-        </div>
-        <div class="col-md-1">
-          <input type="button" class="btn" id="webchat_connect" value="Connect"/>
-        </div>
-        <div class="col-md-1">
-          <input type="button" class="btn" id="webchat_disconnect" value="Disconnect" disabled="true"/>
-        </div>
-      </div>
+    <script>
+        let authToken = '';
+        let stompClient = null;
+        let username = ''; // Store the username after login
 
-      <div class="row">
-        <div class="col-md-4">
-          <label for="webchat_password">Password:</label>
-          <input type="password" id="webchat_password" placeholder="Put your password here..."/>
-        </div>
-      </div>
-      <div class="row">
-        <div class="row text-center"><h2>Connected Users List</h2></div>
-        <div id="chat_user_list" class="row"></div>
-      </div>
+        async function login() {
+            // Get the values from input fields
+            username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-      <div id="chat_list" class="row"></div>
+            // Create the login payload
+            const loginData = {
+                username: username,
+                password: password
+            };
 
-      <div id="alerts"></div>
+            try {
+                // Send a POST request to the login API
+                const response = await fetch('http://localhost:8080/api/auth/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                // Check if login was successful
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Memorize the token for later use
+                    authToken = data.accessToken;
+
+                    // Show success message
+                    document.getElementById('result').innerText = 'Login successful! Token saved.';
+                    console.log('Token:', authToken); // For debugging purposes
+
+                    // Show the connect button
+                    document.getElementById('connectWebSocket').style.display = 'inline-block';
+                } else {
+                    // Show error if login failed
+                    document.getElementById('result').innerText = 'Login failed!';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'An error occurred.';
+            }
+        }
+
+        function connectWebSocket() {
+            const socket = new SockJS('http://localhost:8080/websocket-chat');
+            stompClient = Stomp.over(socket);
+
+            // Connecting to WebSocket with the token
+            stompClient.connect({ Authorization: "Bearer " + authToken }, (frame) => {
+                console.log('Connected to WebSocket:', frame);
+                document.getElementById('result').innerText = 'WebSocket connected!';
+
+                // Subscribe to the user's personal queue
+                subscribeToQueue(username);
+
+                // Show the message sending form and disconnect button
+                document.getElementById('messageForm').style.display = 'block';
+                document.getElementById('disconnectWebSocket').style.display = 'inline-block';
+            }, (error) => {
+                console.error('WebSocket connection error:', error);
+                document.getElementById('result').innerText = 'WebSocket connection failed!';
+            });
+        }
+
+        function subscribeToQueue(username) {
+            // Subscribe to the user's queue, e.g., /queue/<username>
+            const userQueue = `/queue/${username}`;
+
+            // Add headers including 'ack', 'durable', and 'auto-delete'
+            const headers = {
+                'Authorization': "Bearer " + authToken,
+                'ack': 'client',
+                'durable': 'true',
+                'auto-delete': 'false'
+            };
+
+            // Subscribe with the additional headers
+            stompClient.subscribe(userQueue, (message) => {
+                console.log('Received message from queue:', message.body);
+                const parsedMessage = JSON.parse(message.body);
+                displayMessage(parsedMessage.fromWho, parsedMessage.message);
+	        message.ack();
+            }, headers);
+
+            console.log(`Subscribed to: ${userQueue} with headers`, headers);
+        }
+
+        function disconnectWebSocket() {
+            if (stompClient !== null) {
+                stompClient.disconnect(() => {
+                    console.log('Disconnected from WebSocket');
+                    document.getElementById('result').innerText = 'WebSocket disconnected!';
+
+                    // Hide the message form and disconnect button, show the connect button again
+                    document.getElementById('messageForm').style.display = 'none';
+                    document.getElementById('disconnectWebSocket').style.display = 'none';
+                    document.getElementById('connectWebSocket').style.display = 'inline-block';
+                });
+            } else {
+                document.getElementById('result').innerText = 'No active WebSocket connection to disconnect!';
+            }
+        }
+
+        function sendMessage() {
+            const toWhom = document.getElementById('recipient').value;
+            const msg = document.getElementById('messageText').value;
+
+            if (toWhom && msg) {
+                // Create the message payload
+                const payload = {
+                    toWhom: toWhom,
+                    fromWho: username,
+                    message: msg
+                };
+
+                // Send the message to the "/app/message" endpoint
+                stompClient.send("/app/message", {}, JSON.stringify(payload));
+
+                // Show the sent message on screen
+                displayMessage(username, msg);
+            } else {
+                document.getElementById('result').innerText = 'Please enter both recipient and message.';
+            }
+        }
+
+        function displayMessage(fromWho, message) {
+            const messageDisplay = document.getElementById('messageDisplay');
+            const messageElement = document.createElement('div');
+            messageElement.innerText = `${fromWho}: ${message}`;
+            messageDisplay.appendChild(messageElement);
+
+            // Scroll to the bottom of the message display
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+        }
+    </script>
+</head>
+<body>
+    <h1>Login and WebSocket Connection</h1>
+
+    <!-- Login form -->
+    <label for="username">Username:</label>
+    <input type="text" id="username" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" required><br><br>
+
+    <button onclick="login()">Login</button>
+
+    <!-- This will show the result (success/failure messages) -->
+    <p id="result"></p>
+
+    <!-- WebSocket connect and disconnect buttons -->
+    <button id="connectWebSocket" style="display: none;" onclick="connectWebSocket()">Connect to WebSocket</button>
+    <button id="disconnectWebSocket" style="display: none;" onclick="disconnectWebSocket()">Disconnect STOMP</button>
+
+    <!-- Message sending form, hidden by default -->
+    <div id="messageForm" style="display: none;">
+        <h2>Send Message</h2>
+        <label for="recipient">Recipient:</label>
+        <input type="text" id="recipient" required><br><br>
+
+        <label for="messageText">Message:</label>
+        <textarea id="messageText" required></textarea><br><br>
+
+        <button onclick="sendMessage()">Send</button>
     </div>
 
-    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/js/index.js"></script>
-  </body>
+    <!-- Message display area -->
+    <div id="messageDisplay"></div>
+</body>
 </html>

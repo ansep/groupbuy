@@ -1,30 +1,33 @@
 package it.groupbuy.backend.payload;
 
-import it.groupbuy.backend.models.Chatroom;
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class WebSocketMessage {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @NotBlank
-    private String toWhom;
 
     @NotBlank
     private String fromWho;
 
     @NotBlank
+    private String toWhom;
+
+    @NotBlank
     private String message;
 
-    @ManyToOne
-    private Chatroom chatroom;
+    @CreationTimestamp
+    private Instant createdOn;
+
 
     public WebSocketMessage() {}
 
@@ -58,12 +61,21 @@ public class WebSocketMessage {
 	this.message = message;
     }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+	this.id = id;
+    }
 
-	public void setChatroom(Chatroom chatroom) {
-		this.chatroom = chatroom;
-	}
+    public Long getId() {
+	return id;
+    }
+
+    public Instant getCreatedOn() {
+	return createdOn;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+	this.createdOn = createdOn;
+    }
+
 
 }

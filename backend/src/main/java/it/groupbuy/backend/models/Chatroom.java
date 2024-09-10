@@ -3,7 +3,11 @@ package it.groupbuy.backend.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.groupbuy.backend.payload.WebSocketMessage;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,13 +15,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
-import it.groupbuy.backend.payload.WebSocketMessage;
-
 @Entity
-@Table(name = "Chatroom")
 public class Chatroom {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotBlank
@@ -26,15 +27,15 @@ public class Chatroom {
     @NotBlank
     private String recipientUsername;
 
-    @OneToMany
-    private List<WebSocketMessage> message_list;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WebSocketMessage> messages;
 
     public Chatroom() {}
 
     public Chatroom(String senderUsername, String recipientUsername) {
 	this.senderUsername = senderUsername;
 	this.recipientUsername = recipientUsername;
-	this.message_list = new ArrayList<>();
+	this.messages = new ArrayList<WebSocketMessage>();
     }
 
     public Long getId() {
@@ -61,11 +62,12 @@ public class Chatroom {
 	this.recipientUsername = recipientUsername;
     }
 
-    public List<WebSocketMessage> getMessage_list() {
-	return message_list;
+    public List<WebSocketMessage> getMessages() {
+	return messages;
     }
 
-    public void setMessage_list(List<WebSocketMessage> message_list) {
-	this.message_list = message_list;
+    public void setMessages(List<WebSocketMessage> messages) {
+	this.messages = messages;
     }
+
 }
