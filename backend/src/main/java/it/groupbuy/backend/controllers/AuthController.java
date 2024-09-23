@@ -95,19 +95,22 @@ public class AuthController {
 			     signUpRequest.getFirstName(),
 			     signUpRequest.getLastName(),
 			     signUpRequest.getTelephoneNumber());
-	
+
 	List<GroupBuy> own_groups = new ArrayList<GroupBuy>();
 	List<GroupBuy> sub_groups = new ArrayList<GroupBuy>();
 	Set<String> strRoles = signUpRequest.getRole();
 	Set<Role> roles = new HashSet<>();
 
-	if (strRoles == null) {
-	    Role userRole = roleRepository.findByName(ERole.ROLE_BUYER)
-		.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-	    roles.add(userRole);
+	if (strRoles.isEmpty()) {
+	    // Role userRole = roleRepository.findByName(ERole.ROLE_BUYER)
+	    // 	.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+	    // roles.add(userRole);
+	    return ResponseEntity
+		.badRequest()
+		.body(new MessageResponse("Error: A role has to be specified"));
 	} else {
 	    strRoles.forEach(role -> {
-		    switch (role) {
+		    switch (role.toLowerCase()) {
 		    case "broker":
 			Role brokerRole = roleRepository.findByName(ERole.ROLE_BROKER)
 			    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -121,7 +124,7 @@ public class AuthController {
 		    }
 		});
 	}
-	
+
 	user.setOwned_groupbuy(own_groups);
 	user.setSubscribed_groupbuy(sub_groups);
 	user.setRoles(roles);
