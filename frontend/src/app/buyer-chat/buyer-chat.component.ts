@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
@@ -7,7 +7,6 @@ import { SingleChatComponent } from '../single-chat/single-chat.component';
 import { NgClass } from '@angular/common';
 import { Client, Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { connect } from 'rxjs';
 import { NavbarBuyerComponent } from "../navbar-buyer/navbar-buyer.component";
 
 @Component({
@@ -17,92 +16,82 @@ import { NavbarBuyerComponent } from "../navbar-buyer/navbar-buyer.component";
   styleUrl: './buyer-chat.component.scss',
   imports: [NavbarComponent, SingleChatComponent, NgClass, NavbarBuyerComponent],
 })
-export class BuyerChatComponent {
+export class BuyerChatComponent implements OnInit {
   data: any;
   stompClient: any;
-
-  disconnect() {
-    this.stompClient.deactivate();
-    // setConnected(false);
-    console.log('Disconnected');
-  }
-
-  sendName() {
-    this.stompClient.publish({
-      destination: '/app/hello', //euhm, what is this?
-      // body: JSON.stringify({'name': $("#name").val()})
-    });
-  }
-
-  getChat() {
-    return this.selectedChat;
-  }
-
   selectedChat: any;
   items: any;
   contacts: any;
+  authToken: string = ''; // Add a field for the auth token
+  username: string = ''; // Add a field for the username
+
   constructor(
     private apiservice: ApiService,
     private router: Router,
-    private authservice: AuthService
+    private authservice: AuthService // Inject AuthService
   ) {}
 
   ngOnInit() {
-    // if (this.stompClient == null) {
-    // //initiate stompClient
-    // }
-    this.stompClient = this.connect(
-      this.authservice.getUsername(),
-      this.authservice.getToken()
-    );
-    this.items = this.apiservice.getMessages();
-    this.contacts = this.apiservice.getParticipants().slice(0, 15);
+    // Get the authToken and username from the AuthService
+    this.authToken = this.authservice.getToken()!;  // Assuming getAuthToken() returns the token
+    this.username = this.authservice.getUsername()!;    // Assuming getUsername() returns the username
+
+    // Call the connectWebSocket function when the component initializes
+    this.connectWebSocket();
   }
 
-  loadChat(contact: any) {
-    this.selectedChat = contact;
-  }
+  connectWebSocket() {
+    const socket = new SockJS('http://localhost:8080/websocket-chat');
+    this.stompClient = Stomp.over(socket);
 
-  initStomp() {
-    this.stompClient = new Client({
-      brokerURL: 'ws://localhost:15674/ws',
-      onConnect: () => {
-        this.stompClient.subscribe('/topic/test01', (message: any) =>
-          console.log(`Received: ${message.body}`)
-        );
-        this.stompClient.publish({
-          destination: '/topic/test01',
-          body: 'First Message',
-        });
-      },
-      onWebSocketError: (error) => {
-        console.error('Error with websocket', error);
-      },
-      onDisconnect: (error) => {
-        console.error('Disconnected', error);
-      },
-      onStompError: (error) => {
-        console.error('STOMP protocol error', error);
-      },
-      onUnhandledMessage: (message) => {
-        console.error('Unhandled Message', message);
-      },
+    // Connecting to WebSocket with the token
+    this.stompClient.connect({ Authorization: "Bearer " + this.authToken }, (frame: any) => {
+      console.log('Connected to WebSocket:', frame);
+      // You can add the logic to show a message on the page as well
+      const resultElement = document.getElementById('result');
+      if (resultElement) {
+        resultElement.innerText = 'WebSocket connected!';
+      }
+
+      this.getHistory();
+
+      // Subscribe to the user's personal queue
+      this.subscribeToQueue(this.username);
     });
   }
 
-  connect(username: string | null, token: string | null) {
-    //1-1
-    return new Promise((resolve, reject) => {
-      let stompClient = Stomp.over(new SockJS('/websocket-chat'));
-      stompClient.connect({ Authorization: 'Bearer ' + token }, (frame: any) =>
-        resolve(stompClient)
-      );
-    });
+  getHistory() {
+
   }
 
-  // this.authservice.getRole()?.subscribe((data:any) => { // Change the type of 'data' to 'any[]'
-  //   this.role = data;
-  // });
+  // Updated subscribeToQueue function
+  subscribeToQueue(username: string) {
+    // Subscribe to the user's queue, e.g., /queue/<username>
+    const userQueue = `/queue/${username}`;
 
-  // this.role = this.authservice.getRole();
+    // Add headers including 'ack', 'durable', and 'auto-delete'
+    const headers = {
+      'Authorization': "Bearer " + this.authToken,
+      'ack': 'client',
+      'durable': 'true',
+      'auto-delete': 'false'
+    };
+
+    // Subscribe with the additional headers
+    this.stompClient.subscribe(userQueue, (message: any) => {
+      console.log('Received message from queue:', message.body);
+      const parsedMessage = JSON.parse(message.body);
+      // You can add the logic to display the message
+      //this.displayMessage(parsedMessage.fromWho, parsedMessage.message);
+      message.ack(); // Acknowledge the message manually
+    }, headers);
+
+    console.log(`Subscribed to: ${userQueue} with headers`, headers);
+  }
+
+  loadChat(contacts) {
+
+  }
+
 }
+

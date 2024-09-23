@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -14,15 +15,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import it.groupbuy.backend.models.Chatroom;
 import it.groupbuy.backend.payload.WebSocketMessage;
 import it.groupbuy.backend.repository.ChatroomRepository;
+import it.groupbuy.backend.repository.WebSocketMessageRepository;
 
 @Controller
 public class WebSocketController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatroomRepository chatroomRepository;
+    private final WebSocketMessageRepository webSocketMessageRepository;
 
-    public WebSocketController(SimpMessagingTemplate simpMessagingTemplate, ChatroomRepository chatroomRepository){
+    public WebSocketController(SimpMessagingTemplate simpMessagingTemplate, ChatroomRepository chatroomRepository, WebSocketMessageRepository webSocketMessageRepository){
 	this.simpMessagingTemplate = simpMessagingTemplate;
 	this.chatroomRepository = chatroomRepository;
+	this.webSocketMessageRepository = webSocketMessageRepository;
     }
 
     @MessageMapping("/message")
@@ -35,6 +39,7 @@ public class WebSocketController {
 	chatroomRepository.save(chatroom);
     }
 
+    // This really wasn't needed :p complex logic for no reason
     @GetMapping("/chat/{sender}/{recipient}")
     @ResponseBody
     public List<WebSocketMessage> getHistory(@PathVariable String sender, @PathVariable String recipient) {
@@ -48,5 +53,12 @@ public class WebSocketController {
 	merged.addAll(list_tmp);
         merged.sort(Comparator.comparing(WebSocketMessage::getCreatedOn));
 	return merged;
+    }
+
+    @GetMapping("/chat/messages/{username}")
+    @ResponseBody
+    public List<WebSocketMessage> getAllMessageHistory(@PathVariable String username) {
+	List<WebSocketMessage> list = webSocketMessageRepository.findAllMessagesByUsername(username, Sort.by("createdOn"));
+	return list;
     }
 }
