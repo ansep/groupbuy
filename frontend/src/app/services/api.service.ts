@@ -50,6 +50,10 @@ constructor(private https: HttpClient) {}
 
   }
 
+  retrieveMessageHistory(username: string) {
+    return this.https.get('http://localhost:8080/chat/messages/${username}');
+  }
+
   addNewGroupBuy(title: string, price: number, minQuantity: number, availablePieces: number, category:string, image:string) { //what about user id????
     { //TOCHECK THE POST
       return this.https.post('http://localhost:8080/api/broker/new',  {
