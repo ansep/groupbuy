@@ -22,11 +22,11 @@ public class MessageResponse {
 	this.message = message;
     }
 
-    public String getId() {
-	return id;
+    public String getResponseId() {
+	return responseId;
     }
 
-    public void setId(String id) {
-	this.id = id;
+    public void setResponseId(String responseId) {
+	this.responseId = responseId;
     }
 }
