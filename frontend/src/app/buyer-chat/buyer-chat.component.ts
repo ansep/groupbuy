@@ -91,6 +91,7 @@ export class BuyerChatComponent implements OnInit {
         msg: message.msg,
       });
     });
+  }
 
     // Updated subscribeToQueue function
     subscribeToQueue(username: string) {
