@@ -61,9 +61,7 @@ export class BuyerChatComponent implements OnInit {
         }
 
         this.getHistory();
-
-        // Subscribe to the user's personal queue
-        this.subscribeToQueue(this.username);
+        
       }
     );
   }
@@ -75,6 +73,8 @@ export class BuyerChatComponent implements OnInit {
         // Start filtering the message history for viewing
         console.log('Retrieved chat history:', response);
         this.data = this.processChatHistory(response, this.username);
+        // Subscribe to the user's personal queue
+        this.subscribeToQueue(this.username);
       },
       error: (error) => {
         if (error.status === 401) {
