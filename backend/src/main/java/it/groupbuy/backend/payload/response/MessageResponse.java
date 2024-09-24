@@ -3,9 +3,9 @@ package it.groupbuy.backend.payload.response;
 
 public class MessageResponse {
     private String message;
-    private String responseId;
+    private Long responseId;
 
-    public MessageResponse(String message, String responseId) {
+    public MessageResponse(String message, Long responseId) {
 	this.message = message;
 	this.responseId = responseId;
     }
@@ -22,11 +22,11 @@ public class MessageResponse {
 	this.message = message;
     }
 
-    public String getResponseId() {
+    public Long getResponseId() {
 	return responseId;
     }
 
-    public void setResponseId(String responseId) {
+    public void setResponseId(Long responseId) {
 	this.responseId = responseId;
     }
 }
