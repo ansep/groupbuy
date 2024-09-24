@@ -19,19 +19,14 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'reset', component: ResetPasswordComponent, pathMatch: 'full' },
-  { path: 'buyer/messages', component: BuyerChatComponent, pathMatch: 'full'},
-  { path: 'broker/new', component: BrokerNewListingComponent, pathMatch: 'full' },//TODO move to authBrokerGuard!!!
-  {
-    path: 'buyer/group/:id',
-    component: SingleGroupListingComponent,
-    pathMatch: 'full',
-  },
   {
     path: 'broker',
     component: DashboardBrokerComponent,
     canActivate: [authBrokerGuard],
     children: [
       { path: 'home', component: OpenGroupsListComponent },
+      { path: 'new', component: BrokerNewListingComponent, pathMatch: 'full' },
+      { path: 'group/:id', component: SingleGroupListingComponent },
       {
         path: 'profile/:username',
         component: ProfileComponent,
@@ -39,7 +34,6 @@ export const routes: Routes = [
       },
       { path: 'account', component: AccountComponent, pathMatch: 'full' },
       { path: '**', redirectTo: 'home', pathMatch: 'full' },
-
     ],
   },
   {
@@ -48,6 +42,12 @@ export const routes: Routes = [
     canActivate: [authBuyerGuard],
     children: [
       { path: 'home', component: OpenGroupsListComponent },
+      {
+        path: 'group/:id',
+        component: SingleGroupListingComponent,
+        pathMatch: 'full',
+      },
+      { path: 'messages', component: BuyerChatComponent, pathMatch: 'full' },
       {
         path: 'profile/:username',
         component: ProfileComponent,
