@@ -83,6 +83,10 @@ export class ApiService {
     }
   }
 
+  retrieveMessageHistory(username: string) {
+    return this.https.get('http://localhost:8080/chat/messages/' + username);
+  }
+
   async getMessages(): Promise<any[]> {
     const messages = [];
 

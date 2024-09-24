@@ -29,7 +29,7 @@ export class BuyerChatComponent implements OnInit {
     private apiservice: ApiService,
     private router: Router,
     private authservice: AuthService // Inject AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Get the authToken and username from the AuthService
@@ -61,37 +61,66 @@ export class BuyerChatComponent implements OnInit {
   }
 
   getHistory() {
-
+    // Retrieve entire message history for user
+    const unfilteredData = this.apiservice.retrieveMessageHistory(this.username);
+    // Start filtering the message history for viewing
+    this.data = this.processChatHistory(unfilteredData, this.username);
+    console.log(this.data);
   }
 
-  // Updated subscribeToQueue function
-  subscribeToQueue(username: string) {
-    // Subscribe to the user's queue, e.g., /queue/<username>
-    const userQueue = `/queue/${username}`;
+  processChatHistory(messages, currentUser) {
+    const contactMap = {};
 
-    // Add headers including 'ack', 'durable', and 'auto-delete'
-    const headers = {
-      'Authorization': "Bearer " + this.authToken,
-      'ack': 'client',
-      'durable': 'true',
-      'auto-delete': 'false'
-    };
+    // Iterate through each message
+    messages.forEach((message) => {
+      // Determine the contact (the person the user is chatting with)
+      const contact =
+        message.fromWho === currentUser ? message.toWhom : message.fromWho;
 
-    // Subscribe with the additional headers
-    this.stompClient.subscribe(userQueue, (message: any) => {
-      console.log('Received message from queue:', message.body);
-      const parsedMessage = JSON.parse(message.body);
-      // You can add the logic to display the message
-      //this.displayMessage(parsedMessage.fromWho, parsedMessage.message);
-      message.ack(); // Acknowledge the message manually
-    }, headers);
+      // Determine if the message is from the current user
+      const fromCurrentUser = message.fromWho === currentUser;
 
-    console.log(`Subscribed to: ${userQueue} with headers`, headers);
+      // If the contact doesn't exist in the map, initialize their chat history
+      if (!contactMap[contact]) {
+        contactMap[contact] = [];
+      }
+
+      // Add the message to the contact's chat history
+      contactMap[contact].push({
+        from: fromCurrentUser, // true if it's from the current user
+        msg: message.msg,
+      });
+    });
   }
 
-  loadChat(contacts) {
+    // Updated subscribeToQueue function
+    subscribeToQueue(username: string) {
+      // Subscribe to the user's queue, e.g., /queue/<username>
+      const userQueue = `/queue/${username}`;
+
+      // Add headers including 'ack', 'durable', and 'auto-delete'
+      const headers = {
+        'Authorization': "Bearer " + this.authToken,
+        'ack': 'client',
+        'durable': 'true',
+        'auto-delete': 'false'
+      };
+
+      // Subscribe with the additional headers
+      this.stompClient.subscribe(userQueue, (message: any) => {
+        console.log('Received message from queue:', message.body);
+        const parsedMessage = JSON.parse(message.body);
+        // You can add the logic to display the message
+        //this.displayMessage(parsedMessage.fromWho, parsedMessage.message);
+        message.ack(); // Acknowledge the message manually
+      }, headers);
+
+      console.log(`Subscribed to: ${userQueue} with headers`, headers);
+    }
+
+    loadChat(contacts) {
+
+    }
 
   }
-
-}
 
