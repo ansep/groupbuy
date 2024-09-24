@@ -156,7 +156,7 @@ public class GroupBuyController {
     	groupbuy.setBuyers(newBuyers);
     	userRepository.save(user);
     	repository.save(groupbuy);
-    	return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully"));
+    	return ResponseEntity.ok(new MessageResponse("Groupbuy id:" + groupbuy.getId() + " created successfully"));
     }
 
 
