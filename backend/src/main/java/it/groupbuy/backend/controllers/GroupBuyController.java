@@ -51,8 +51,8 @@ public class GroupBuyController {
     public CollectionModel<EntityModel<GroupBuy>> all() { // load one by one the buyers
     	List<EntityModel<GroupBuy>> groupbuy = repository.findAll().stream() // load one by one the groupbuys and put them in a list
 	    .map(assembler::toModel).collect(Collectors.toList());
-		return CollectionModel.of(groupbuy, //
-				  linkTo(methodOn(GroupBuyController.class).all()).withSelfRel()); // creates the hateoas links to the objects
+		return CollectionModel.of(groupbuy);
+				  //linkTo(methodOn(GroupBuyController.class).all()).withSelfRel()); 
     }
 
 
@@ -68,8 +68,8 @@ public class GroupBuyController {
     public CollectionModel<EntityModel<GroupBuy>> allAuth() { // load one by one the buyers
 		List<EntityModel<GroupBuy>> groupbuy = repository.findAll().stream() // load one by one the groupbuys and put them in a list
 	    .map(assembler::toModel).collect(Collectors.toList());
-		return CollectionModel.of(groupbuy, //
-				  linkTo(methodOn(GroupBuyController.class).allAuth()).withSelfRel()); // creates the hateoas links to the objects
+		return CollectionModel.of(groupbuy);
+				  // linkTo(methodOn(GroupBuyController.class).allAuth()).withSelfRel()); 
     }
 
     
