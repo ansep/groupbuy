@@ -92,7 +92,7 @@ export class BuyerChatComponent implements OnInit {
   ) {
     const contactMap: { [key: string]: { from: boolean; msg: string }[] } = {};
     // Iterate through each message
-    messages.forEach((message) => {
+    messages.forEach((message: any) => {
       // Determine the contact (the person the user is chatting with)
       const contact: string =
         message.fromWho === currentUser ? message.toWhom : message.fromWho;
