@@ -49,10 +49,11 @@ public class GroupBuyController {
     private final GroupBuyModelAssembler assembler;
     private final UserRepository userRepository;
 
-    GroupBuyController(GroupbuyRepository repository, GroupBuyModelAssembler assembler, UserRepository userRepository) {
+    GroupBuyController(GroupbuyRepository repository, GroupBuyModelAssembler assembler, UserRepository userRepository, FilesStorageService storageService) {
     	this.repository = repository;
 	this.userRepository = userRepository;
 	this.assembler = assembler;
+	this.storageService = storageService;
     }
 
 
