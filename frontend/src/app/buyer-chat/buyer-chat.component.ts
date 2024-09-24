@@ -68,11 +68,11 @@ export class BuyerChatComponent implements OnInit {
     console.log(this.data);
   }
 
-  processChatHistory(messages, currentUser) {
-    const contactMap = {};
+  processChatHistory(messages: any, currentUser: any) {
+    const contactMap:any = {};
 
     // Iterate through each message
-    messages.forEach((message) => {
+    messages.forEach((message: any) => {
       // Determine the contact (the person the user is chatting with)
       const contact =
         message.fromWho === currentUser ? message.toWhom : message.fromWho;
@@ -116,10 +116,6 @@ export class BuyerChatComponent implements OnInit {
       }, headers);
 
       console.log(`Subscribed to: ${userQueue} with headers`, headers);
-    }
-
-    loadChat(contacts) {
-
     }
 
   }

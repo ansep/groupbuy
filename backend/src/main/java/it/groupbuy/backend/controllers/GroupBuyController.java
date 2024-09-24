@@ -5,8 +5,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.core.io.Resource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +22,10 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import it.groupbuy.backend.models.User;
 import it.groupbuy.backend.payload.response.UserResponse;
 import it.groupbuy.backend.payload.response.GroupbuyResponse;
@@ -28,6 +35,7 @@ import it.groupbuy.backend.repository.GroupbuyRepository;
 import it.groupbuy.backend.models.GroupBuyModelAssembler;
 import it.groupbuy.backend.models.GroupBuyNotFoundException;
 import it.groupbuy.backend.repository.UserRepository;
+import it.groupbuy.backend.service.FilesStorageService;
 import jakarta.validation.Valid;
 import it.groupbuy.backend.models.EStatus;
 import it.groupbuy.backend.models.GroupBuy;
@@ -36,6 +44,7 @@ import it.groupbuy.backend.payload.request.GroupBuyPatchRequest;
 @RestController
 public class GroupBuyController {
 
+    private final FilesStorageService storageService;
     private final GroupbuyRepository repository;
     private final GroupBuyModelAssembler assembler;
     private final UserRepository userRepository;
@@ -233,4 +242,38 @@ public class GroupBuyController {
 	return ResponseEntity.accepted().body(res);
     }
 
+    @PostMapping("/groupbuy/{id}/picture")
+    @PreAuthorize("hasRole('BROKER')")
+    public ResponseEntity<?> putProfilePicture(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+	if (!user.getOwned_groupbuy().contains(groupbuy)) {
+	    ResponseEntity.badRequest().body("Groupbuy not owned");
+	}
+	String message = "";
+	try {
+	    storageService.save(file);
+	    message = "Uploaded the file successfully: " + file.getOriginalFilename();
+	    groupbuy.setPostingPicturePath(file.getOriginalFilename());
+	    repository.save(groupbuy);
+	    return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
+	} catch (Exception e) {
+	    message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+	    return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+	}
+    }
+
+    @GetMapping("/groupbuy/{id}/picture")
+    public ResponseEntity<?> getProfilePicture(@PathVariable("id") Long id) {
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+	if (!user.getOwned_groupbuy().contains(groupbuy)) {
+	    ResponseEntity.badRequest().body("Groupbuy not owned");
+	}
+	Resource file = storageService.load(groupbuy.getPostingPicturePath());
+	return ResponseEntity.ok()
+	    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
 }

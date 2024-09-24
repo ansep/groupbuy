@@ -61,6 +61,9 @@ public class GroupBuy {
     @Size(max = 20)
     private String location;
 
+    private String postingPicturePath;
+
+
     public GroupBuy() {}
 
     public GroupBuy(User broker, Integer maxSize, String description, String category,
@@ -163,4 +166,11 @@ public class GroupBuy {
     	this.cost = cost;
     }
 
+    public String getPostingPicturePath() {
+	return postingPicturePath;
+    }
+
+    public void setPostingPicturePath(String postingPicturePath) {
+	this.postingPicturePath = postingPicturePath;
+    }
 }
