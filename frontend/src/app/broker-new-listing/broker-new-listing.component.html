@@ -1,24 +1,46 @@
-<app-navbar-broker></app-navbar-broker>
 <div class="card mb-3 single-list" style="max-width: 90%; margin: 0 auto">
   <div class="text-center">
     <h4>Add new listing</h4>
-    <form style="text-align: center">
-
-      <div class="row justify-content-center">
+    <!-- reactive form -->
+    <form
+      style="text-align: center"
+      [formGroup]="addListingForm"
+      (ngSubmit)="sendNewListing()"
+    >
+      <div class="row">
         <div class="col-4">
           <div>
             <div class="d-flex justify-content-center mb-2">
-                <img id="selectedAvatar" src="https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg"
-                class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" alt="example placeholder" />
+              <img
+                id="selectedAvatar"
+                src="https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg"
+                class="rounded-circle"
+                style="width: 50px; height: 50px; object-fit: cover"
+                alt="example placeholder"
+              />
             </div>
             <div class="d-flex justify-content-center">
-                <div data-mdb-ripple-init type="button" class="btn btn-primary btn-sm">
-                    <label class="form-label text-white m-1" for="customFile2">Choose an image</label>
-                    <input type="file" class="form-control d-none" id="customFile2" onchange="displaySelectedImage(event, 'selectedAvatar')" />
-                </div>
+              <div
+                data-mdb-ripple-init
+                type="button"
+                class="btn btn-primary btn-sm"
+              >
+                <label class="form-label text-white m-1" for="customFile2"
+                  >Choose an image</label
+                >
+                <input
+                  type="file"
+                  class="form-control d-none"
+                  id="customFile2"
+                  onchange="displaySelectedImage(event, 'selectedAvatar')"
+                  accept="image/*"
+                  formControlName="image"
+                />
+              </div>
             </div>
           </div>
         </div>
+
         <div class="col-4">
           <div>
             <label for="titleInput"></label>
@@ -28,8 +50,24 @@
               class="form-control"
               id="titleInput"
               style="width: 80%; margin: 0 auto"
+              formControlName="title"
             />
-            <div class="form-text">Write something concise and descriptive.</div>
+            <div class="form-text">
+              Write something concise and descriptive.
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div>
+            <label for="productInput"></label>
+            <input
+              placeholder="Product type (Smartphone, Laptop, etc.)"
+              type="text"
+              class="form-control"
+              id="productInput"
+              style="width: 80%; margin: 0 auto"
+              formControlName="product"
+            />
           </div>
         </div>
       </div>
@@ -41,26 +79,37 @@
           class="form-control"
           id="descriptionInput"
           style="margin: 0 auto; height: 2cm; width: 80%"
+          formControlName="description"
         ></textarea>
       </div>
-      <div style="width: 80%; margin: 0 auto; justify-content:center;" class="text-center">
+      <div
+        style="width: 80%; margin: 0 auto; justify-content: center"
+        class="text-center"
+      >
         <div class="row">
           <div class="col-md-6">
-        <div class="mb-3">
-          <label for="input1"></label>
-          <input
-            placeholder="Unit Price (€)"
-            type="text"
-            class="form-control"
-            id="input1"
-          />
-        </div>
+            <div class="mb-3">
+              <label for="input1"></label>
+              <input
+                placeholder="Unit Price (€)"
+                type="text"
+                class="form-control"
+                id="input1"
+                formControlName="price"
+              />
+            </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="categoryInput"></label>
-              <select class="form-select" id="categoryInput">
-                <option selected disabled>Select a category</option>
+              <select
+                class="form-select"
+                id="categoryInput"
+                formControlName="category"
+              >
+                <option value="default" selected disabled>
+                  Select a category
+                </option>
                 <option value="electronic">Electronic</option>
                 <option value="food">Food</option>
                 <option value="spares">Spare Parts</option>
@@ -68,7 +117,6 @@
                 <option value="fashion">Fashion</option>
               </select>
             </div>
-
           </div>
         </div>
         <div class="row">
@@ -77,26 +125,37 @@
               <label for="availableUnitsInput"></label>
               <input
                 placeholder="Amount of available units"
-                type="text"
+                type="number"
                 class="form-control"
                 id="input2"
+                formControlName="availablePieces"
               />
             </div>
           </div>
           <div class="col-md-6">
-        <div class="mb-3">
-          <label for="minimumQuantityInput"></label>
-          <input
-            placeholder="Minimum shippable quantity"
-            type="text"
-            class="form-control"
-            id="input4"
-          />
-        </div>
+            <div class="mb-3">
+              <label for="locationInput"></label>
+              <input
+                placeholder="Location"
+                type="text"
+                class="form-control"
+                id="locationInput"
+                style="width: 80%; margin: 0 auto"
+                formControlName="location"
+              />
+              <!-- <label for="minimumQuantityInput"></label>
+              <input
+                placeholder="Minimum shippable quantity"
+                type="text"
+                class="form-control"
+                id="input4"
+                formControlName="minQuantity"
+              /> -->
+            </div>
           </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" (click)="sendNewListing()">Submit</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
   <p></p>
