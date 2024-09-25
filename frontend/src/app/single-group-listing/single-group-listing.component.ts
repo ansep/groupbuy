@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BrokerModuleSingleGroupComponent } from '../broker-module-single-group/broker-module-single-group.component';
 import { AuthService } from '../services/auth.service';
-import { NavbarComponent } from "../navbar/navbar.component";
+import { NavbarComponent } from '../navbar/navbar.component';
 @Component({
   selector: 'app-single-group-listing',
   standalone: true,
@@ -12,8 +12,8 @@ import { NavbarComponent } from "../navbar/navbar.component";
     SingleGroupListingComponent,
     CommonModule,
     BrokerModuleSingleGroupComponent,
-    NavbarComponent
-],
+    NavbarComponent,
+  ],
   templateUrl: './single-group-listing.component.html',
   styleUrls: ['./single-group-listing.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -31,8 +31,11 @@ export class SingleGroupListingComponent implements OnInit {
     description: string;
     subscribedPeople: number;
   } | null = null;
-  role: string | null = null;
+  role: 'broker' | 'buyer' | null = null;
   placeholderImage = 'assets/no-image-available.png';
+  isOwner: boolean = false;
+  joined: boolean = false;
+  addedToWishlist: boolean = false;
 
   constructor(
     private apiservice: ApiService,
@@ -59,6 +62,36 @@ export class SingleGroupListingComponent implements OnInit {
           description: response.description,
           subscribedPeople: 0,
         };
+
+        if (this.role === 'broker') {
+          //If receive correct response, broker is owner, else if status is 400 then not owner
+          this.apiservice.getSubscribersList(groupId).subscribe({
+            next: (response: any) => {
+              console.log(response);
+              // TODO: pass the subscribers list to the broker module child component
+              this.isOwner = true;
+            },
+            error: (error) => {
+              if (error.status === 401) {
+                this.router.navigate(['login']);
+              }
+              console.error(error);
+            },
+          });
+        } else if (this.role === 'buyer') {
+          this.apiservice.hasCurrentBuyerJoinedGroup(groupId).subscribe({
+            next: (response: any) => {
+              console.log(response);
+              this.joined = true;
+            },
+            error: (error) => {
+              if (error.status === 401) {
+                this.router.navigate(['login']);
+              }
+              console.error(error);
+            },
+          });
+        }
       },
       error: (error) => {
         if (error.status === 401) {
@@ -67,5 +100,38 @@ export class SingleGroupListingComponent implements OnInit {
         console.error(error);
       },
     });
+  }
+
+  joinGroupBuy(id: number) {
+    this.apiservice.joinGroupBuy(id).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        //TODO: edit the join button to joined/leave button
+      },
+      error: (error) => {
+        if (error.status === 401) {
+          this.router.navigate(['login']);
+        }
+        console.error(error);
+      },
+    });
+  }
+
+  leaveGroupBuy(id: number) {
+    this.apiservice.leaveGroupBuy(id).subscribe({
+      next: (response: any) => {
+        console.log(response);
+      },
+      error: (error) => {
+        if (error.status === 401) {
+          this.router.navigate(['login']);
+        }
+        console.error(error);
+      },
+    });
+  }
+
+  manageGroupBuy(id: number) {
+    // TODO: edit page for broker to manage group buy
   }
 }

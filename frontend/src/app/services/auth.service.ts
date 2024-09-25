@@ -59,8 +59,15 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
-  getRole() {
-    return localStorage.getItem('role');
+  getRole(): 'broker' | 'buyer' | null {
+    const role = localStorage.getItem('role');
+    if (role === 'broker') {
+      return 'broker';
+    } else if (role === 'buyer') {
+      return 'buyer';
+    } else {
+      return null;
+    }
   }
 
   getToken() {

@@ -92,6 +92,31 @@ export class ApiService {
     );
   }
 
+  getSubscribersList(id: number) {
+    return this.https.get(
+      'http://localhost:8080/groupbuy/' + id + '/subscription'
+    );
+  }
+
+  joinGroupBuy(id: number) {
+    return this.https.post(
+      'http://localhost:8080/groupbuy/' + id + '/subscription',
+      {}
+    );
+  }
+
+  leaveGroupBuy(id: number) {
+    return this.https.delete(
+      'http://localhost:8080/groupbuy/' + id + '/subscription'
+    );
+  }
+
+  hasCurrentBuyerJoinedGroup(id: number) {
+    return this.https.get(
+      'http://localhost:8080/groupbuy/' + id + '/subscription'
+    );
+  }
+
   retrieveMessageHistory(username: string) {
     return this.https.get('http://localhost:8080/chat/messages/' + username);
   }
