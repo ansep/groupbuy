@@ -20,6 +20,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'reset', component: ResetPasswordComponent, pathMatch: 'full' },
+  { path: 'group/:id', component: SingleGroupListingComponent },
   {
     path: 'broker',
     component: DashboardBrokerComponent,

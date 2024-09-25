@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BrokerModuleSingleGroupComponent } from '../broker-module-single-group/broker-module-single-group.component';
 import { AuthService } from '../services/auth.service';
+import { NavbarComponent } from "../navbar/navbar.component";
 @Component({
   selector: 'app-single-group-listing',
   standalone: true,
@@ -11,7 +12,8 @@ import { AuthService } from '../services/auth.service';
     SingleGroupListingComponent,
     CommonModule,
     BrokerModuleSingleGroupComponent,
-  ],
+    NavbarComponent
+],
   templateUrl: './single-group-listing.component.html',
   styleUrls: ['./single-group-listing.component.scss'],
   encapsulation: ViewEncapsulation.None,

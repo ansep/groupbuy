@@ -54,7 +54,11 @@ export class GroupsListComponent {
 
   // Function to load the product details page
   openGroupBuy(id: number) {
-    this.router.navigate([localStorage.getItem('role'), 'group', id]);
+    if (!localStorage.getItem('role')) {
+      this.router.navigate(['group', id]);
+    } else {
+      this.router.navigate([localStorage.getItem('role'), 'group', id]);
+    }
   }
 
   filterGroups(term: string | null) {

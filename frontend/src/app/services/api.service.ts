@@ -147,7 +147,7 @@ export class ApiService {
     'Gianalbertommanlio Foti',
   ];
   getListingDetail(id: string) {
-    return this.https.get('http://localhost:8080/groupbuy/' + id);
+    return this.https.get('http://localhost:8080/api/auth/groupbuy/' + id);
     //returns
     //   {
     //     "maxSize": 13423,
