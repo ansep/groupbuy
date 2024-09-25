@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import it.groupbuy.backend.models.GroupBuy;
 
 @Repository
-public interface GroupbuyRepository extends JpaRepository<GroupBuy, Long>{
-	
-	
+public interface GroupbuyRepository extends JpaRepository<GroupBuy, Long> {
+
 }
