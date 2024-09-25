@@ -70,7 +70,7 @@ public class User {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "buyers")
     private List<GroupBuy> subscribed_groupbuy;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="broker")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="broker")
     private List<GroupBuy> owned_groupbuy;
 
     // If we have a broker
