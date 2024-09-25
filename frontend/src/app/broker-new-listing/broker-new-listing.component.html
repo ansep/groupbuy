@@ -55,29 +55,18 @@
             </div>
           </div>
         </div>
-        <div class="col-4">
-          <div>
-            <label for="productInput"></label>
-            <input
-              placeholder="Product type (Smartphone, Laptop, etc.)"
-              type="text"
-              class="form-control"
-              id="productInput"
-              style="width: 80%; margin: 0 auto"
-              formControlName="product"
-            />
-          </div>
-        </div>
       </div>
 
       <div class="mb-3">
         <label for="descriptionInput"></label>
+        <!-- limit 2000 characters -->
         <textarea
-          placeholder="Description"
+          placeholder="Description (max 2000 characters)"
           class="form-control"
           id="descriptionInput"
           style="margin: 0 auto; height: 2cm; width: 80%"
           formControlName="description"
+          maxlength="2000"
         ></textarea>
       </div>
       <div

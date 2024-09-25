@@ -23,7 +23,6 @@ export class SingleGroupListingComponent implements OnInit {
     id: number;
     title: string;
     unitPrice: number;
-    product: string;
     availablePieces: number;
     category: string;
     location: string;
@@ -52,9 +51,8 @@ export class SingleGroupListingComponent implements OnInit {
       next: (response: any) => {
         this.item = {
           id: response.id,
-          title: response.description, //TODO: title,
+          title: response.product,
           unitPrice: response.cost,
-          product: response.product,
           availablePieces: response.maxSize,
           category: response.category,
           location: response.location,

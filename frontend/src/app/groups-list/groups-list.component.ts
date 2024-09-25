@@ -14,7 +14,6 @@ export class GroupsListComponent {
     id: number;
     title: string;
     unitPrice: number;
-    product: string;
     availablePieces: number;
     category: string;
     location: string;
@@ -26,7 +25,6 @@ export class GroupsListComponent {
     id: number;
     title: string;
     unitPrice: number;
-    product: string;
     availablePieces: number;
     category: string;
     location: string;

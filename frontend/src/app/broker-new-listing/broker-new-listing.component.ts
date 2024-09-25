@@ -22,7 +22,10 @@ export class BrokerNewListingComponent {
   addListingForm = new FormGroup({
     title: new FormControl('', Validators.required),
     image: new FormControl(''), // Validators.required),
-    description: new FormControl(''), // Validators.required),
+    description: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(2000),
+    ]),
     category: new FormControl('default', Validators.required),
     price: new FormControl('', [
       Validators.required,
@@ -37,7 +40,6 @@ export class BrokerNewListingComponent {
       Validators.pattern('^[0-9]*$'),
     ]),
     location: new FormControl('', Validators.required),
-    product: new FormControl('', Validators.required),
   });
 
   submitted = false;
@@ -60,14 +62,12 @@ export class BrokerNewListingComponent {
       this.addListingForm.value.image &&
       this.addListingForm.value.availablePieces &&
       this.addListingForm.value.category &&
-      this.addListingForm.value.location &&
-      this.addListingForm.value.product
+      this.addListingForm.value.location
     ) {
       this.apiService
         .addNewGroupBuy(
           this.addListingForm.value.title,
           Number(this.addListingForm.value.price), // Convert the value to a number
-          this.addListingForm.value.product,
           Number(this.addListingForm.value.availablePieces),
           this.addListingForm.value.category,
           this.addListingForm.value.location,
@@ -84,17 +84,14 @@ export class BrokerNewListingComponent {
                   this.addListingForm.value.image
                 )
                 .subscribe({
-                  next: (data: any) => {
-                    console.log('Image uploaded:', data);
+                  next: (data2: any) => {
+                    console.log('Image uploaded:', data2);
                   },
                   error: (error) => {
                     console.error('Error uploading image:', error);
                   },
                   complete: () => {
-                    // TODO: this.router.navigate(['/broker/group/' + data.responseId]);
-                    console.log(
-                      'simulate redirect to /broker/group/' + data.responseId
-                    );
+                    this.router.navigate(['/broker/group/' + data.responseId]);
                   },
                 });
             }
