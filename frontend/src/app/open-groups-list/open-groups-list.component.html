@@ -17,10 +17,18 @@
     </div>
   </div>
   @for (item of items; track item.id){
-  <div class="card mb-2 ms-2 me-2" (click)="openGroupBuy(item.id)">
-    <div class="row g-0">
-      <div class="col-md-3">
-        <img [src]="item.image" class="img-fluid rounded-start" alt="..." />
+  <div
+    class="card mb-2 ms-2 me-2"
+    style="height: 150px"
+    (click)="openGroupBuy(item.id)"
+  >
+    <div class="row g-0 h-100">
+      <div class="col-md-3 h-100 d-flex justify-content-center">
+        <img
+          [src]="item.image"
+          class="img-fluid rounded-start"
+          style="height: inherit"
+        />
       </div>
       <div class="col-md-8">
         <div class="card-body">

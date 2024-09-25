@@ -43,6 +43,7 @@ export class BrokerNewListingComponent {
   submitted = false;
   incorrect = false;
   errorMessage: string | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
 
   constructor(private apiService: ApiService, private router: Router) {}
   sendNewListing() {
@@ -70,14 +71,33 @@ export class BrokerNewListingComponent {
           Number(this.addListingForm.value.availablePieces),
           this.addListingForm.value.category,
           this.addListingForm.value.location,
-          this.addListingForm.value.image,
           this.addListingForm.value.description
         )
         .subscribe({
           next: (data: any) => {
-            // TODO: Listing created, redirect to listing
-            // this.router.navigate(['/broker/group/' + data.id]);
             console.log('Listing created:', data);
+            // Upload image
+            if (this.addListingForm.value.image) {
+              this.apiService
+                .uploadGroupBuyImage(
+                  data.responseId,
+                  this.addListingForm.value.image
+                )
+                .subscribe({
+                  next: (data: any) => {
+                    console.log('Image uploaded:', data);
+                  },
+                  error: (error) => {
+                    console.error('Error uploading image:', error);
+                  },
+                  complete: () => {
+                    // TODO: this.router.navigate(['/broker/group/' + data.responseId]);
+                    console.log(
+                      'simulate redirect to /broker/group/' + data.responseId
+                    );
+                  },
+                });
+            }
           },
           error: (error) => {
             if (error.status === 401) {
@@ -88,6 +108,30 @@ export class BrokerNewListingComponent {
             }
           },
         });
+    }
+  }
+
+  onFileSelected(event: any) {
+    console.log('eventtt', event);
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      console.log('file', file);
+      this.addListingForm.patchValue({
+        image: file,
+      });
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+      };
+      try {
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Error reading file:', error);
+      }
     }
   }
 }

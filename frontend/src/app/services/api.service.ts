@@ -49,7 +49,7 @@ export class ApiService {
     return participants;
   }
 
-  // TODO: Add image, description to API call
+  // TODO: Add description to API call
   addNewGroupBuy(
     title: string,
     price: number,
@@ -57,7 +57,6 @@ export class ApiService {
     availablePieces: number,
     category: string,
     location: string,
-    image: string,
     description: string
   ) {
     {
@@ -78,10 +77,19 @@ export class ApiService {
           // minQuantity,
           // availablePieces,
           // category,
-          // image,
         }
       );
     }
+  }
+
+  uploadGroupBuyImage(id: number, image: string) {
+    const formData = new FormData();
+    formData.append('file', image);
+    formData.append('id', id.toString());
+    return this.https.post(
+      'http://localhost:8080/groupbuy/' + id + '/picture',
+      formData
+    );
   }
 
   retrieveMessageHistory(username: string) {

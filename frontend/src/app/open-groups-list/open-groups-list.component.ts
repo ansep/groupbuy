@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   styleUrl: './open-groups-list.component.scss',
 })
 export class OpenGroupsListComponent {
+  placeHolderImage = 'assets/no-image-available.png';
   items: {
     id: number;
     title: string;
@@ -42,10 +43,9 @@ export class OpenGroupsListComponent {
             availablePieces: groupBuy.maxSize,
             category: groupBuy.category,
             location: groupBuy.location,
-            image: groupBuy.postingPicturePath,
-            //TODO: Add real description, subscribedPeople, requiredPeople when implemented in API
-            description:
-              'This is a description of the product that is being sold in the group buy listing. It is a very long and verbose description that contains nothing relevant at all. Yeah indeed this piece of text is very long and pretty useless but it is a great way to understand how bad frontend can go I guess.',
+            image: groupBuy.postingPicturePath || this.placeHolderImage,
+            //TODO: Add description different from title, subscribedPeople, requiredPeople when implemented in API
+            description: groupBuy.description,
             subscribedPeople: 50,
             requiredPeople: 1000,
           };
