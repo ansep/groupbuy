@@ -245,6 +245,7 @@ public class GroupBuyController {
 
     @PostMapping("/groupbuy/{id}/picture")
     @PreAuthorize("hasRole('BROKER')")
+    @Transactional
     public ResponseEntity<?> putProfilePicture(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
@@ -267,12 +268,7 @@ public class GroupBuyController {
 
     @GetMapping("/groupbuy/{id}/picture")
     public ResponseEntity<?> getProfilePicture(@PathVariable("id") Long id) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-	if (!user.getOwned_groupbuy().contains(groupbuy)) {
-	    ResponseEntity.badRequest().body("Groupbuy not owned");
-	}
 	Resource file = storageService.load(groupbuy.getPostingPicturePath());
 	return ResponseEntity.ok()
 	    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);

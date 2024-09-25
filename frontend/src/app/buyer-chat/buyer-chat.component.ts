@@ -74,7 +74,7 @@ export class BuyerChatComponent implements OnInit {
         console.log('Retrieved chat history:', response);
         this.data = this.processChatHistory(response, this.username);
         // Subscribe to the user's personal queue
-        this.subscribeToQueue(this.username);
+        this.subscribeToQueue(this.username); 
       },
       error: (error) => {
         if (error.status === 401) {
