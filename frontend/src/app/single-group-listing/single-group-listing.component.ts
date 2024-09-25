@@ -58,7 +58,9 @@ export class SingleGroupListingComponent implements OnInit {
           availablePieces: response.maxSize,
           category: response.category,
           location: response.location,
-          image: response.postingPicturePath,
+          image: response.postingPicturePath
+            ? 'http://localhost:8080/groupbuy/' + groupId + '/picture'
+            : this.placeholderImage,
           description: response.description,
           subscribedPeople: 0,
         };

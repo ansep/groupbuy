@@ -43,7 +43,14 @@ export class GroupsListComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['groups']) {
-      this.displayedGroups = this.groups;
+      this.displayedGroups = this.groups.map((item) => {
+        return {
+          ...item,
+          image: item.image
+            ? 'http://localhost:8080/groupbuy/' + item.id + '/picture'
+            : this.placeholderImage,
+        };
+      });
     }
   }
   ngAfterViewInit() {
