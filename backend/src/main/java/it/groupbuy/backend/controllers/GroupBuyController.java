@@ -74,6 +74,7 @@ public class GroupBuyController {
 
     @GetMapping("/groupbuy/{broker}")
     @PreAuthorize("hasRole('BROKER')")
+    @Transactional
     public List<GroupBuy> getBrokerGroupBuys(@PathVariable String broker) {
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
