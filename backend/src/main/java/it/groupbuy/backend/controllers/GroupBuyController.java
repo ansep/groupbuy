@@ -65,7 +65,7 @@ public class GroupBuyController {
 				  linkTo(methodOn(GroupBuyController.class).all()).withSelfRel()); // creates the hateoas links to the objects
     }
 
-    @GetMapping("/api/groupbuy/{id}")
+    @GetMapping("/api/groupbuy/{id}/subscriptions")
     @Transactional
     public Integer getSubscribedNum(@PathVariable Long id) {
     	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
