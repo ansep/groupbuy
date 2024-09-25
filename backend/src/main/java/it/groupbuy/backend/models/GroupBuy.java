@@ -40,7 +40,7 @@ public class GroupBuy {
     private Integer maxSize;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 2001)
     private String description;
 
     @NotBlank
