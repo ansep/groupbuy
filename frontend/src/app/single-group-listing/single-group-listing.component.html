@@ -3,9 +3,9 @@
   style="max-width: 90%; height: auto; margin: 0 auto"
 >
   @if(item) {
-  <div class="text-center">
+  <!-- <div class="text-center">
     <h4>Listing details</h4>
-  </div>
+  </div> -->
   <p></p>
   <div class="clearfix m-2">
     <img
@@ -50,15 +50,15 @@
         </td>
         <td
           [ngClass]="{
-            'bg-green': item.subscribedPeople < item.requiredPeople,
-            'bg-red': item.subscribedPeople >= item.requiredPeople,
+            'bg-green': item.subscribedPeople < item.availablePieces,
+            'bg-red': item.subscribedPeople >= item.availablePieces,
             'bg-yellow':
-              item.requiredPeople - item.subscribedPeople <=
-              item.requiredPeople * 0.2
+              item.availablePieces - item.subscribedPeople <=
+              item.availablePieces * 0.2
           }"
         >
           <div class="bg-green bg-red bg-yellow rounded">
-            {{ item.subscribedPeople }} / {{ item.requiredPeople }}
+            {{ item.subscribedPeople }} / {{ item.availablePieces }}
           </div>
         </td>
         <td>

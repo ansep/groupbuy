@@ -21,7 +21,6 @@ export class GroupsListComponent {
     image: string;
     description: string;
     subscribedPeople: number;
-    requiredPeople: number;
   }[] = [];
   displayedGroups: {
     id: number;
@@ -34,7 +33,6 @@ export class GroupsListComponent {
     image: string;
     description: string;
     subscribedPeople: number;
-    requiredPeople: number;
   }[] = [];
   searchForm = new FormGroup({
     search: new FormControl(null),

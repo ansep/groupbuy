@@ -28,7 +28,6 @@ export class SingleGroupListingComponent implements OnInit {
     image: string;
     description: string;
     subscribedPeople: number;
-    requiredPeople: number;
   } | null = null;
   role: string | null = null;
   placeholderImage = 'assets/no-image-available.png';
@@ -57,7 +56,6 @@ export class SingleGroupListingComponent implements OnInit {
           image: response.postingPicturePath,
           description: response.description,
           subscribedPeople: 0,
-          requiredPeople: 0,
         };
       },
       error: (error) => {

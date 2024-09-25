@@ -21,7 +21,6 @@ export class OpenGroupsListComponent {
     image: string;
     description: string;
     subscribedPeople: number;
-    requiredPeople: number;
   }[] = [];
 
   constructor(private apiservice: ApiService) {}
@@ -43,10 +42,9 @@ export class OpenGroupsListComponent {
             category: groupBuy.category,
             location: groupBuy.location,
             image: groupBuy.postingPicturePath,
-            //TODO: Add description different from title, subscribedPeople, requiredPeople when implemented in API
+            //TODO: Add description different from title, subscribedPeople when implemented in API
             description: groupBuy.description,
             subscribedPeople: 50,
-            requiredPeople: 1000,
           };
         });
       }
