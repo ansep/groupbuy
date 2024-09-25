@@ -14,7 +14,6 @@ export class OpenGroupsListComponent {
     id: number;
     title: string;
     unitPrice: number;
-    product: string;
     availablePieces: number;
     category: string;
     location: string;
@@ -35,9 +34,8 @@ export class OpenGroupsListComponent {
         this.items = data['_embedded'].groupBuys.map((groupBuy: any) => {
           return {
             id: groupBuy._links.self[0].href.split('/').pop(),
-            title: groupBuy.description,
+            title: groupBuy.product,
             unitPrice: groupBuy.cost,
-            product: groupBuy.product,
             availablePieces: groupBuy.maxSize,
             category: groupBuy.category,
             location: groupBuy.location,

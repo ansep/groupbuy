@@ -53,7 +53,6 @@ export class ApiService {
   addNewGroupBuy(
     title: string,
     price: number,
-    product: string,
     availablePieces: number,
     category: string,
     location: string,
@@ -65,11 +64,11 @@ export class ApiService {
         'http://localhost:8080/groupbuy',
 
         {
-          description: title,
+          description,
           cost: price,
           category,
           maxSize: availablePieces,
-          product,
+          product: title,
           status: 'OPEN',
           location,
           // title,
@@ -173,47 +172,6 @@ export class ApiService {
   ];
   getListingDetail(id: string) {
     return this.https.get('http://localhost:8080/api/auth/groupbuy/' + id);
-    //returns
-    //   {
-    //     "maxSize": 13423,
-    //     "description": "Samsung S5",
-    //     "category": "electronic",
-    //     "product": "Smartphone",
-    //     "cost": 123.0,
-    //     "status": "OPEN",
-    //     "location": "Milan",
-    //     "postingPicturePath": null,
-    //     "_links": {
-    //         "self": [
-    //             {
-    //                 "href": "http://localhost:8080/api/auth/groupbuy/1"
-    //             },
-    //             {
-    //                 "href": "http://localhost:8080/groupbuy/1"
-    //             },
-    //             {
-    //                 "href": "http://localhost:8080/api/auth/groupbuy"
-    //             },
-    //             {
-    //                 "href": "http://localhost:8080/groupbuy"
-    //             }
-    //         ]
-    //     }
-    // }
-    // should return {
-    //   id: 1,
-    //   title: this.titles[Math.floor(Math.random() * 3) + 1],
-    //   description:
-    //     "Description for this group Buy. This is a very long and verbose decription that contains nothing relevant at all. Yeah indeed this piece of text is very long and pretty useless but it's a great way to understand how bad frontend can go I guess.",
-    //   //subscribed are random number within the maximum required people
-    //   subscribedPeople: Math.floor(Math.random() * 1000),
-    //   requiredPeople: 1000,
-    //   unitPrice: Math.floor(Math.random() * 400) + 12,
-    //   brokerName: this.names[Math.floor(Math.random() * 6)],
-    //   image:
-    //     'https://media-assets.wired.it/photos/64f5bd6bcceb534d9f169474/16:9/w_1888,h_1062,c_limit/notebook%20da%20gaming.jpg',
-    //   location: this.locations[Math.floor(Math.random() * 11)],
-    // };
   }
 
   // getGroup(id:any){
