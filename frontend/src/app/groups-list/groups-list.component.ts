@@ -39,7 +39,7 @@ export class GroupsListComponent {
   searchForm = new FormGroup({
     search: new FormControl(null),
   });
-  placeHolderImage = 'assets/no-image-available.png';
+  placeholderImage = 'assets/no-image-available.png';
 
   constructor(private router: Router) {}
 

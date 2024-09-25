@@ -1,26 +1,30 @@
-<app-navbar></app-navbar>
 <div
-  class="card mb-3 single-list"
+  class="card mb-3 mt-3 single-list"
   style="max-width: 90%; height: auto; margin: 0 auto"
 >
+  @if(item) {
   <div class="text-center">
     <h4>Listing details</h4>
   </div>
   <p></p>
   <div class="clearfix m-2">
     <img
-      [src]="items.image"
+      [src]="item.image || placeholderImage"
       class="col-md-5 float-md-start mb-3 me-md-3 rounded"
-      alt="..."
-      style="margin-right: 10px; margin-left: 10px"
+      style="
+        margin-right: 10px;
+        margin-left: 10px;
+        height: 200px;
+        object-fit: scale-down;
+      "
     />
 
     <div>
-      <h3 class="card-title">{{ items.title }}</h3>
+      <h3 class="card-title">{{ item.title }}</h3>
     </div>
 
     <div class="card-body">
-      <p class="card-text text-break">{{ items.description }}</p>
+      <p class="card-text text-break">{{ item.description }}</p>
     </div>
 
     <table class="table table-bordered text-center mb-3">
@@ -30,30 +34,31 @@
         <th scope="col">Unit Price</th>
         <th scope="col">Group Participants</th>
         <th scope="col">
-          <div><a href="#" (click)="handleClick()">Add to wishlist</a></div>
+          <div><a href="#">Add to wishlist</a></div>
         </th>
       </tr>
       <tr class="">
         <td class="text-center">
-          <a href="#" (click)="handleClick()">{{ items.brokerName }}</a>
+          <!-- TODO: item.brokerName -->
+          <a href="#">{{ "mario" }}</a>
         </td>
         <td>
-          <div>{{ items.location }}</div>
+          <div>{{ item.location }}</div>
         </td>
         <td>
-          <div>{{ items.unitPrice }} €</div>
+          <div>{{ item.unitPrice }} €</div>
         </td>
         <td
           [ngClass]="{
-            'bg-green': items.subscribedPeople < items.requiredPeople,
-            'bg-red': items.subscribedPeople >= items.requiredPeople,
+            'bg-green': item.subscribedPeople < item.requiredPeople,
+            'bg-red': item.subscribedPeople >= item.requiredPeople,
             'bg-yellow':
-              items.requiredPeople - items.subscribedPeople <=
-              items.requiredPeople * 0.2
+              item.requiredPeople - item.subscribedPeople <=
+              item.requiredPeople * 0.2
           }"
         >
           <div class="bg-green bg-red bg-yellow rounded">
-            {{ items.subscribedPeople }} / {{ items.requiredPeople }}
+            {{ item.subscribedPeople }} / {{ item.requiredPeople }}
           </div>
         </td>
         <td>
@@ -66,7 +71,6 @@
           </a>
         </td>
       </tr>
-
     </table>
     @if (role === 'broker'){
     <div class="text-center">
@@ -76,7 +80,11 @@
         ></app-broker-module-single-group>
       </div>
     </div>
-  }
+    }
   </div>
-
+  } @else {
+  <div class="text-center">
+    <h4>Item not found</h4>
+  </div>
+  }
 </div>
