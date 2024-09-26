@@ -3,13 +3,13 @@ import { ApiService } from '../services/api.service';
 import { GroupsListComponent } from '../groups-list/groups-list.component';
 
 @Component({
-  selector: 'app-open-groups-list',
+  selector: 'app-buyer-joined-listings',
   standalone: true,
   imports: [GroupsListComponent],
-  templateUrl: './open-groups-list.component.html',
-  styleUrl: './open-groups-list.component.scss',
+  templateUrl: './buyer-joined-listings.component.html',
+  styleUrl: './buyer-joined-listings.component.scss',
 })
-export class OpenGroupsListComponent {
+export class BuyerJoinedListingsComponent {
   items: {
     id: number;
     title: string;
@@ -25,17 +25,12 @@ export class OpenGroupsListComponent {
 
   constructor(private apiservice: ApiService) {}
   ngOnInit() {
-    this.apiservice.getOpenGroups().subscribe((data: any) => {
-      if (
-        data['_embedded'] &&
-        data['_embedded'].groupBuys &&
-        data['_embedded'].groupBuys.length > 0
-      ) {
-        this.items = data['_embedded'].groupBuys
-          .filter((groupBuy: any) => groupBuy.status === 'OPEN')
-          .map((groupBuy: any) => {
+    this.apiservice.getJoinedGroups().subscribe({
+      next: (data: any) => {
+        if (data && data.length > 0) {
+          this.items = data.map((groupBuy: any) => {
             return {
-              id: groupBuy._links.self[0].href.split('/').pop(),
+              id: groupBuy.id,
               title: groupBuy.product,
               unitPrice: groupBuy.cost,
               availablePieces: groupBuy.maxSize,
@@ -47,7 +42,11 @@ export class OpenGroupsListComponent {
               status: groupBuy.status,
             };
           });
-      }
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
     });
   }
 }

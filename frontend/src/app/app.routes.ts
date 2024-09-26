@@ -14,6 +14,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { BuyerChatComponent } from './buyer-chat/buyer-chat.component';
 import { BrokerNewListingComponent } from './broker-new-listing/broker-new-listing.component';
 import { BrokerMyGroupsComponent } from './broker-my-groups/broker-my-groups.component';
+import { BuyerJoinedListingsComponent } from './buyer-joined-listings/buyer-joined-listings.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
@@ -45,6 +46,11 @@ export const routes: Routes = [
     canActivate: [authBuyerGuard],
     children: [
       { path: 'home', component: OpenGroupsListComponent },
+      {
+        path: 'groups',
+        component: BuyerJoinedListingsComponent,
+        pathMatch: 'full',
+      },
       {
         path: 'group/:id',
         component: SingleGroupListingComponent,

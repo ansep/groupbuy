@@ -91,7 +91,7 @@ export class SingleGroupListingComponent implements OnInit {
             },
           });
         } else if (this.role === 'buyer') {
-          this.apiservice.hasCurrentBuyerJoinedGroup(groupId).subscribe({
+          this.apiservice.getJoinedGroups().subscribe({
             next: (response: any) => {
               if (response && response.length > 0) {
                 this.joined = response.some((item: any) => item.id == groupId);
