@@ -1,11 +1,14 @@
 <h1 class="page-title">{{ username || "GroupBuy - User Profile" }}</h1>
 <div class="avatar-container">
-    <div
-      class="image-container"
-      [style.background-image]="'url(' + avatar + ')'"
-    ></div>
-    <div class="icon-wrapper"></div>
+  <div class="image-container" style="overflow: hidden">
+    <img
+      id="selectedAvatar"
+      [src]="avatar"
+      style="height: 200px; object-fit: cover"
+    />
   </div>
+  <div class="icon-wrapper"></div>
+</div>
 @if (isLoggedUser) {
 <button class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
 }

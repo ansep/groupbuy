@@ -23,6 +23,16 @@ export class NavbarBuyerComponent {
       | 'groups'
       | 'messages'
       | 'profile';
+    this.authService.getUserInfo().subscribe({
+      next: (user) => {
+        if (user.profile_picture_path) {
+          this.avatar = `http://localhost:8080/api/user/${user.id}/picture`;
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   openHome() {
