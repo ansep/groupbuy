@@ -45,6 +45,32 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @GetMapping("/user/{id}")
+    public UserResponse getUserResponse(@PathVariable Long id) {
+	User user = userRepository.findById(id).get();
+	UserResponse ret  = new UserResponse(user.getId(),
+					     user.getUsername(),
+					     user.getEmail(),
+					     user.getFirstName(),
+					     user.getLastName(),
+					     user.getTelephoneNumber(),
+					     user.getProfilePicturePath());
+	return ret;
+    }
+
+    @GetMapping("/user/{username}")
+    public UserResponse getUserResponse(@PathVariable String username) {
+	User user = userRepository.findByUsername(username).get();
+	UserResponse ret  = new UserResponse(user.getId(),
+					     user.getUsername(),
+					     user.getEmail(),
+					     user.getFirstName(),
+					     user.getLastName(),
+					     user.getTelephoneNumber(),
+					     user.getProfilePicturePath());
+	return ret;
+    }
+
     @PatchMapping("/user")
     @PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
     public ResponseEntity<?> patchUser(@Valid @RequestBody PatchRequest patchRequest) {
@@ -91,7 +117,7 @@ public class UserController {
 	return ResponseEntity.ok()
 	    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
-    
+
     @GetMapping("/user/{id}/ownedGroupbuy")
     @PreAuthorize("hasRole('BROKER')")
     @Transactional
@@ -104,13 +130,13 @@ public class UserController {
 		for (int i=0; i<n; i++) {
 			GroupBuy g = groupbuys.get(i);
 			GroupbuyResponse response = new GroupbuyResponse(g.getId(), g.getMaxSize(),
-					g.getDescription(), g.getCategory(), g.getProduct(),g.getCost(), g.getStatus(), 
+					g.getDescription(), g.getCategory(), g.getProduct(),g.getCost(), g.getStatus(),
 					g.getLocation());
 			res.add(response);
 		}
 		return ResponseEntity.accepted().body(res);
     }
-    
+
     @GetMapping("/user/{id}/subscribedGroupbuy")
     @PreAuthorize("hasRole('BUYER')")
     @Transactional
@@ -123,12 +149,12 @@ public class UserController {
 		for (int i=0; i<n; i++) {
 			GroupBuy g = groupbuys.get(i);
 			GroupbuyResponse response = new GroupbuyResponse(g.getId(), g.getMaxSize(),
-					g.getDescription(), g.getCategory(), g.getProduct(),g.getCost(), g.getStatus(), 
+					g.getDescription(), g.getCategory(), g.getProduct(),g.getCost(), g.getStatus(),
 					g.getLocation());
 			res.add(response);
 		}
 		return ResponseEntity.accepted().body(res);
     }
-    
-    
+
+
 }
