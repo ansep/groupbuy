@@ -117,7 +117,7 @@ export class ApiService {
 
   hasCurrentBuyerJoinedGroup(id: number) {
     return this.https.get(
-      'http://localhost:8080/groupbuy/' + id + '/subscription'
+      'http://localhost:8080/api/user/' + id + '/subscribedGroupbuy'
     );
   }
 

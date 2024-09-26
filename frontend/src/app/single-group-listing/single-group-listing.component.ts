@@ -34,7 +34,6 @@ export class SingleGroupListingComponent implements OnInit {
   placeholderImage = 'assets/no-image-available.png';
   isOwner: boolean = false;
   joined: boolean = false;
-  addedToWishlist: boolean = false;
 
   constructor(
     private apiservice: ApiService,
@@ -50,7 +49,7 @@ export class SingleGroupListingComponent implements OnInit {
     this.apiservice.getListingDetail(groupId).subscribe({
       next: (response: any) => {
         this.item = {
-          id: response.id,
+          id: groupId,
           title: response.product,
           unitPrice: response.cost,
           availablePieces: response.maxSize,
@@ -94,8 +93,9 @@ export class SingleGroupListingComponent implements OnInit {
         } else if (this.role === 'buyer') {
           this.apiservice.hasCurrentBuyerJoinedGroup(groupId).subscribe({
             next: (response: any) => {
-              console.log(response);
-              this.joined = true;
+              if (response && response.length > 0) {
+                this.joined = response.some((item: any) => item.id == groupId);
+              }
             },
             error: (error) => {
               if (error.status === 401) {
@@ -118,8 +118,18 @@ export class SingleGroupListingComponent implements OnInit {
   joinGroupBuy(id: number) {
     this.apiservice.joinGroupBuy(id).subscribe({
       next: (response: any) => {
-        console.log(response);
-        //TODO: edit the join button to joined/leave button
+        this.joined = true;
+        this.apiservice.getSubscribersCount(id).subscribe({
+          next: (response: any) => {
+            if (this.item) this.item.subscribedPeople = response;
+          },
+          error: (error) => {
+            if (error.status === 401) {
+              this.router.navigate(['login']);
+            }
+            console.error(error);
+          },
+        });
       },
       error: (error) => {
         if (error.status === 401) {
@@ -133,7 +143,18 @@ export class SingleGroupListingComponent implements OnInit {
   leaveGroupBuy(id: number) {
     this.apiservice.leaveGroupBuy(id).subscribe({
       next: (response: any) => {
-        console.log(response);
+        this.joined = false;
+        this.apiservice.getSubscribersCount(id).subscribe({
+          next: (response: any) => {
+            if (this.item) this.item.subscribedPeople = response;
+          },
+          error: (error) => {
+            if (error.status === 401) {
+              this.router.navigate(['login']);
+            }
+            console.error(error);
+          },
+        });
       },
       error: (error) => {
         if (error.status === 401) {

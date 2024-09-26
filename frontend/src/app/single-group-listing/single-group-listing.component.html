@@ -36,18 +36,7 @@
         <th scope="col">Location</th>
         <th scope="col">Unit Price</th>
         <th scope="col">Group Participants</th>
-        <th scope="col">
-          <div>
-            <!-- TODO: manage buyer has already added to wishlist or not -->
-            @if(role === 'buyer' && !addedToWishlist) {<a href="#"
-              >Add to wishlist</a
-            >
-            } @else if(role === 'buyer' && addedToWishlist) {<a href="#"
-              >Remove from wishlist</a
-            >
-            }
-          </div>
-        </th>
+        <th scope="col"></th>
       </tr>
       <tr class="">
         <td class="text-center">
