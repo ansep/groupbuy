@@ -79,27 +79,37 @@ export class AuthService {
   }
 
   getUserInfo() {
+    //TODO: connect to API
     return new Observable<any>((observer) => {
       observer.next({
+        id: 3,
         username: localStorage.getItem('username'),
         email: localStorage.getItem('email'),
         role: localStorage.getItem('role'),
         firstName: 'John',
         lastName: 'Doe',
         telephoneNumber: '1234567890',
+        profile_picture_path: 'ciao.jpg',
       });
     });
   }
 
-  editUser(
-    password: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    telephoneNumber: string
-  ) {
+  // TODO: connect user edit to API
+  editUser(updatedInfo: {
+    password: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    telephoneNumber: string;
+  }) {
     return new Observable((observer) => {
       observer.next({ message: 'User updated' });
     });
+  }
+
+  uploadUserImage(image: string) {
+    const formData = new FormData();
+    formData.append('file', image);
+    return this.https.post('http://localhost:8080/api/user/picture', formData);
   }
 }

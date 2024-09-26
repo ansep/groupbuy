@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,19 +17,23 @@ import { Router } from '@angular/router';
 })
 export class AccountComponent {
   oldUserInfo: {
+    id: number;
     username: string;
     email: string;
     role: string;
     firstName: string;
     lastName: string;
     telephoneNumber: string;
+    profile_picture_path: string;
   } = {
+    id: 0,
     username: '',
     email: '',
     role: '',
     firstName: '',
     lastName: '',
     telephoneNumber: '',
+    profile_picture_path: '',
   };
   editAccountForm = new FormGroup({
     username: new FormControl({ value: '', disabled: true }),
@@ -40,7 +44,9 @@ export class AccountComponent {
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     telephoneNumber: new FormControl('', Validators.pattern('^[0-9]*$')),
+    image: new FormControl(''),
   });
+  imagePreview: string | ArrayBuffer | null = 'assets/default-avatar-lg.png';
   submitted = false;
   incorrect = false;
   errorMessage: string | null = null;
@@ -55,7 +61,11 @@ export class AccountComponent {
         firstName: this.oldUserInfo.firstName,
         lastName: this.oldUserInfo.lastName,
         telephoneNumber: this.oldUserInfo.telephoneNumber,
+        image: this.oldUserInfo.profile_picture_path,
       });
+      if (user.profile_picture_path) {
+        this.imagePreview = `http://localhost:8080/api/user/${user.id}/picture`;
+      }
     });
   }
 
@@ -74,33 +84,74 @@ export class AccountComponent {
       }
       return;
     }
-    this.authService
-      .editUser(
-        this.editAccountForm.value.password || '',
-        this.editAccountForm.value.email || '',
-        this.editAccountForm.value.firstName || '',
-        this.editAccountForm.value.lastName || '',
-        this.editAccountForm.value.telephoneNumber || ''
-      )
-      .subscribe({
-        next: (data: any) => {
-          // TODO: Redirect to the correct profile page
-          // this.router.navigate(['/profile/usename'], {
-          //   queryParams: { edited: 'true' },
-          // });
-          this.router.navigate([this.oldUserInfo.role + '/account'], {
+    const newInformation: any = {};
+    if (this.editAccountForm.value.password) {
+      newInformation.password = this.editAccountForm.value.password;
+    }
+    if (this.editAccountForm.value.email) {
+      newInformation.email = this.editAccountForm.value.email;
+    }
+    if (this.editAccountForm.value.firstName) {
+      newInformation.firstName = this.editAccountForm.value.firstName;
+    }
+    if (this.editAccountForm.value.lastName) {
+      newInformation.lastName = this.editAccountForm.value.lastName;
+    }
+    if (this.editAccountForm.value.telephoneNumber) {
+      newInformation.telephoneNumber =
+        this.editAccountForm.value.telephoneNumber;
+    }
+    this.authService.editUser(newInformation).subscribe({
+      next: (data: any) => {
+        if (this.editAccountForm.value.image) {
+          this.authService
+            .uploadUserImage(this.editAccountForm.value.image)
+            .subscribe({
+              next: (imageData: any) => {},
+              error: (error) => {
+                console.error('Error uploading image:', error);
+              },
+            });
+        }
+        // TODO: Show message on profile page when user is edited
+        this.router.navigate(
+          [this.oldUserInfo.role, 'profile', this.oldUserInfo.username],
+          {
             queryParams: { edited: 'true' },
-          });
-        },
-        error: (error) => {
-          if (error.status === 400) {
-            this.errorMessage = error.error.message;
-          } else if (error.status === 401) {
-            this.incorrect = true;
-          } else {
-            this.incorrect = true;
           }
-        },
+        );
+      },
+      error: (error) => {
+        if (error.status === 400) {
+          this.errorMessage = error.error.message;
+        } else if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          this.incorrect = true;
+        }
+      },
+    });
+  }
+
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.editAccountForm.patchValue({
+        image: file,
       });
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+      };
+      try {
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Error reading file:', error);
+      }
+    }
   }
 }
