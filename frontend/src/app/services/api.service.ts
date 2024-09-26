@@ -49,7 +49,6 @@ export class ApiService {
     return participants;
   }
 
-  // TODO: Add description to API call
   addNewGroupBuy(
     title: string,
     price: number,
@@ -88,6 +87,12 @@ export class ApiService {
     return this.https.post(
       'http://localhost:8080/groupbuy/' + id + '/picture',
       formData
+    );
+  }
+
+  getSubscribersCount(id: number) {
+    return this.https.get(
+      'http://localhost:8080/groupbuy/' + id + '/subscriptions'
     );
   }
 

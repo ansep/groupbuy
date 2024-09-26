@@ -63,6 +63,19 @@ export class SingleGroupListingComponent implements OnInit {
           subscribedPeople: 0,
         };
 
+        this.apiservice.getSubscribersCount(groupId).subscribe({
+          next: (response: any) => {
+            console.log(response);
+            if (this.item) this.item.subscribedPeople = response;
+          },
+          error: (error) => {
+            if (error.status === 401) {
+              this.router.navigate(['login']);
+            }
+            console.error(error);
+          },
+        });
+
         if (this.role === 'broker') {
           //If receive correct response, broker is owner, else if status is 400 then not owner
           this.apiservice.getSubscribersList(groupId).subscribe({

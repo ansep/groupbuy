@@ -1,6 +1,7 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-groups-list',
@@ -37,18 +38,24 @@ export class GroupsListComponent {
   });
   placeholderImage = 'assets/no-image-available.png';
 
-  constructor(private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['groups']) {
-      this.displayedGroups = this.groups.map((item) => {
-        return {
-          ...item,
-          image: item.image
-            ? 'http://localhost:8080/groupbuy/' + item.id + '/picture'
-            : this.placeholderImage,
-        };
+      this.groups.forEach((group) => {
+        group.image = group.image
+          ? 'http://localhost:8080/groupbuy/' + group.id + '/picture'
+          : this.placeholderImage;
+        this.apiService.getSubscribersCount(group.id).subscribe({
+          next: (response: any) => {
+            group.subscribedPeople = response;
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
       });
+      this.displayedGroups = this.groups;
     }
   }
   ngAfterViewInit() {
