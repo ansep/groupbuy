@@ -36,6 +36,10 @@ export class ApiService {
     }
   }
 
+  deleteGroupBuy(id: number) {
+    return this.https.delete('http://localhost:8080/groupbuy/' + id);
+  }
+
   uploadGroupBuyImage(id: number, image: string) {
     const formData = new FormData();
     formData.append('file', image);

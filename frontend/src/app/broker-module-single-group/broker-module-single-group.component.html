@@ -29,7 +29,13 @@
           <td style="width: 15%">{{ participant.email }}</td>
           <td style="width: 15%">{{ participant.telephoneNumber }}</td>
           <td style="width: 15%">
-            <button type="button" class="btn btn-primary">Contact user</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="openChatWithUser(participant.id)"
+            >
+              Contact user
+            </button>
           </td>
         </tr>
         }
@@ -46,15 +52,19 @@
     style="width: 70%; margin: 0 auto"
   >
     <button type="button" class="btn btn-primary btn-lg mx-1">
-      Edit Listing
-    </button>
-    <button type="button" class="btn btn-primary btn-lg mx-1">
       Broadcast Message
     </button>
-    <button type="button" class="btn btn-primary btn-lg mx-1">
+    <button type="button" class="btn btn-warning btn-lg mx-1">
+      Edit Listing
+    </button>
+    <button type="button" class="btn btn-success btn-lg mx-1">
       Finalize Listing
     </button>
-    <button type="button" class="btn btn-primary btn-lg mx-1">
+    <button
+      type="button"
+      class="btn btn-danger btn-lg mx-1"
+      (click)="deleteGroupBuy()"
+    >
       Cancel Listing
     </button>
   </div>

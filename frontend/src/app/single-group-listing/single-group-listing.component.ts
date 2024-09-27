@@ -45,6 +45,8 @@ export class SingleGroupListingComponent implements OnInit {
     profilePicturePath: string;
   }[] = [];
 
+  newGroupBuy = false;
+
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
@@ -55,6 +57,11 @@ export class SingleGroupListingComponent implements OnInit {
   ngOnInit() {
     this.role = this.authService.getRole();
     const groupId = this.route.snapshot.params['id'];
+    this.route.queryParams.subscribe((params) => {
+      if (params['new'] === 'true') {
+        this.newGroupBuy = true;
+      }
+    });
 
     this.apiService.getListingDetail(groupId).subscribe({
       next: (response: any) => {

@@ -75,8 +75,6 @@ export class BrokerNewListingComponent {
         )
         .subscribe({
           next: (data: any) => {
-            console.log('Listing created:', data);
-            // Upload image
             if (this.addListingForm.value.image) {
               this.apiService
                 .uploadGroupBuyImage(
@@ -91,7 +89,9 @@ export class BrokerNewListingComponent {
                     console.error('Error uploading image:', error);
                   },
                   complete: () => {
-                    this.router.navigate(['/broker/group/' + data.responseId]);
+                    this.router.navigate(['/broker/group/' + data.responseId], {
+                      queryParams: { new: 'true' },
+                    });
                   },
                 });
             }

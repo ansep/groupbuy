@@ -1,5 +1,17 @@
 @if(!role) {
 <app-navbar></app-navbar>
+} @if(newGroupBuy) {
+<div class="container mt-3">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Group Buy has been created
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
 }
 <div
   class="card mb-3 mt-3 single-list"
@@ -90,6 +102,7 @@
     <div class="text-center">
       <div class="text-center">
         <app-broker-module-single-group
+          [groupBuyId]="item.id"
           [participants]="subscribers"
           class="text-center"
         ></app-broker-module-single-group>
