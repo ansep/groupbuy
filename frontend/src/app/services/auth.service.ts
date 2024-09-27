@@ -94,6 +94,10 @@ export class AuthService {
     });
   }
 
+  getUserId() {
+    return parseInt(localStorage.getItem('id') || '0');
+  }
+
   // TODO: connect user edit to API
   editUser(updatedInfo: {
     password: string;

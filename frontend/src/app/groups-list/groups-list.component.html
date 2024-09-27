@@ -1,4 +1,7 @@
 <div class="list-group">
+  @if(groups.length === 0) {
+  <p class="mx-auto mt-5">No groups found.</p>
+  } @else{
   <div class="col-md-12 px-2 py-1">
     <div class="d-flex justify-content-end">
       <div class="d-flex shadow">
@@ -21,7 +24,9 @@
       </div>
     </div>
   </div>
-  @for (item of displayedGroups; track item.id){
+  @if(displayedGroups.length === 0) {
+  <p class="mx-auto mt-1">No groups found for the search criteria.</p>
+  } @else{ @for (item of displayedGroups; track item.id){
   <div
     class="card mb-2 ms-2 me-2"
     style="height: 150px; cursor: pointer"
@@ -73,5 +78,5 @@
       </div>
     </div>
   </div>
-  }
+  } } }
 </div>

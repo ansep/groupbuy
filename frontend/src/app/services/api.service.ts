@@ -69,6 +69,12 @@ export class ApiService {
     );
   }
 
+  getBrokerGroups(userId: number) {
+    return this.https.get(
+      'http://localhost:8080/api/user/' + userId + '/ownedGroupbuy'
+    );
+  }
+
   getSubscribersCount(id: number) {
     return this.https.get(
       'http://localhost:8080/groupbuy/' + id + '/subscriptions'

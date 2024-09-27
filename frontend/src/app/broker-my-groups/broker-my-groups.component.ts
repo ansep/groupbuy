@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { GroupsListComponent } from '../groups-list/groups-list.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-broker-my-groups',
@@ -20,32 +21,30 @@ export class BrokerMyGroupsComponent {
     image: string;
     description: string;
     subscribedPeople: number;
+    status: string;
   }[] = [];
 
-  constructor(private apiservice: ApiService) {}
+  constructor(
+    private apiservice: ApiService,
+    private authService: AuthService
+  ) {}
   ngOnInit() {
-    // TODO: edit from getOpenGroups to getBrokerGroups
-    this.apiservice.getOpenGroups().subscribe((data: any) => {
-      if (
-        data['_embedded'] &&
-        data['_embedded'].groupBuys &&
-        data['_embedded'].groupBuys.length > 0
-      ) {
-        this.items = data['_embedded'].groupBuys.map((groupBuy: any) => {
-          return {
-            id: groupBuy._links.self[0].href.split('/').pop(),
-            title: groupBuy.product,
-            unitPrice: groupBuy.cost,
-            availablePieces: groupBuy.maxSize,
-            category: groupBuy.category,
-            location: groupBuy.location,
-            image: groupBuy.postingPicturePath,
-            //TODO: Add description different from title, subscribedPeople when implemented in API
-            description: groupBuy.description,
-            subscribedPeople: 50,
-          };
-        });
-      }
+    const brokerId = this.authService.getUserId();
+    this.apiservice.getBrokerGroups(brokerId).subscribe((data: any) => {
+      this.items = data.map((groupBuy: any) => {
+        return {
+          id: groupBuy.id,
+          title: groupBuy.product,
+          unitPrice: groupBuy.cost,
+          availablePieces: groupBuy.maxSize,
+          category: groupBuy.category,
+          location: groupBuy.location,
+          image: groupBuy.postingPicturePath,
+          description: groupBuy.description,
+          subscribedPeople: 0,
+          status: groupBuy.status,
+        };
+      });
     });
   }
 }
