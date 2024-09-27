@@ -58,7 +58,7 @@ public class UserController {
 	return ret;
     }
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/user/byname/{username}")
     public UserResponse getUserResponse(@PathVariable String username) {
 	User user = userRepository.findByUsername(username).get();
 	UserResponse ret  = new UserResponse(user.getId(),
