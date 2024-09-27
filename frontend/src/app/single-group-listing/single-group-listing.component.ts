@@ -34,6 +34,7 @@ export class SingleGroupListingComponent implements OnInit {
   placeholderImage = 'assets/no-image-available.png';
   isOwner: boolean = false;
   joined: boolean = false;
+  brokerName: string = 'PROVA123';
 
   constructor(
     private apiservice: ApiService,
@@ -163,6 +164,10 @@ export class SingleGroupListingComponent implements OnInit {
         console.error(error);
       },
     });
+  }
+
+  openBrokerProfile(brokerName: string) {
+    this.router.navigate([this.authService.getRole(), 'profile', brokerName]);
   }
 
   manageGroupBuy(id: number) {

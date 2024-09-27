@@ -40,8 +40,11 @@
       </tr>
       <tr class="">
         <td class="text-center">
-          <!-- TODO: item.brokerName -->
-          <a href="#">{{ "mario" }}</a>
+          <a
+            style="cursor: pointer; text-decoration: underline"
+            (click)="openBrokerProfile(brokerName)"
+            >{{ brokerName }}</a
+          >
         </td>
         <td>
           <div>{{ item.location }}</div>
