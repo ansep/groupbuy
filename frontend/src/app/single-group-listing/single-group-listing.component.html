@@ -90,9 +90,14 @@
     <div class="text-center">
       <div class="text-center">
         <app-broker-module-single-group
+          [participants]="subscribers"
           class="text-center"
         ></app-broker-module-single-group>
       </div>
+    </div>
+    } @else if(role !== 'broker' && role !== 'buyer') {
+    <div class="text-center">
+      <p>Log in to join the group buy</p>
     </div>
     }
   </div>

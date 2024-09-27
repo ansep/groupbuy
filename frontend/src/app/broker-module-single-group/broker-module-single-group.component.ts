@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 
@@ -7,14 +7,18 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './broker-module-single-group.component.html',
-  styleUrl: './broker-module-single-group.component.scss'
+  styleUrl: './broker-module-single-group.component.scss',
 })
 export class BrokerModuleSingleGroupComponent {
-  participants:any[] = []
-  constructor(private apiservice:ApiService, private router:Router){
-  }
-  ngOnInit(){
-    this.participants = this.apiservice.getParticipants();
-    console.log(this.participants);
-  }
+  @Input() participants: {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    telephoneNumber: string;
+    profilePicturePath: string;
+  }[] = [];
+
+  constructor(private router: Router) {}
 }

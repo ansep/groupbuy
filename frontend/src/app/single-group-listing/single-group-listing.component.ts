@@ -35,6 +35,15 @@ export class SingleGroupListingComponent implements OnInit {
   isOwner: boolean = false;
   joined: boolean = false;
   brokerName: string = '';
+  subscribers: {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    telephoneNumber: string;
+    profilePicturePath: string;
+  }[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -89,8 +98,7 @@ export class SingleGroupListingComponent implements OnInit {
           //If receive correct response, broker is owner, else if status is 400 then not owner
           this.apiService.getSubscribersList(groupId).subscribe({
             next: (response: any) => {
-              console.log(response);
-              // TODO: pass the subscribers list to the broker module child component
+              this.subscribers = response;
               this.isOwner = true;
             },
             error: (error) => {

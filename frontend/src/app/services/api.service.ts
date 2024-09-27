@@ -11,23 +11,6 @@ export class ApiService {
     return this.https.get('http://localhost:8080/api/auth/groupbuy');
   }
 
-  getParticipants(): any {
-    const participants = [];
-
-    for (let i = 0; i < 100; i++) {
-      const participant = {
-        id: i,
-        name: `name ${i}`,
-        email: `participant${i}@mail.it`,
-        surname: `surname ${i}`,
-        username: `username ${i}`,
-        phoneNumber: `telephoneNumber ${i}`,
-      };
-      participants.push(participant);
-    }
-    return participants;
-  }
-
   addNewGroupBuy(
     title: string,
     price: number,
