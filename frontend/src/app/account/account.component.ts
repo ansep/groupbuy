@@ -20,7 +20,6 @@ export class AccountComponent {
     id: number;
     username: string;
     email: string;
-    role: string;
     firstName: string;
     lastName: string;
     telephoneNumber: string;
@@ -29,7 +28,6 @@ export class AccountComponent {
     id: 0,
     username: '',
     email: '',
-    role: '',
     firstName: '',
     lastName: '',
     telephoneNumber: '',
@@ -52,20 +50,25 @@ export class AccountComponent {
   errorMessage: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.authService.getUserInfo().subscribe((user) => {
-      this.oldUserInfo = user;
-      this.editAccountForm.patchValue({
-        username: this.oldUserInfo.username,
-        email: this.oldUserInfo.email,
-        role: this.oldUserInfo.role,
-        firstName: this.oldUserInfo.firstName,
-        lastName: this.oldUserInfo.lastName,
-        telephoneNumber: this.oldUserInfo.telephoneNumber,
-        image: this.oldUserInfo.profile_picture_path,
-      });
-      if (user.profile_picture_path) {
-        this.imagePreview = `http://localhost:8080/api/user/${user.id}/picture`;
-      }
+    this.authService.getUserInfo(authService.getUserId()).subscribe({
+      next: (user: any) => {
+        this.oldUserInfo = user;
+        this.editAccountForm.patchValue({
+          username: this.oldUserInfo.username,
+          email: this.oldUserInfo.email,
+          role: authService.getRole(),
+          firstName: this.oldUserInfo.firstName,
+          lastName: this.oldUserInfo.lastName,
+          telephoneNumber: this.oldUserInfo.telephoneNumber,
+          image: this.oldUserInfo.profile_picture_path,
+        });
+        if (user.profile_picture_path) {
+          this.imagePreview = `http://localhost:8080/api/user/${user.id}/picture`;
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
     });
   }
 
@@ -115,7 +118,7 @@ export class AccountComponent {
         }
         // TODO: Show message on profile page when user is edited
         this.router.navigate(
-          [this.oldUserInfo.role, 'profile', this.oldUserInfo.username],
+          [this.authService.getRole(), 'profile', this.oldUserInfo.username],
           {
             queryParams: { edited: 'true' },
           }

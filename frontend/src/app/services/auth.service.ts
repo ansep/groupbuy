@@ -78,20 +78,8 @@ export class AuthService {
     return localStorage.getItem('username');
   }
 
-  getUserInfo() {
-    //TODO: connect to API
-    return new Observable<any>((observer) => {
-      observer.next({
-        id: 3,
-        username: localStorage.getItem('username'),
-        email: localStorage.getItem('email'),
-        role: localStorage.getItem('role'),
-        firstName: 'John',
-        lastName: 'Doe',
-        telephoneNumber: '1234567890',
-        profile_picture_path: 'ciao.jpg',
-      });
-    });
+  getUserInfo(id: number) {
+    return this.https.get('http://localhost:8080/api/user/' + id);
   }
 
   getUserId() {
