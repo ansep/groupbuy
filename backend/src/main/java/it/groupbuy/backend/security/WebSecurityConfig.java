@@ -72,6 +72,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				   .requestMatchers("/chat/**").permitAll()
 				   .requestMatchers(HttpMethod.GET, "/api/user/*/picture").permitAll()
 				   .requestMatchers(HttpMethod.GET, "/groupbuy/*/picture").permitAll()
+				   .requestMatchers(HttpMethod.GET, "/groupbuy/*/subscriptions").permitAll()
 				   .requestMatchers("/error/**").permitAll()
 				   .anyRequest().authenticated()
 				   //.anyRequest().permitAll() //debug

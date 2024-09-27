@@ -232,8 +232,8 @@ public class GroupBuyController {
     @Transactional
     ResponseEntity<?> getBroker(@PathVariable Long id){
     	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-    	User broker = groupbuy.getBroker();
-    	UserResponse res = new UserResponse(broker.getId(), broker.getUsername(), broker.getEmail());
+		User broker = groupbuy.getBroker();
+    	UserResponse res = new UserResponse(broker.getId(), broker.getUsername(), broker.getEmail(), broker.getFirstName(), broker.getLastName(), broker.getTelephoneNumber(), broker.getProfilePicturePath());
     	return ResponseEntity.accepted().body(res);
     }
 
@@ -252,7 +252,7 @@ public class GroupBuyController {
 	int n = buyers.size();
 	for (int i=0; i<n; i++) {
 	    User buyer = buyers.get(i);
-	    UserResponse response = new UserResponse(buyer.getId(),  buyer.getUsername(), buyer.getEmail());
+	    UserResponse response = new UserResponse(buyer.getId(),  buyer.getUsername(), buyer.getEmail(), buyer.getFirstName(), buyer.getLastName(), buyer.getTelephoneNumber(), buyer.getProfilePicturePath());
 	    res.add(response);
 	}
 	return ResponseEntity.accepted().body(res);
