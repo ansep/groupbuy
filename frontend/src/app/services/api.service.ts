@@ -40,6 +40,14 @@ export class ApiService {
     return this.https.delete('http://localhost:8080/groupbuy/' + id);
   }
 
+  finalizeGroupBuy(id: number) {
+    // TODO: link to right API when available
+    return this.https.put(
+      'http://localhost:8080/groupbuy/' + id + '/finalize',
+      {}
+    );
+  }
+
   uploadGroupBuyImage(id: number, image: string) {
     const formData = new FormData();
     formData.append('file', image);

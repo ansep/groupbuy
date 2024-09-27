@@ -104,6 +104,7 @@
         <app-broker-module-single-group
           [groupBuyId]="item.id"
           [participants]="subscribers"
+          [closedGroup]="item.status != 'OPEN'"
           class="text-center"
         ></app-broker-module-single-group>
       </div>

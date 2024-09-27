@@ -1,5 +1,3 @@
-<!-- admin.component.html -->
-
 <div class="list-group overflow-auto shadow m-3">
   @if (participants.length === 0) {
   <div class="text-center">
@@ -47,29 +45,41 @@
 <p></p>
 <div style="height: 20px"></div>
 <div class="m-1 container">
-  <div
-    class="d-flex justify-content-between"
-    style="width: 70%; margin: 0 auto"
-  >
-    <button type="button" class="btn btn-primary btn-lg mx-1">
+  <div class="d-flex justify-content-center" style="width: 70%; margin: 0 auto">
+    <button type="button" class="btn btn-primary btn-lg mx-3">
       Broadcast Message
     </button>
-    <button type="button" class="btn btn-warning btn-lg mx-1">
+    @if(!closedGroup) {
+    <button type="button" class="btn btn-warning btn-lg mx-3">
       Edit Listing
     </button>
-    <button type="button" class="btn btn-success btn-lg mx-1">
+    <button
+      type="button"
+      class="btn btn-success btn-lg mx-3"
+      (click)="finalizeGroupBuy()"
+    >
       Finalize Listing
     </button>
     <button
       type="button"
-      class="btn btn-danger btn-lg mx-1"
+      class="btn btn-danger btn-lg mx-3"
       (click)="deleteGroupBuy()"
     >
       Cancel Listing
     </button>
+    }
   </div>
-  <!-- make buttons larger
-  add some margin on the very bottom
-  fix table centering
-   -->
+  @if (closedGroupNotification) {
+  <div class="container mt-3">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      Group Buy has been finalized
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+  }
 </div>

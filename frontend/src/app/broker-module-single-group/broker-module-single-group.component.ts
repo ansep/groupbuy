@@ -12,6 +12,8 @@ import { ApiService } from '../services/api.service';
 })
 export class BrokerModuleSingleGroupComponent {
   @Input() groupBuyId: number = 0;
+  @Input() closedGroup: boolean = true;
+  closedGroupNotification: boolean = false;
   @Input() participants: {
     id: number;
     username: string;
@@ -44,6 +46,24 @@ export class BrokerModuleSingleGroupComponent {
         this.router.navigate([this.authService.getRole(), 'home'], {
           queryParams: { deleted: true },
         });
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
+  finalizeGroupBuy() {
+    const confirm = window.confirm(
+      'Are you sure you want to finalize this group buy?'
+    );
+    if (!confirm) {
+      return;
+    }
+    this.apiService.finalizeGroupBuy(this.groupBuyId).subscribe({
+      next: (response) => {
+        this.closedGroup = true;
+        this.closedGroupNotification = true;
       },
       error: (error) => {
         console.error(error);

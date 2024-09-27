@@ -29,6 +29,7 @@ export class SingleGroupListingComponent implements OnInit {
     image: string;
     description: string;
     subscribedPeople: number;
+    status: string;
   } | null = null;
   role: 'broker' | 'buyer' | null = null;
   placeholderImage = 'assets/no-image-available.png';
@@ -77,6 +78,7 @@ export class SingleGroupListingComponent implements OnInit {
             : this.placeholderImage,
           description: response.description,
           subscribedPeople: 0,
+          status: response.status,
         };
 
         this.apiService.getSubscribersCount(groupId).subscribe({
@@ -192,9 +194,5 @@ export class SingleGroupListingComponent implements OnInit {
 
   openBrokerProfile(brokerName: string) {
     this.router.navigate([this.authService.getRole(), 'profile', brokerName]);
-  }
-
-  manageGroupBuy(id: number) {
-    // TODO: edit page for broker to manage group buy
   }
 }
