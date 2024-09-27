@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ApiService } from '../services/api.service';
@@ -13,7 +13,6 @@ import { ApiService } from '../services/api.service';
 export class BrokerModuleSingleGroupComponent {
   @Input() groupBuyId: number = 0;
   @Input() closedGroup: boolean = true;
-  closedGroupNotification: boolean = false;
   @Input() participants: {
     id: number;
     username: string;
@@ -23,6 +22,7 @@ export class BrokerModuleSingleGroupComponent {
     telephoneNumber: string;
     profilePicturePath: string;
   }[] = [];
+  @Output() closeGroupEmit = new EventEmitter<void>();
 
   constructor(
     private apiService: ApiService,
@@ -63,7 +63,7 @@ export class BrokerModuleSingleGroupComponent {
     this.apiService.finalizeGroupBuy(this.groupBuyId).subscribe({
       next: (response) => {
         this.closedGroup = true;
-        this.closedGroupNotification = true;
+        this.closeGroupEmit.emit();
       },
       error: (error) => {
         console.error(error);

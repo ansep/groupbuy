@@ -47,6 +47,7 @@ export class SingleGroupListingComponent implements OnInit {
   }[] = [];
 
   newGroupBuy = false;
+  closedGroupNotification: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -194,5 +195,10 @@ export class SingleGroupListingComponent implements OnInit {
 
   openBrokerProfile(brokerName: string) {
     this.router.navigate([this.authService.getRole(), 'profile', brokerName]);
+  }
+
+  closeGroupBuy() {
+    this.closedGroupNotification = true;
+    if (this.item) this.item.status = 'CLOSED';
   }
 }
