@@ -227,8 +227,7 @@ public class GroupBuyController {
     	return ResponseEntity.ok(new MessageResponse("Unsubscription done successfully"));
     }
 
-    @GetMapping("/groupbuy/{id}/broker")
-    @PreAuthorize("hasRole('BUYER')")
+    @GetMapping("/api/auth/groupbuy/{id}/broker")
     @Transactional
     ResponseEntity<?> getBroker(@PathVariable Long id){
     	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));

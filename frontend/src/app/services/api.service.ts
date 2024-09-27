@@ -37,7 +37,6 @@ export class ApiService {
     description: string
   ) {
     {
-      //TOCHECK THE POST
       return this.https.post(
         'http://localhost:8080/groupbuy',
 
@@ -49,11 +48,6 @@ export class ApiService {
           product: title,
           status: 'OPEN',
           location,
-          // title,
-          // price,
-          // minQuantity,
-          // availablePieces,
-          // category,
         }
       );
     }
@@ -160,11 +154,13 @@ export class ApiService {
     'Bartolo Morabito',
     'Gianalbertommanlio Foti',
   ];
-  getListingDetail(id: string) {
+  getListingDetail(id: number) {
     return this.https.get('http://localhost:8080/api/auth/groupbuy/' + id);
   }
 
-  // getGroup(id:any){
-  //   return this.getOpenGroups.
-  // }
+  getListingBroker(id: number) {
+    return this.https.get(
+      'http://localhost:8080/api/auth/groupbuy/' + id + '/broker'
+    );
+  }
 }

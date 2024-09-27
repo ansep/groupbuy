@@ -34,10 +34,10 @@ export class SingleGroupListingComponent implements OnInit {
   placeholderImage = 'assets/no-image-available.png';
   isOwner: boolean = false;
   joined: boolean = false;
-  brokerName: string = 'PROVA123';
+  brokerName: string = '';
 
   constructor(
-    private apiservice: ApiService,
+    private apiService: ApiService,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
@@ -47,7 +47,7 @@ export class SingleGroupListingComponent implements OnInit {
     this.role = this.authService.getRole();
     const groupId = this.route.snapshot.params['id'];
 
-    this.apiservice.getListingDetail(groupId).subscribe({
+    this.apiService.getListingDetail(groupId).subscribe({
       next: (response: any) => {
         this.item = {
           id: groupId,
@@ -63,7 +63,7 @@ export class SingleGroupListingComponent implements OnInit {
           subscribedPeople: 0,
         };
 
-        this.apiservice.getSubscribersCount(groupId).subscribe({
+        this.apiService.getSubscribersCount(groupId).subscribe({
           next: (response: any) => {
             console.log(response);
             if (this.item) this.item.subscribedPeople = response;
@@ -76,9 +76,18 @@ export class SingleGroupListingComponent implements OnInit {
           },
         });
 
+        this.apiService.getListingBroker(groupId).subscribe({
+          next: (response: any) => {
+            this.brokerName = response.username;
+          },
+          error: (error) => {
+            console.error(error);
+          },
+        });
+
         if (this.role === 'broker') {
           //If receive correct response, broker is owner, else if status is 400 then not owner
-          this.apiservice.getSubscribersList(groupId).subscribe({
+          this.apiService.getSubscribersList(groupId).subscribe({
             next: (response: any) => {
               console.log(response);
               // TODO: pass the subscribers list to the broker module child component
@@ -92,7 +101,7 @@ export class SingleGroupListingComponent implements OnInit {
             },
           });
         } else if (this.role === 'buyer') {
-          this.apiservice.getJoinedGroups().subscribe({
+          this.apiService.getJoinedGroups().subscribe({
             next: (response: any) => {
               if (response && response.length > 0) {
                 this.joined = response.some((item: any) => item.id == groupId);
@@ -117,10 +126,10 @@ export class SingleGroupListingComponent implements OnInit {
   }
 
   joinGroupBuy(id: number) {
-    this.apiservice.joinGroupBuy(id).subscribe({
+    this.apiService.joinGroupBuy(id).subscribe({
       next: (response: any) => {
         this.joined = true;
-        this.apiservice.getSubscribersCount(id).subscribe({
+        this.apiService.getSubscribersCount(id).subscribe({
           next: (response: any) => {
             if (this.item) this.item.subscribedPeople = response;
           },
@@ -142,10 +151,10 @@ export class SingleGroupListingComponent implements OnInit {
   }
 
   leaveGroupBuy(id: number) {
-    this.apiservice.leaveGroupBuy(id).subscribe({
+    this.apiService.leaveGroupBuy(id).subscribe({
       next: (response: any) => {
         this.joined = false;
-        this.apiservice.getSubscribersCount(id).subscribe({
+        this.apiService.getSubscribersCount(id).subscribe({
           next: (response: any) => {
             if (this.item) this.item.subscribedPeople = response;
           },
