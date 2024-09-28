@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <div class="col-4 mt-5">
+  <div class="col-4">
     <form
       class="needs-validation"
       [class.was-validated]="submitted"
@@ -136,8 +136,17 @@
         />
       </div>
       <div style="text-align: center">
-        <button type="submit" class="btn btn-primary mt-3 col-3">
+        <button type="submit" class="btn btn-primary mt-3 col-6">
           Update account
+        </button>
+      </div>
+      <div style="text-align: center">
+        <button
+          type="button"
+          class="btn btn-danger mt-3 col-6"
+          (click)="deleteAccount()"
+        >
+          Delete account
         </button>
       </div>
     </form>

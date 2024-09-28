@@ -74,4 +74,8 @@ export class BrokerModuleSingleGroupComponent {
       },
     });
   }
+
+  openBuyerProfile(username: string) {
+    this.router.navigate(['broker/profile', username]);
+  }
 }

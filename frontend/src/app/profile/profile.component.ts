@@ -14,6 +14,15 @@ export class ProfileComponent {
   avatar = 'assets/default-avatar-lg.png';
   username: string | null = null;
   updatedProfile: boolean = false;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    telephoneNumber: string;
+    profilePicturePath: string;
+  } | null = null;
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
@@ -21,30 +30,41 @@ export class ProfileComponent {
   ) {}
   ngOnInit() {
     this.username = this.route.snapshot.paramMap.get('username');
-    const loggedInUser = localStorage.getItem('username');
-    if (this.username === loggedInUser) {
-      this.isLoggedUser = true;
-      this.route.queryParams.subscribe((params) => {
-        if (params['edited'] === 'true') {
-          this.updatedProfile = true;
-        }
+    if (this.username) {
+      const loggedInUser = localStorage.getItem('username');
+      if (this.username === loggedInUser) {
+        this.isLoggedUser = true;
+        this.route.queryParams.subscribe((params) => {
+          if (params['edited'] === 'true') {
+            this.updatedProfile = true;
+          }
+        });
+      }
+      this.authService.getUserInfoByUsername(this.username).subscribe({
+        next: (user: any) => {
+          this.user = user;
+          if (user.profilePicturePath) {
+            this.avatar =
+              `http://localhost:8080/api/user/${user.id}/picture?t=` +
+              new Date().getTime();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+        },
       });
+    } else {
+      this.router.navigate(['/']);
     }
-    this.authService.getUserInfo(this.authService.getUserId()).subscribe({
-      next: (user: any) => {
-        if (user.profilePicturePath) {
-          this.avatar =
-            `http://localhost:8080/api/user/${user.id}/picture?t=` +
-            new Date().getTime();
-        }
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
   }
 
   editProfile() {
     this.router.navigate(['/' + localStorage.getItem('role') + '/account']);
+  }
+
+  sendMessageToUser() {
+    this.router.navigate([
+      '/' + localStorage.getItem('role') + '/messages/' + this.user?.username,
+    ]);
   }
 }

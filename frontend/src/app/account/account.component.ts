@@ -176,4 +176,24 @@ export class AccountComponent {
       }
     }
   }
+
+  deleteAccount() {
+    const confirm = window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone.'
+    );
+    if (!confirm) {
+      return;
+    }
+    // TODO: Connect delete user API
+    // this.authService.deleteUser().subscribe({
+    //   next: (response) => {
+    //     this.router.navigate(['/login']);
+    //   },
+    //   error: (error) => {
+    //     console.error(error);
+    //   },
+    // });
+    // this.authService.logout();
+    // this.router.navigate(['/']);
+  }
 }

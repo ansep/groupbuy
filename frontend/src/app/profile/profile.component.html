@@ -11,17 +11,54 @@
   </div>
 </div>
 }
-<h1 class="page-title">{{ username || "GroupBuy - User Profile" }}</h1>
-<div class="avatar-container">
-  <div class="image-container" style="overflow: hidden">
-    <img
-      id="selectedAvatar"
-      [src]="avatar"
-      style="height: 200px; object-fit: cover"
-    />
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4 d-flex justify-content-center">
+      <div class="avatar-container mb-3">
+        <div class="image-container" style="overflow: hidden">
+          <img
+            id="selectedAvatar"
+            [src]="avatar"
+            class="img-fluid rounded-circle"
+            style="height: 200px; width: 200px; object-fit: cover"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h2>{{ user?.firstName }} {{ user?.lastName }}</h2>
+      <!-- <p><span
+        class="badge bg-info"
+      >
+        {{ user?.role == "broker" ? "Broker" : "Buyer" }}
+      </span></p> -->
+      <div class="action-buttons mb-3">
+        @if (isLoggedUser) {
+        <button class="btn btn-primary" (click)="editProfile()">
+          Edit Profile
+        </button>
+        } @else {
+        <button class="btn btn-primary" (click)="sendMessageToUser()">
+          Send Message
+        </button>
+        }
+      </div>
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <th scope="row">Username</th>
+            <td>{{ user?.username }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td>{{ user?.email }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Telephone number</th>
+            <td>{{ user?.telephoneNumber }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="icon-wrapper"></div>
 </div>
-@if (isLoggedUser) {
-<button class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
-}

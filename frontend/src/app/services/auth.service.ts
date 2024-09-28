@@ -90,6 +90,10 @@ export class AuthService {
     return this.https.get('http://localhost:8080/api/user/' + id);
   }
 
+  getUserInfoByUsername(username: string) {
+    return this.https.get('http://localhost:8080/api/user/byname/' + username);
+  }
+
   getUserId() {
     return parseInt(localStorage.getItem('id') || '0');
   }

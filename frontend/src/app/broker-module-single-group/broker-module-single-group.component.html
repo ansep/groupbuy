@@ -7,9 +7,9 @@
   <table style="height: 60px">
     <thead>
       <tr>
+        <th style="width: 15%">Username</th>
         <th style="width: 20%">Name</th>
         <th style="width: 20%">Surname</th>
-        <th style="width: 15%">Username</th>
         <th style="width: 15%">Email</th>
         <th style="width: 15%">Phone Number</th>
         <th style="width: 15%">Send a Message</th>
@@ -21,9 +21,15 @@
       <tbody class="text-center">
         @for (participant of participants; track participant.id){
         <tr class="text-center">
+          <td style="width: 15%">
+            <a
+            style="cursor: pointer; text-decoration: underline"
+            (click)="openBuyerProfile(participant.username)"
+            >{{ participant.username }}</a
+          >
+          </td>
           <td style="width: 20%">{{ participant.firstName }}</td>
           <td style="width: 20%">{{ participant.lastName }}</td>
-          <td style="width: 15%">{{ participant.username }}</td>
           <td style="width: 15%">{{ participant.email }}</td>
           <td style="width: 15%">{{ participant.telephoneNumber }}</td>
           <td style="width: 15%">
