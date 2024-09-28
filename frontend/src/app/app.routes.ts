@@ -15,6 +15,7 @@ import { BuyerChatComponent } from './buyer-chat/buyer-chat.component';
 import { BrokerNewListingComponent } from './broker-new-listing/broker-new-listing.component';
 import { BrokerMyGroupsComponent } from './broker-my-groups/broker-my-groups.component';
 import { BuyerJoinedListingsComponent } from './buyer-joined-listings/buyer-joined-listings.component';
+import { BrokerEditListingComponent } from './broker-edit-listing/broker-edit-listing.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardUnloggedComponent, pathMatch: 'full' },
@@ -30,6 +31,11 @@ export const routes: Routes = [
       { path: 'home', component: OpenGroupsListComponent },
       { path: 'groups', component: BrokerMyGroupsComponent, pathMatch: 'full' },
       { path: 'new', component: BrokerNewListingComponent, pathMatch: 'full' },
+      {
+        path: 'edit/:id',
+        component: BrokerEditListingComponent,
+        pathMatch: 'full',
+      },
       { path: 'group/:id', component: SingleGroupListingComponent },
       {
         path: 'profile/:username',

@@ -46,7 +46,10 @@ export class GroupsListComponent {
     if (changes['groups']) {
       this.groups.forEach((group) => {
         group.image = group.image
-          ? 'http://localhost:8080/groupbuy/' + group.id + '/picture'
+          ? 'http://localhost:8080/groupbuy/' +
+            group.id +
+            '/picture?t=' +
+            new Date().getTime()
           : this.placeholderImage;
         this.apiService.getSubscribersCount(group.id).subscribe({
           next: (response: any) => {

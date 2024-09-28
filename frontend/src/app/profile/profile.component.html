@@ -1,3 +1,16 @@
+@if (updatedProfile) {
+<div class="container mt-3">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Account information has been updated
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
+}
 <h1 class="page-title">{{ username || "GroupBuy - User Profile" }}</h1>
 <div class="avatar-container">
   <div class="image-container" style="overflow: hidden">

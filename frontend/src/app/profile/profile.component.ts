@@ -13,6 +13,7 @@ export class ProfileComponent {
   isLoggedUser = false;
   avatar = 'assets/default-avatar-lg.png';
   username: string | null = null;
+  updatedProfile: boolean = false;
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
@@ -23,11 +24,18 @@ export class ProfileComponent {
     const loggedInUser = localStorage.getItem('username');
     if (this.username === loggedInUser) {
       this.isLoggedUser = true;
+      this.route.queryParams.subscribe((params) => {
+        if (params['edited'] === 'true') {
+          this.updatedProfile = true;
+        }
+      });
     }
     this.authService.getUserInfo(this.authService.getUserId()).subscribe({
       next: (user: any) => {
-        if (user.profile_picture_path) {
-          this.avatar = `http://localhost:8080/api/user/${user.id}/picture`;
+        if (user.profilePicturePath) {
+          this.avatar =
+            `http://localhost:8080/api/user/${user.id}/picture?t=` +
+            new Date().getTime();
         }
       },
       error: (err) => {

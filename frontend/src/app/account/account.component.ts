@@ -23,7 +23,7 @@ export class AccountComponent {
     firstName: string;
     lastName: string;
     telephoneNumber: string;
-    profile_picture_path: string;
+    profilePicturePath: string;
   } = {
     id: 0,
     username: '',
@@ -31,7 +31,7 @@ export class AccountComponent {
     firstName: '',
     lastName: '',
     telephoneNumber: '',
-    profile_picture_path: '',
+    profilePicturePath: '',
   };
   editAccountForm = new FormGroup({
     username: new FormControl({ value: '', disabled: true }),
@@ -60,10 +60,12 @@ export class AccountComponent {
           firstName: this.oldUserInfo.firstName,
           lastName: this.oldUserInfo.lastName,
           telephoneNumber: this.oldUserInfo.telephoneNumber,
-          image: this.oldUserInfo.profile_picture_path,
+          image: this.oldUserInfo.profilePicturePath,
         });
-        if (user.profile_picture_path) {
-          this.imagePreview = `http://localhost:8080/api/user/${user.id}/picture`;
+        if (user.profilePicturePath) {
+          this.imagePreview =
+            `http://localhost:8080/api/user/${user.id}/picture?t=` +
+            new Date().getTime();
         }
       },
       error: (err) => {
@@ -106,23 +108,40 @@ export class AccountComponent {
     }
     this.authService.editUser(newInformation).subscribe({
       next: (data: any) => {
-        if (this.editAccountForm.value.image) {
+        if (
+          this.editAccountForm.value.image &&
+          this.editAccountForm.value.image !==
+            this.oldUserInfo.profilePicturePath
+        ) {
           this.authService
             .uploadUserImage(this.editAccountForm.value.image)
             .subscribe({
-              next: (imageData: any) => {},
+              next: (imageData: any) => {
+                this.router
+                  .navigate(
+                    [
+                      this.authService.getRole(),
+                      'profile',
+                      this.oldUserInfo.username,
+                    ],
+                    {
+                      queryParams: { edited: 'true' },
+                    }
+                  )
+                  .then(() => window.location.reload());
+              },
               error: (error) => {
                 console.error('Error uploading image:', error);
               },
             });
+        } else {
+          this.router.navigate(
+            [this.authService.getRole(), 'profile', this.oldUserInfo.username],
+            {
+              queryParams: { edited: 'true' },
+            }
+          );
         }
-        // TODO: Show message on profile page when user is edited
-        this.router.navigate(
-          [this.authService.getRole(), 'profile', this.oldUserInfo.username],
-          {
-            queryParams: { edited: 'true' },
-          }
-        );
       },
       error: (error) => {
         if (error.status === 400) {

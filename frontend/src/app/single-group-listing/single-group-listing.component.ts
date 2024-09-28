@@ -47,6 +47,7 @@ export class SingleGroupListingComponent implements OnInit {
   }[] = [];
 
   newGroupBuy = false;
+  editedGroupBuy = false;
   closedGroupNotification: boolean = false;
 
   constructor(
@@ -62,6 +63,8 @@ export class SingleGroupListingComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params['new'] === 'true') {
         this.newGroupBuy = true;
+      } else if (params['edited'] === 'true') {
+        this.editedGroupBuy = true;
       }
     });
 
@@ -75,7 +78,10 @@ export class SingleGroupListingComponent implements OnInit {
           category: response.category,
           location: response.location,
           image: response.postingPicturePath
-            ? 'http://localhost:8080/groupbuy/' + groupId + '/picture'
+            ? 'http://localhost:8080/groupbuy/' +
+              groupId +
+              '/picture?t=' +
+              new Date().getTime()
             : this.placeholderImage,
           description: response.description,
           subscribedPeople: 0,
@@ -113,6 +119,7 @@ export class SingleGroupListingComponent implements OnInit {
             },
             error: (error) => {
               if (error.status === 401) {
+                this.authService.logout();
                 this.router.navigate(['login']);
               }
               console.error(error);

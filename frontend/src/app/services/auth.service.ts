@@ -35,6 +35,14 @@ export class AuthService {
     });
   }
 
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
+    localStorage.removeItem('id');
+    localStorage.removeItem('email');
+  }
+
   resetPassword(email: string) {
     return new Observable((observer) => {
       observer.next({ message: 'Email sent' });

@@ -34,6 +34,10 @@ export class BrokerModuleSingleGroupComponent {
     this.router.navigate([this.authService.getRole(), 'chat', id]);
   }
 
+  editGroupBuy() {
+    this.router.navigate([this.authService.getRole(), 'edit', this.groupBuyId]);
+  }
+
   deleteGroupBuy() {
     const confirm = window.confirm(
       'Are you sure you want to delete this group buy?'

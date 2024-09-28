@@ -25,8 +25,10 @@ export class NavbarBuyerComponent {
       | 'profile';
     this.authService.getUserInfo(this.authService.getUserId()).subscribe({
       next: (user: any) => {
-        if (user.profile_picture_path) {
-          this.avatar = `http://localhost:8080/api/user/${user.id}/picture`;
+        if (user.profilePicturePath) {
+          this.avatar =
+            `http://localhost:8080/api/user/${user.id}/picture?t=` +
+            new Date().getTime();
         }
       },
       error: (err) => {

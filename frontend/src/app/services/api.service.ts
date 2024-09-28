@@ -36,6 +36,26 @@ export class ApiService {
     }
   }
 
+  editGroupBuy(
+    id: number,
+    title: string,
+    price: number,
+    availablePieces: number,
+    category: string,
+    location: string,
+    description: string
+  ) {
+    return this.https.patch('http://localhost:8080/groupbuy/' + id, {
+      description,
+      cost: price,
+      category,
+      maxSize: availablePieces,
+      product: title,
+      status: 'OPEN',
+      location,
+    });
+  }
+
   deleteGroupBuy(id: number) {
     return this.https.delete('http://localhost:8080/groupbuy/' + id);
   }

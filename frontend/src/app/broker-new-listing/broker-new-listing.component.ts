@@ -16,7 +16,7 @@ import { ngbRunTransition } from '@ng-bootstrap/ng-bootstrap/util/transition/ngb
   standalone: true,
   templateUrl: './broker-new-listing.component.html',
   styleUrl: './broker-new-listing.component.scss',
-  imports: [NavbarBrokerComponent, NavbarBrokerComponent, ReactiveFormsModule],
+  imports: [NavbarBrokerComponent, ReactiveFormsModule],
 })
 export class BrokerNewListingComponent {
   addListingForm = new FormGroup({
