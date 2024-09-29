@@ -174,32 +174,38 @@ public class GroupBuyController {
     	return ResponseEntity.ok(new MessageResponse("Groupbuy created successfully", groupbuy.getId()));
     }
 
+    @PostMapping("/groupbuy/{id}/close")
+    @PreAuthorize("hasRole('BROKER')")
+    ResponseEntity<?> closeGroupbuy(@PathVariable Long id) {
+
+    }
+
 
     @PostMapping("/groupbuy/{id}/subscription")
     @PreAuthorize("hasRole('BUYER')")
     @Transactional
     ResponseEntity<?> subscribe(@PathVariable Long id) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-    	if (groupbuy.getBuyers().contains(user)) {
+	if (groupbuy.getBuyers().contains(user)) {
 	    return ResponseEntity.badRequest().body("Already subscribed to this groupbuy");
-    	}
-    	if (groupbuy.getStatus().equals(EStatus.CLOSE)) {
+	}
+	if (groupbuy.getStatus().equals(EStatus.CLOSE)) {
 	    return ResponseEntity.badRequest().body("Groupbuy status: CLOSED");
-    	}
-    	List<User> b = groupbuy.getBuyers();
+	}
+	List<User> b = groupbuy.getBuyers();
 	b.add(user);
 	groupbuy.setBuyers(b);
 	List<GroupBuy> g = user.getSubscribed_groupbuy();
 	g.add(groupbuy);
-    	user.setSubscribed_groupbuy(g);
-    	if (g.size() == groupbuy.getMaxSize()) {
+	user.setSubscribed_groupbuy(g);
+	if (g.size() == groupbuy.getMaxSize()) {
 	    groupbuy.setStatus(EStatus.CLOSE);
-    	}
-    	userRepository.save(user);
-    	repository.save(groupbuy);
-    	return ResponseEntity.ok(new MessageResponse("Subscription done successfully"));
+	}
+	userRepository.save(user);
+	repository.save(groupbuy);
+	return ResponseEntity.ok(new MessageResponse("Subscription done successfully"));
     }
 
 
@@ -207,84 +213,84 @@ public class GroupBuyController {
     @PreAuthorize("hasRole('BUYER')")
     @Transactional
     ResponseEntity<?> unsubscribe(@PathVariable Long id) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-    	if (!groupbuy.getBuyers().contains(user)) {
+	if (!groupbuy.getBuyers().contains(user)) {
 	    return ResponseEntity.badRequest().body("Already unsubscribed to this groupbuy");
-    	}
-    	if (groupbuy.getStatus().equals(EStatus.CLOSE)) {
+	}
+	if (groupbuy.getStatus().equals(EStatus.CLOSE)) {
 	    return ResponseEntity.badRequest().body("Groupbuy status: CLOSED");
-    	}
-    	List<User> u = groupbuy.getBuyers();
+	}
+	List<User> u = groupbuy.getBuyers();
 	u.remove(user);
-    	groupbuy.setBuyers(u);
-    	List<GroupBuy> g = user.getSubscribed_groupbuy();
-    	g.remove(groupbuy);
-    	user.setSubscribed_groupbuy(g);
-    	userRepository.save(user);
-    	repository.save(groupbuy);
-    	return ResponseEntity.ok(new MessageResponse("Unsubscription done successfully"));
-    }
-
-    @GetMapping("/api/auth/groupbuy/{id}/broker")
-    @Transactional
-    ResponseEntity<?> getBroker(@PathVariable Long id){
-    	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-		User broker = groupbuy.getBroker();
-    	UserResponse res = new UserResponse(broker.getId(), broker.getUsername(), broker.getEmail(), broker.getFirstName(), broker.getLastName(), broker.getTelephoneNumber(), broker.getProfilePicturePath());
-    	return ResponseEntity.accepted().body(res);
-    }
-
-    @GetMapping("/groupbuy/{id}/subscription")
-    @PreAuthorize("hasRole('BROKER')")
-    @Transactional
-    ResponseEntity<?> getBuyers(@PathVariable Long id){
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	User user = userRepository.findByUsername(userDetails.getUsername()).get();
-	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-	if (!user.getOwned_groupbuy().contains(groupbuy)) {
-	    ResponseEntity.badRequest().body("Groupbuy not owned");
-	}
-	List<UserResponse> res = new ArrayList<>();
-	List<User> buyers = groupbuy.getBuyers();
-	int n = buyers.size();
-	for (int i=0; i<n; i++) {
-	    User buyer = buyers.get(i);
-	    UserResponse response = new UserResponse(buyer.getId(),  buyer.getUsername(), buyer.getEmail(), buyer.getFirstName(), buyer.getLastName(), buyer.getTelephoneNumber(), buyer.getProfilePicturePath());
-	    res.add(response);
-	}
-	return ResponseEntity.accepted().body(res);
-    }
-
-    @PostMapping("/groupbuy/{id}/picture")
-    @PreAuthorize("hasRole('BROKER')")
-    @Transactional
-    public ResponseEntity<?> putProfilePicture(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	User user = userRepository.findByUsername(userDetails.getUsername()).get();
-	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-	if (!user.getOwned_groupbuy().contains(groupbuy)) {
-	    ResponseEntity.badRequest().body("Groupbuy not owned");
-	}
-	String message = "";
-	try {
-	    storageService.save(file);
-	    message = "Uploaded the file successfully: " + file.getOriginalFilename();
-	    groupbuy.setPostingPicturePath(file.getOriginalFilename());
+	groupbuy.setBuyers(u);
+	List<GroupBuy> g = user.getSubscribed_groupbuy();
+	    g.remove(groupbuy);
+	    user.setSubscribed_groupbuy(g);
+	    userRepository.save(user);
 	    repository.save(groupbuy);
-	    return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
-	} catch (Exception e) {
-	    message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
-	    return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+	    return ResponseEntity.ok(new MessageResponse("Unsubscription done successfully"));
 	}
-    }
 
-    @GetMapping("/groupbuy/{id}/picture")
-    public ResponseEntity<?> getProfilePicture(@PathVariable("id") Long id) {
-	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
-	Resource file = storageService.load(groupbuy.getPostingPicturePath());
-	return ResponseEntity.ok()
-	    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }
-}
+	@GetMapping("/api/auth/groupbuy/{id}/broker")
+	@Transactional
+	ResponseEntity<?> getBroker(@PathVariable Long id){
+	    GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+	    User broker = groupbuy.getBroker();
+	    UserResponse res = new UserResponse(broker.getId(), broker.getUsername(), broker.getEmail(), broker.getFirstName(), broker.getLastName(), broker.getTelephoneNumber(), broker.getProfilePicturePath());
+	    return ResponseEntity.accepted().body(res);
+	}
+
+	@GetMapping("/groupbuy/{id}/subscription")
+	@PreAuthorize("hasRole('BROKER')")
+	@Transactional
+	ResponseEntity<?> getBuyers(@PathVariable Long id){
+	    UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	    GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+	    if (!user.getOwned_groupbuy().contains(groupbuy)) {
+		ResponseEntity.badRequest().body("Groupbuy not owned");
+	    }
+	    List<UserResponse> res = new ArrayList<>();
+	    List<User> buyers = groupbuy.getBuyers();
+	    int n = buyers.size();
+	    for (int i=0; i<n; i++) {
+		User buyer = buyers.get(i);
+		UserResponse response = new UserResponse(buyer.getId(),  buyer.getUsername(), buyer.getEmail(), buyer.getFirstName(), buyer.getLastName(), buyer.getTelephoneNumber(), buyer.getProfilePicturePath());
+		res.add(response);
+	    }
+	    return ResponseEntity.accepted().body(res);
+	}
+
+	@PostMapping("/groupbuy/{id}/picture")
+	@PreAuthorize("hasRole('BROKER')")
+	@Transactional
+		 public ResponseEntity<?> putProfilePicture(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+		     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		     User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		     GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+		     if (!user.getOwned_groupbuy().contains(groupbuy)) {
+			 ResponseEntity.badRequest().body("Groupbuy not owned");
+		     }
+		     String message = "";
+		     try {
+			 storageService.save(file);
+			 message = "Uploaded the file successfully: " + file.getOriginalFilename();
+			 groupbuy.setPostingPicturePath(file.getOriginalFilename());
+			 repository.save(groupbuy);
+			 return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
+		     } catch (Exception e) {
+			 message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+			 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+		     }
+		 }
+
+		 @GetMapping("/groupbuy/{id}/picture")
+		 public ResponseEntity<?> getProfilePicture(@PathVariable("id") Long id) {
+		     GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+		     Resource file = storageService.load(groupbuy.getPostingPicturePath());
+		     return ResponseEntity.ok()
+			 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+		 }
+		 }
