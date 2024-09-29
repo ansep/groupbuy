@@ -61,9 +61,8 @@ export class ApiService {
   }
 
   finalizeGroupBuy(id: number) {
-    // TODO: link to right API when available
-    return this.https.put(
-      'http://localhost:8080/groupbuy/' + id + '/finalize',
+    return this.https.post(
+      'http://localhost:8080/groupbuy/' + id + '/close',
       {}
     );
   }
@@ -117,28 +116,6 @@ export class ApiService {
 
   retrieveMessageHistory(username: string) {
     return this.https.get('http://localhost:8080/chat/messages/' + username);
-  }
-
-  async getMessages(): Promise<any[]> {
-    const messages = [];
-
-    for (let i = 0; i < 10; i++) {
-      let body = await fetch(
-        'https://jsonplaceholder.typicode.com/posts/' + (i + 1) + '/comments'
-      );
-      const comments = await body.json();
-      comments.map((item: any) => item.name); //useless, just to show how to use
-      const message = {
-        id: i,
-        sender: `sender ${i}`,
-        receiver: `receiver ${i}`,
-        data: comments.map((item: any) => item.name),
-        date: `date ${i}`,
-      };
-      messages.push(message);
-    }
-
-    return messages;
   }
 
   // some titles for the bulk buying microelectronics

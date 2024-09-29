@@ -1,4 +1,4 @@
-<div class="chat">
+<div class="chat" style="height: 85vh">
   <div class="chat-header clearfix">
     <div class="row">
       <div class="col-lg-6">
@@ -21,49 +21,45 @@
           <small>Last seen: 2 hours ago</small>
         </div>
       </div>
-      <!-- <div class="col-lg-6 hidden-sm text-right">
-              <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-              <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-              <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-              <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-          </div> -->
     </div>
   </div>
   <div class="chat-history" style="max-height: 430px; overflow-y: auto">
     <ul class="m-b-0">
-      @for( message of messages; track message.id){
+      @for( message of chat; track message){ @if(message.from) {
       <li class="clearfix">
-        <!-- <div class="message-data text-right">
-                <span class="message-data-time">10:10 AM, Today</span>
-                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-            </div> -->
         <div class="message other-message float-right">
-          {{ message.data[0] }}
+          {{ message.msg }}
         </div>
       </li>
+      } @else {
       <li class="clearfix">
-        <!-- <div class="message-data text-right">
-              <span class="message-data-time">10:10 AM, Today</span>
-              <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-          </div> -->
         <div class="message other-message my-message">
-          {{ message.data[1] }}
+          {{ message.msg }}
         </div>
       </li>
-
-      }
+      } }
     </ul>
   </div>
   <div class="chat-message clearfix">
-    <div class="input-group mb-0">
-      <div class="input-group-prepend">
-        <span class="input-group-text"><i class="fa fa-send"></i></span>
+    <!-- reactive form -->
+    <form [formGroup]="sendMessageForm">
+      <div class="input-group mb-0">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter message here..."
+          formControlName="message"
+          (keydown.enter)="send()"
+        />
+        <div class="input-group-prepend">
+          <span
+            class="input-group-text"
+            style="cursor: pointer"
+            (click)="send()"
+            ><i class="fa fa-send"></i
+          ></span>
+        </div>
       </div>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Enter text here..."
-      />
-    </div>
+    </form>
   </div>
 </div>

@@ -37,6 +37,7 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       { path: 'group/:id', component: SingleGroupListingComponent },
+      { path: 'messages', component: BuyerChatComponent, pathMatch: 'full' },
       {
         path: 'profile/:username',
         component: ProfileComponent,

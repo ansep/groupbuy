@@ -62,14 +62,18 @@
             [contact]="selectedContact"
           ></app-single-chat>
           } @else {
-
-          <img
-            class="image-container"
-            src="../../assets/ChatLogoo.png"
-            alt="placeholder"
-            style="display: block; margin: 0 auto"
-          />
-
+          <!-- a simpledivc with a centered text: "Select a contact to start chatting" -->
+          <div
+            style="
+              display: flex;
+              margin: 0 auto;
+              height: 85vh;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <h6 class="text-center">Select a contact to start chatting</h6>
+          </div>
           }
         </div>
       </div>
