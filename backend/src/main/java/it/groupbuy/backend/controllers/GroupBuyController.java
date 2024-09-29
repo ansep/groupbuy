@@ -177,7 +177,15 @@ public class GroupBuyController {
     @PostMapping("/groupbuy/{id}/close")
     @PreAuthorize("hasRole('BROKER')")
     ResponseEntity<?> closeGroupbuy(@PathVariable Long id) {
-
+    	GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+    	if (!groupbuy.getBroker().getUsername().equals(user.getUsername())) {
+	    return ResponseEntity.badRequest().body("Groupbuy not owned");
+    	}
+	groupbuy.setStatus(EStatus.CLOSE);
+	repository.save(groupbuy);
+    	return ResponseEntity.ok(new MessageResponse("Groupbuy closed successfully", groupbuy.getId()));
     }
 
 
