@@ -4,8 +4,8 @@ import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SingleChatComponent } from '../single-chat/single-chat.component';
-import { NgClass } from '@angular/common';
-import { Client, Stomp } from '@stomp/stompjs';
+import { KeyValuePipe, NgClass } from '@angular/common';
+import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { NavbarBuyerComponent } from '../navbar-buyer/navbar-buyer.component';
 
@@ -19,30 +19,35 @@ import { NavbarBuyerComponent } from '../navbar-buyer/navbar-buyer.component';
     SingleChatComponent,
     NgClass,
     NavbarBuyerComponent,
+    KeyValuePipe,
   ],
 })
 export class BuyerChatComponent implements OnInit {
-  data: any;
   stompClient: any;
-  selectedChat: any;
+  selectedChat: { from: boolean; msg: string }[] | null = null;
+  selectedContact: { username: string; id: number; hasImage: boolean } | null =
+    null;
   items: any;
-  contacts: any;
-  authToken: string = ''; // Add a field for the auth token
-  username: string = ''; // Add a field for the username
+  // [key: string]: { from: boolean; msg: string }[];
+  contacts: { [key: string]: { from: boolean; msg: string }[] } = {};
+  contactsImages: { [key: string]: { hasImage: boolean; id: number } } = {};
+  authToken: string = '';
+  username: string = '';
 
   constructor(
     private apiservice: ApiService,
     private router: Router,
-    private authservice: AuthService // Inject AuthService
+    private authservice: AuthService
   ) {}
 
   ngOnInit() {
-    // Get the authToken and username from the AuthService
-    this.authToken = this.authservice.getToken()!; // Assuming getAuthToken() returns the token
-    this.username = this.authservice.getUsername()!; // Assuming getUsername() returns the username
-
-    // Call the connectWebSocket function when the component initializes
-    this.connectWebSocket();
+    this.authToken = this.authservice.getToken()!;
+    this.username = this.authservice.getUsername()!;
+    if (!this.authToken || !this.username) {
+      this.router.navigate(['/login']);
+    } else {
+      this.connectWebSocket();
+    }
   }
 
   connectWebSocket() {
@@ -61,7 +66,6 @@ export class BuyerChatComponent implements OnInit {
         }
 
         this.getHistory();
-        
       }
     );
   }
@@ -72,9 +76,22 @@ export class BuyerChatComponent implements OnInit {
       next: (response: any) => {
         // Start filtering the message history for viewing
         console.log('Retrieved chat history:', response);
-        this.data = this.processChatHistory(response, this.username);
+        this.contacts = this.processChatHistory(response, this.username);
+        for (const contact of Object.keys(this.contacts)) {
+          this.authservice.getUserInfoByUsername(contact).subscribe({
+            next: (contactData: any) => {
+              this.contactsImages[contact] = {
+                hasImage: !!contactData.profilePicturePath,
+                id: contactData.id,
+              };
+            },
+            error: (error) => {
+              console.log('Error retrieving user info:', error);
+            },
+          });
+        }
         // Subscribe to the user's personal queue
-        this.subscribeToQueue(this.username); 
+        this.subscribeToQueue(this.username);
       },
       error: (error) => {
         if (error.status === 401) {
@@ -108,9 +125,11 @@ export class BuyerChatComponent implements OnInit {
       // Add the message to the contact's chat history
       contactMap[contact].push({
         from: fromCurrentUser, // true if it's from the current user
-        msg: message.msg,
+        msg: message.message,
       });
     });
+    console.log('Processed chat history:', JSON.stringify(contactMap));
+    return contactMap;
   }
 
   // Updated subscribeToQueue function
@@ -142,5 +161,13 @@ export class BuyerChatComponent implements OnInit {
     console.log(`Subscribed to: ${userQueue} with headers`, headers);
   }
 
-  loadChat(contacts: any) {}
+  loadChat(contactName: string) {
+    console.log('Loading chat:', contactName);
+    this.selectedContact = {
+      username: contactName,
+      id: this.contactsImages[contactName].id,
+      hasImage: this.contactsImages[contactName].hasImage,
+    };
+    this.selectedChat = this.contacts[contactName];
+  }
 }

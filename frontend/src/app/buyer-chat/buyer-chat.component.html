@@ -21,17 +21,29 @@
             class="list-unstyled chat-list"
             style="max-height: 500px; overflow-y: auto"
           >
-            @for( contact of contacts; track contact.id){
+            @for( contact of contacts | keyvalue; track contact.key){
             <li
               class="clearfix"
-              [ngClass]="{ active: contact === selectedChat }"
+              [ngClass]="{
+                active:
+                  selectedContact && contact.key === selectedContact.username
+              }"
+              (click)="loadChat(contact.key)"
             >
               <img
-                src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                [src]="
+                  contactsImages[contact.key].hasImage
+                    ? 'http://localhost:8080/api/user/' +
+                      contactsImages[contact.key].id +
+                      '/picture'
+                    : 'assets/default-avatar.png'
+                "
                 alt="avatar"
               />
-              <div class="about" (click)="loadChat(contact)">
-                <div class="name">{{ contact.name }} {{ contact.surname }}</div>
+              <div class="about">
+                <div class="name">
+                  {{ contact.key }}
+                </div>
                 <div class="status">
                   <i class="fa fa-circle offline"></i> left 7 mins ago
                 </div>
@@ -44,9 +56,12 @@
 
         <!-- this is the single chat component, so should be refactored as a separate component -->
         <div class="chat">
-          <!-- @if (getChat()){
-          <app-single-chat [contact]="getChat()"></app-single-chat>
-          } @else { -->
+          @if (selectedChat) {
+          <app-single-chat
+            [chat]="selectedChat"
+            [contact]="selectedContact"
+          ></app-single-chat>
+          } @else {
 
           <img
             class="image-container"
@@ -55,7 +70,7 @@
             style="display: block; margin: 0 auto"
           />
 
-          <!-- } -->
+          }
         </div>
       </div>
     </div>
