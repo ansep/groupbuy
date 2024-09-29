@@ -48,7 +48,6 @@ local.properties
 
 # External tool builders
 .externalToolBuilders/
-
 # Locally stored "Eclipse launch configurations"
 *.launch
 
@@ -341,6 +340,7 @@ dist
 .history
 .ionide
 
+uploads/*
 # End of https://www.toptal.com/developers/gitignore/api/java,emacs,visualstudiocode,eclipse,node,angular,netbeans
 
 
