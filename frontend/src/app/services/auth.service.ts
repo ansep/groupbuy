@@ -98,15 +98,25 @@ export class AuthService {
     return parseInt(localStorage.getItem('id') || '0');
   }
 
-  // TODO: Check password field update
   editUser(updatedInfo: {
-    password: string;
     email: string;
     firstName: string;
     lastName: string;
     telephoneNumber: string;
   }) {
     return this.https.patch('http://localhost:8080/api/user', updatedInfo);
+  }
+
+  updatePassword(
+    currentPassword: string,
+    newPassword: string,
+    passwordConfirm: string
+  ) {
+    return this.https.put('http://localhost:8080/api/user/password', {
+      currentPassword,
+      newPassword,
+      confirmPassword: passwordConfirm,
+    });
   }
 
   uploadUserImage(image: string) {

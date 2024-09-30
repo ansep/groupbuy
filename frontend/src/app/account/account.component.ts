@@ -35,7 +35,8 @@ export class AccountComponent {
   };
   editAccountForm = new FormGroup({
     username: new FormControl({ value: '', disabled: true }),
-    password: new FormControl(''),
+    currentPassword: new FormControl(''),
+    newPassword: new FormControl(''),
     passwordConfirm: new FormControl(''),
     email: new FormControl('', Validators.email),
     role: new FormControl({ value: '', disabled: true }),
@@ -75,85 +76,85 @@ export class AccountComponent {
     });
   }
 
-  edit() {
+  async edit() {
     this.errorMessage = null;
     this.incorrect = false;
     this.submitted = true;
     if (
       this.editAccountForm.invalid ||
-      (this.editAccountForm.value.password &&
-        this.editAccountForm.value.password !==
+      (this.editAccountForm.value.newPassword &&
+        !this.editAccountForm.value.currentPassword) ||
+      (this.editAccountForm.value.newPassword &&
+        this.editAccountForm.value.newPassword !==
           this.editAccountForm.value.passwordConfirm)
     ) {
       if (!this.editAccountForm.invalid) {
-        this.errorMessage = 'Passwords do not match';
+        if (!this.editAccountForm.value.currentPassword) {
+          this.errorMessage = 'Current password is required to change password';
+        } else {
+          this.errorMessage = 'Passwords do not match';
+        }
       }
       return;
     }
-    const newInformation: any = {};
-    if (this.editAccountForm.value.password) {
-      newInformation.password = this.editAccountForm.value.password;
-    }
-    if (this.editAccountForm.value.email) {
-      newInformation.email = this.editAccountForm.value.email;
-    }
-    if (this.editAccountForm.value.firstName) {
-      newInformation.firstName = this.editAccountForm.value.firstName;
-    }
-    if (this.editAccountForm.value.lastName) {
-      newInformation.lastName = this.editAccountForm.value.lastName;
-    }
-    if (this.editAccountForm.value.telephoneNumber) {
-      newInformation.telephoneNumber =
-        this.editAccountForm.value.telephoneNumber;
-    }
-    this.authService.editUser(newInformation).subscribe({
-      next: (data: any) => {
-        if (
-          this.editAccountForm.value.image &&
-          this.editAccountForm.value.image !==
-            this.oldUserInfo.profilePicturePath
-        ) {
-          this.authService
-            .uploadUserImage(this.editAccountForm.value.image)
-            .subscribe({
-              next: (imageData: any) => {
-                this.router
-                  .navigate(
-                    [
-                      this.authService.getRole(),
-                      'profile',
-                      this.oldUserInfo.username,
-                    ],
-                    {
-                      queryParams: { edited: 'true' },
-                    }
-                  )
-                  .then(() => window.location.reload());
-              },
-              error: (error) => {
-                console.error('Error uploading image:', error);
-              },
-            });
-        } else {
-          this.router.navigate(
-            [this.authService.getRole(), 'profile', this.oldUserInfo.username],
-            {
-              queryParams: { edited: 'true' },
-            }
-          );
+
+    try {
+      // Step 1: Edit user information
+      const newInformation: any = {};
+      if (this.editAccountForm.value.email) {
+        newInformation.email = this.editAccountForm.value.email;
+      }
+      if (this.editAccountForm.value.firstName) {
+        newInformation.firstName = this.editAccountForm.value.firstName;
+      }
+      if (this.editAccountForm.value.lastName) {
+        newInformation.lastName = this.editAccountForm.value.lastName;
+      }
+      if (this.editAccountForm.value.telephoneNumber) {
+        newInformation.telephoneNumber =
+          this.editAccountForm.value.telephoneNumber;
+      }
+
+      await this.authService.editUser(newInformation).toPromise();
+
+      // Step 2: Update password if needed
+      if (this.editAccountForm.value.newPassword) {
+        await this.authService
+          .updatePassword(
+            this.editAccountForm.value.currentPassword || '',
+            this.editAccountForm.value.newPassword,
+            this.editAccountForm.value.passwordConfirm || ''
+          )
+          .toPromise();
+      }
+
+      // Step 3: Upload new image if needed
+      if (
+        this.editAccountForm.value.image &&
+        this.editAccountForm.value.image !== this.oldUserInfo.profilePicturePath
+      ) {
+        await this.authService
+          .uploadUserImage(this.editAccountForm.value.image)
+          .toPromise();
+      }
+
+      // All operations completed successfully, now redirect
+      this.router.navigate(
+        [this.authService.getRole(), 'profile', this.oldUserInfo.username],
+        {
+          queryParams: { edited: 'true', reload: 'true' },
         }
-      },
-      error: (error) => {
-        if (error.status === 400) {
-          this.errorMessage = error.error.message;
-        } else if (error.status === 401) {
-          this.router.navigate(['/login']);
-        } else {
-          this.incorrect = true;
-        }
-      },
-    });
+      );
+    } catch (error: any) {
+      console.error('Error updating account:', error);
+      if (error.status === 400) {
+        this.errorMessage = error.error.message;
+      } else if (error.status === 401) {
+        this.router.navigate(['/login']);
+      } else {
+        this.incorrect = true;
+      }
+    }
   }
 
   onFileSelected(event: any) {
@@ -179,7 +180,6 @@ export class AccountComponent {
   }
 
   deleteAccount() {
-    // TODO: Connect delete user API
     this.authService.deleteUser().subscribe({
       next: (response) => {
         this.closeDeleteModal?.nativeElement.click();

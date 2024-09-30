@@ -35,6 +35,18 @@ export class ProfileComponent {
       if (this.username === loggedInUser) {
         this.isLoggedUser = true;
         this.route.queryParams.subscribe((params) => {
+          if (params['reload'] === 'true') {
+            this.router
+              .navigate(
+                [this.authService.getRole(), 'profile', this.username],
+                {
+                  queryParams: { edited: 'true' },
+                }
+              )
+              .then(() => {
+                window.location.reload();
+              });
+          }
           if (params['edited'] === 'true') {
             this.updatedProfile = true;
           }

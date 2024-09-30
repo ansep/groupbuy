@@ -42,6 +42,7 @@ export class ChatComponent implements OnInit {
   displayedChats:
     | { [key: string]: { from: boolean; msg: string }[] }
     | undefined;
+  highlighted: { [key: string]: boolean } = {};
 
   constructor(
     private apiservice: ApiService,
@@ -224,10 +225,31 @@ export class ChatComponent implements OnInit {
         const parsedMessage = JSON.parse(message.body);
         const contact = parsedMessage.fromWho;
         const messageText = parsedMessage.message;
-        this.contacts[contact].push({
-          from: false,
-          msg: messageText,
-        });
+        if (!this.contacts[contact]) {
+          this.contacts[contact] = [];
+          this.authservice.getUserInfoByUsername(contact).subscribe({
+            next: (contactData: any) => {
+              this.contactsImages[contact] = {
+                hasImage: !!contactData.profilePicturePath,
+                id: contactData.id,
+              };
+              this.contacts[contact].push({
+                from: false,
+                msg: messageText,
+              });
+              this.highlighted[contact] = true;
+            },
+            error: (error) => {
+              console.log('Error retrieving user info:', error);
+            },
+          });
+        } else {
+          this.highlighted[contact] = true;
+          this.contacts[contact].push({
+            from: false,
+            msg: messageText,
+          });
+        }
         message.ack(); // Acknowledge the message manually
       },
       headers
@@ -237,6 +259,7 @@ export class ChatComponent implements OnInit {
   }
 
   loadChat(contactName: string) {
+    this.highlighted[contactName] = false;
     console.log('Loading chat:', contactName);
     this.selectedContact = {
       username: contactName,
