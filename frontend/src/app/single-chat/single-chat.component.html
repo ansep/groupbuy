@@ -1,24 +1,22 @@
 <div class="chat" style="height: 85vh">
   <div class="chat-header clearfix">
     <div class="row">
-      <div class="col-lg-6">
-        <a
-          href="javascript:void(0);"
-          data-toggle="modal"
-          data-target="#view_info"
-        >
-          <img
-            [src]="
-              contact && contact.hasImage
-                ? 'http://localhost:8080/api/user/' + contact.id + '/picture'
-                : 'assets/default-avatar.png'
-            "
-            alt="avatar"
-          />
-        </a>
+      <div
+        class="col-lg-6 d-flex align-items-center"
+        style="cursor: pointer"
+        (click)="openUserProfile(contact?.username)"
+      >
+        <img
+          [src]="
+            contact && contact.hasImage
+              ? 'http://localhost:8080/api/user/' + contact.id + '/picture'
+              : 'assets/default-avatar.png'
+          "
+          alt="avatar"
+        />
         <div class="chat-about">
           <h6 class="m-b-0">{{ contact?.username }}</h6>
-          <small>Last seen: 2 hours ago</small>
+          <!-- <small>Last seen: 2 hours ago</small> -->
         </div>
       </div>
     </div>

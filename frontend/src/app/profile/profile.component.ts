@@ -63,8 +63,8 @@ export class ProfileComponent {
   }
 
   sendMessageToUser() {
-    this.router.navigate([
-      '/' + localStorage.getItem('role') + '/messages/' + this.user?.username,
-    ]);
+    this.router.navigate([this.authService.getRole(), 'messages'], {
+      queryParams: { user: this.user?.username },
+    });
   }
 }

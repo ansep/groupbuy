@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ApiService } from '../services/api.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-single-chat',
@@ -18,12 +19,17 @@ export class SingleChatComponent {
     message: new FormControl(''),
   });
 
-  constructor(private apiservice: ApiService) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   send() {
     if (this.sendMessageForm.value.message) {
       this.sendMessage.emit(this.sendMessageForm.value.message);
       this.sendMessageForm.reset();
     }
+  }
+
+  openUserProfile(username: string | undefined) {
+    if (!username) return;
+    this.router.navigate([this.authService.getRole(), 'profile', username]);
   }
 }

@@ -23,7 +23,7 @@
           >
             @for( contact of contacts | keyvalue; track contact.key){
             <li
-              class="clearfix"
+              class="clearfix d-flex align-items-center"
               [ngClass]="{
                 active:
                   selectedContact && contact.key === selectedContact.username
@@ -32,6 +32,7 @@
             >
               <img
                 [src]="
+                  contactsImages[contact.key] &&
                   contactsImages[contact.key].hasImage
                     ? 'http://localhost:8080/api/user/' +
                       contactsImages[contact.key].id +
@@ -44,9 +45,9 @@
                 <div class="name">
                   {{ contact.key }}
                 </div>
-                <div class="status">
+                <!-- <div class="status">
                   <i class="fa fa-circle offline"></i> left 7 mins ago
-                </div>
+                </div> -->
               </div>
             </li>
             }

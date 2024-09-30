@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -33,11 +33,13 @@ export class ChatComponent implements OnInit {
   contactsImages: { [key: string]: { hasImage: boolean; id: number } } = {};
   authToken: string = '';
   username: string = '';
+  paramUser: string = '';
 
   constructor(
     private apiservice: ApiService,
     private router: Router,
-    private authservice: AuthService
+    private authservice: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -48,6 +50,9 @@ export class ChatComponent implements OnInit {
     } else {
       this.connectWebSocket();
     }
+    this.route.queryParams.subscribe((params) => {
+      this.paramUser = params['user'];
+    });
   }
 
   connectWebSocket() {
@@ -77,6 +82,15 @@ export class ChatComponent implements OnInit {
         // Start filtering the message history for viewing
         console.log('Retrieved chat history:', response);
         this.contacts = this.processChatHistory(response, this.username);
+        // If user is not in the chat history, process as new chat
+        let isInHistory = false;
+        if (this.paramUser) {
+          isInHistory = Object.keys(this.contacts).includes(this.paramUser);
+          if (!isInHistory) {
+            this.checkLinkToChat();
+          }
+        }
+
         for (const contact of Object.keys(this.contacts)) {
           this.authservice.getUserInfoByUsername(contact).subscribe({
             next: (contactData: any) => {
@@ -84,6 +98,9 @@ export class ChatComponent implements OnInit {
                 hasImage: !!contactData.profilePicturePath,
                 id: contactData.id,
               };
+              if (contact === this.paramUser) {
+                this.checkLinkToChat(contact);
+              }
             },
             error: (error) => {
               console.log('Error retrieving user info:', error);
@@ -130,6 +147,26 @@ export class ChatComponent implements OnInit {
     });
     console.log('Processed chat history:', JSON.stringify(contactMap));
     return contactMap;
+  }
+
+  checkLinkToChat(username?: string) {
+    if (username) {
+      this.loadChat(username);
+    } else {
+      this.authservice.getUserInfoByUsername(this.paramUser).subscribe({
+        next: (contactData: any) => {
+          this.contacts[this.paramUser] = [];
+          this.contactsImages[this.paramUser] = {
+            hasImage: !!contactData.profilePicturePath,
+            id: contactData.id,
+          };
+          this.loadChat(this.paramUser);
+        },
+        error: (error) => {
+          console.log('Error retrieving user info:', error);
+        },
+      });
+    }
   }
 
   // Updated subscribeToQueue function

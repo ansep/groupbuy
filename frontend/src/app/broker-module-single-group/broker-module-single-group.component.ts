@@ -53,8 +53,10 @@ export class BrokerModuleSingleGroupComponent {
     private router: Router
   ) {}
 
-  openChatWithUser(id: number) {
-    this.router.navigate([this.authService.getRole(), 'chat', id]);
+  openChatWithUser(name: string) {
+    this.router.navigate([this.authService.getRole(), 'messages'], {
+      queryParams: { user: name },
+    });
   }
 
   editGroupBuy() {
@@ -130,6 +132,8 @@ export class BrokerModuleSingleGroupComponent {
     if (this.closeBroadcastModal) {
       this.closeBroadcastModal.nativeElement.click();
     }
+    this.broadcastMessageForm.reset();
+    this.broadcastMessageForm.enable();
   }
 
   async connectWebSocket() {
