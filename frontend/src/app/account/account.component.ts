@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -48,6 +48,7 @@ export class AccountComponent {
   submitted = false;
   incorrect = false;
   errorMessage: string | null = null;
+  @ViewChild('closeDeleteModal') closeDeleteModal: ElementRef | undefined;
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService.getUserInfo(authService.getUserId()).subscribe({
@@ -178,22 +179,16 @@ export class AccountComponent {
   }
 
   deleteAccount() {
-    const confirm = window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.'
-    );
-    if (!confirm) {
-      return;
-    }
     // TODO: Connect delete user API
-    // this.authService.deleteUser().subscribe({
-    //   next: (response) => {
-    //     this.router.navigate(['/login']);
-    //   },
-    //   error: (error) => {
-    //     console.error(error);
-    //   },
-    // });
-    // this.authService.logout();
-    // this.router.navigate(['/']);
+    this.authService.deleteUser().subscribe({
+      next: (response) => {
+        this.closeDeleteModal?.nativeElement.click();
+        this.authService.logout();
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 }

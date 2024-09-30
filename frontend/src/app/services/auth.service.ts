@@ -98,7 +98,7 @@ export class AuthService {
     return parseInt(localStorage.getItem('id') || '0');
   }
 
-  // TODO: connect user edit to API
+  // TODO: Check password field update
   editUser(updatedInfo: {
     password: string;
     email: string;
@@ -106,14 +106,16 @@ export class AuthService {
     lastName: string;
     telephoneNumber: string;
   }) {
-    return new Observable((observer) => {
-      observer.next({ message: 'User updated' });
-    });
+    return this.https.patch('http://localhost:8080/api/user', updatedInfo);
   }
 
   uploadUserImage(image: string) {
     const formData = new FormData();
     formData.append('file', image);
     return this.https.post('http://localhost:8080/api/user/picture', formData);
+  }
+
+  deleteUser() {
+    return this.https.delete('http://localhost:8080/api/user');
   }
 }

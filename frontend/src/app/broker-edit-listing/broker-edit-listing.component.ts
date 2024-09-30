@@ -33,7 +33,7 @@ export class BrokerEditListingComponent {
       Validators.required,
       Validators.maxLength(2000),
     ]),
-    category: new FormControl('default', Validators.required),
+    category: new FormControl('', Validators.required),
     price: new FormControl('', [
       Validators.required,
       Validators.pattern('^[0-9]*$'),

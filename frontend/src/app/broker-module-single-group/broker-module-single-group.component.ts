@@ -71,10 +71,26 @@ export class BrokerModuleSingleGroupComponent {
 
   deleteGroupBuy() {
     this.apiService.deleteGroupBuy(this.groupBuyId).subscribe({
-      next: (response) => {
+      next: async (response) => {
         if (this.closeDeleteModal) {
           this.closeDeleteModal.nativeElement.click();
         }
+        const message = 'Group buy ' + this.groupBuyName + ' has been deleted';
+        this.connectWebSocket();
+        let attempts = 0;
+        while (!this.connectedWebSocket && attempts < 20) {
+          console.log('Waiting for WebSocket connection...');
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
+        if (!this.connectedWebSocket) {
+          console.error('Failed to connect to WebSocket');
+          this.disconnectWebSocket();
+          return;
+        }
+        this.sendBroadcastMessage(message);
+        this.disconnectWebSocket();
+
         this.router.navigate([this.authService.getRole(), 'home'], {
           queryParams: { deleted: true },
         });
