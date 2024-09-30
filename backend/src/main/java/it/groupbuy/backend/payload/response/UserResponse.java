@@ -2,16 +2,24 @@ package it.groupbuy.backend.payload.response;
 
 public class UserResponse {
 
-	private Long id;
+    private Long id;
     private String username;
     private String email;
-    
-    public UserResponse(Long id, String username, String email) {
+    private String firstName;
+    private String lastName;
+    private String telephoneNumber;
+    private String profilePicturePath;
+
+    public UserResponse(Long id, String username, String email, String firstName, String lastName, String telephoneNumber, String profilePicturePath) {
     	this.id = id;
     	this.username = username;
     	this.email = email;
+	this.firstName = firstName;
+	this.lastName = lastName;
+	this.telephoneNumber = telephoneNumber;
+	this.profilePicturePath = profilePicturePath;
     }
-    
+
     public Long getId() {
     	return id;
     }
@@ -35,5 +43,37 @@ public class UserResponse {
     public void setEmail(String email) {
     	this.email = email;
     }
-    
+
+    public String getFirstName() {
+	return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+	this.firstName = firstName;
+    }
+
+    public String getLastName() {
+	return lastName;
+    }
+
+    public void setLastName(String lastName) {
+	this.lastName = lastName;
+    }
+
+    public String getTelephoneNumber() {
+	return telephoneNumber;
+    }
+
+    public void setTelephoneNumber(String telephoneNumber) {
+	this.telephoneNumber = telephoneNumber;
+    }
+
+    public String getProfilePicturePath() {
+	return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+	this.profilePicturePath = profilePicturePath;
+    }
+
 }

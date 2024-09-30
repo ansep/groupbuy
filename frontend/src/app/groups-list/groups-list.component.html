@@ -1,0 +1,82 @@
+<div class="list-group">
+  @if(groups.length === 0) {
+  <p class="mx-auto mt-5">No groups found.</p>
+  } @else{
+  <div class="col-md-12 px-2 py-1">
+    <div class="d-flex justify-content-end">
+      <div class="d-flex shadow">
+        <form [formGroup]="searchForm" class="d-flex">
+          <input
+            id="search-input"
+            class="form-control"
+            placeholder="Filter groups"
+            formControlName="search"
+          />
+        </form>
+        <!-- <button
+          id="search-button"
+          type="button"
+          class="btn btn-primary"
+          style="width: 25%"
+        >
+          <i class="bi bi-search"></i>
+        </button> -->
+      </div>
+    </div>
+  </div>
+  @if(displayedGroups.length === 0) {
+  <p class="mx-auto mt-1">No groups found for the search criteria.</p>
+  } @else{ @for (item of displayedGroups; track item.id){
+  <div
+    class="card mb-2 ms-2 me-2"
+    style="height: 150px; cursor: pointer"
+    (click)="openGroupBuy(item.id)"
+  >
+    <div class="row g-0 h-100">
+      <div class="col-md-3 h-100 d-flex justify-content-center">
+        <img
+          [src]="item.image"
+          class="img-fluid rounded-start"
+          style="height: inherit"
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h3 class="card-title">{{ item.title }}</h3>
+          <!-- <div class="container">
+              <div class="row">
+              <div class="col">
+                <h3 class="card-title">{{item.title}}</h3>
+              </div>
+              <div class="col-2">
+                <h5 class="card-text" class="text-muted">{{item.subscribedPeople}} / {{item.availablePieces}}</h5  >
+              </div> -->
+          <!-- </div>
+            </div> -->
+          <p class="card-text text-break truncate">{{ item.description }}</p>
+          <!-- <div class="container">
+              <div class="row">
+                <div class="col">
+                  <a href="/Group/{{item.id}}" type="button" class="btn btn-outline-primary stretched-link">See more</a>
+              </div>
+  
+                <div class="col-1 pe-1">
+                  <h4>{{item.unitPrice}}€ </h4>
+                </div>
+              </div>-->
+          <!-- </div> -->
+        </div>
+      </div>
+      <div class="col-md-1">
+        <h5 class="card-text" class="text-muted">
+          {{ item.subscribedPeople }} / {{ item.availablePieces }}
+        </h5>
+        <p></p>
+        <h4>{{ item.unitPrice.toFixed(2) }}€</h4>
+        <p></p>
+        <!-- <a href="/Group/{{item.id}}" type="button" class="btn btn-sm btn-outline-primary stretched-link">See more</a> -->
+      </div>
+    </div>
+  </div>
+  } } }
+</div>

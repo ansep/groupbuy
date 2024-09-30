@@ -4,28 +4,31 @@ import it.groupbuy.backend.models.EStatus;
 
 public class GroupbuyResponse {
 
-	private Long id;
-	private Integer maxSize;
-	private String description;
-	private String category;
-	private String product;
-	private Float cost;
-	private EStatus status;
-	private String location;
-	
-	public GroupbuyResponse(Long id, Integer maxSize, String description, 
-			String category,String product, Float cost,EStatus status, String location) {
+    private Long id;
+    private Integer maxSize;
+    private String description;
+    private String category;
+    private String product;
+    private Float cost;
+    private EStatus status;
+    private String location;
+    private String postingPicturePath;
+
+    public GroupbuyResponse(Long id, Integer maxSize, String description,
+			    String category,String product, Float cost,EStatus status, String location,
+			    String postingPicturePath) {
     	this.id = id;
-		this.maxSize = maxSize;
+	this.maxSize = maxSize;
     	this.description = description;
     	this.category = category;
     	this.product = product;
     	this.cost = cost;
     	this.status = status;
     	this.location = location;
+	this.postingPicturePath = postingPicturePath;
     }
-	
-	public Long getId() {
+
+    public Long getId() {
     	return id;
     }
 
@@ -88,5 +91,13 @@ public class GroupbuyResponse {
     public void setCost(Float cost) {
     	this.cost = cost;
     }
-	
+
+    public String getPostingPicturePath() {
+	return postingPicturePath;
+    }
+
+    public void setPostingPicturePath(String postingPicturePath) {
+	this.postingPicturePath = postingPicturePath;
+    }
+
 }

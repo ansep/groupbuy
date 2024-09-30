@@ -63,7 +63,17 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 	    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	    .authorizeHttpRequests(auth ->
 				   auth.requestMatchers("/api/auth/**").permitAll()
+				   .requestMatchers("/").permitAll()
+				   .requestMatchers("/favicon.ico").permitAll()
+				   .requestMatchers("/index.html").permitAll()
+				   .requestMatchers("/js/index.js").permitAll()
+				   .requestMatchers("/webjars/**").permitAll()
+				   .requestMatchers("/websocket-chat/**").permitAll()
+				   .requestMatchers("/chat/**").permitAll()
 				   .requestMatchers(HttpMethod.GET, "/api/user/*/picture").permitAll()
+				   .requestMatchers(HttpMethod.GET, "/groupbuy/*/picture").permitAll()
+				   .requestMatchers(HttpMethod.GET, "/groupbuy/*/subscriptions").permitAll()
+				   .requestMatchers("/error/**").permitAll()
 				   .anyRequest().authenticated()
 				   //.anyRequest().permitAll() //debug
 				   );

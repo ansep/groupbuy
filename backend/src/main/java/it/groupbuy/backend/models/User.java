@@ -1,5 +1,7 @@
 package it.groupbuy.backend.models;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,16 +62,24 @@ public class User {
     private String profilePicturePath;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "user_roles",
-		 joinColumns = @JoinColumn(name = "user_id"),
-		 inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_roles",
+	       joinColumns = @JoinColumn(name = "user_id"),
+	       inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-    
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "buyers")
     private List<GroupBuy> subscribed_groupbuy;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="broker")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="broker")
     private List<GroupBuy> owned_groupbuy;
+
+    // If we have a broker
+    @OneToMany
+    private List<GroupBuy> publishedGroupbuy = new ArrayList<>();
+
+    // If we have a buyer
+    @OneToMany
+    private List<GroupBuy> subscribedGroupbuy = new ArrayList<>();
 
     public User() {}
 
@@ -81,40 +91,40 @@ public class User {
 	this.lastName = lastName;
 	this.telephoneNumber = telephoneNumber;
     }
-    
+
     public void removeOwnedGropbuy(GroupBuy g) {
     	this.owned_groupbuy.remove(g);
     }
-    
+
     public void addOwnedGropbuy(GroupBuy g) {
     	this.owned_groupbuy.add(g);
     }
-    
+
     public void addSubscribedGropbuy(GroupBuy g) {
     	this.subscribed_groupbuy.add(g);
     }
-    
+
     public void deleteSubscribedGropbuy(GroupBuy g) {
     	this.subscribed_groupbuy.remove(g);
     }
-    
-    
+
+
     public List<GroupBuy> getSubscribed_groupbuy() {
-		return subscribed_groupbuy;
-	}
+	return subscribed_groupbuy;
+    }
 
-	public void setSubscribed_groupbuy(List<GroupBuy> subscribed_groupbuy) {
-		this.subscribed_groupbuy = subscribed_groupbuy;
-	}
+    public void setSubscribed_groupbuy(List<GroupBuy> subscribed_groupbuy) {
+	this.subscribed_groupbuy = subscribed_groupbuy;
+    }
 
-	public List<GroupBuy> getOwned_groupbuy() {
-		return owned_groupbuy;
-	}
+    public List<GroupBuy> getOwned_groupbuy() {
+	return owned_groupbuy;
+    }
 
-	public void setOwned_groupbuy(List<GroupBuy> owned_groupbuy) {
-		this.owned_groupbuy = owned_groupbuy;
-	}
-    
+    public void setOwned_groupbuy(List<GroupBuy> owned_groupbuy) {
+	this.owned_groupbuy = owned_groupbuy;
+    }
+
     public Long getId() {
 	return id;
     }
@@ -178,7 +188,7 @@ public class User {
     public void setRoles(Set<Role> roles) {
 	this.roles = roles;
     }
-    
+
 
     public String getProfilePicturePath() {
 	return profilePicturePath;
@@ -188,4 +198,19 @@ public class User {
 	this.profilePicturePath = profilePicturePath;
     }
 
+    public List<GroupBuy> getSubscribedGroupbuy() {
+	return subscribedGroupbuy;
+    }
+
+    public void setSubscribedGroupbuy(List<GroupBuy> subscribedGroupbuy) {
+	this.subscribedGroupbuy = subscribedGroupbuy;
+    }
+
+    public List<GroupBuy> getPublishedGroupbuy() {
+	return publishedGroupbuy;
+    }
+
+    public void setPublishedGroupbuy(List<GroupBuy> publishedGroupbuy) {
+	this.publishedGroupbuy = publishedGroupbuy;
+    }
 }

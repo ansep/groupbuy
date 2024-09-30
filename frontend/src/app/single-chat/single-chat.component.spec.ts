@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LogoutComponent } from './logout.component';
+import { SingleChatComponent } from './single-chat.component';
 
-describe('LogoutComponent', () => {
-  let component: LogoutComponent;
-  let fixture: ComponentFixture<LogoutComponent>;
+describe('SingleChatComponent', () => {
+  let component: SingleChatComponent;
+  let fixture: ComponentFixture<SingleChatComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LogoutComponent]
+      imports: [SingleChatComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(LogoutComponent);
+    fixture = TestBed.createComponent(SingleChatComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

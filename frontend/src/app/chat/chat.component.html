@@ -1,0 +1,84 @@
+<link
+  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet"
+/>
+
+<div class="container mt-4">
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <div class="card chat-app">
+        <div id="plist" class="people-list">
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" placeholder="Search..." />
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fa fa-search"></i>
+              </span>
+            </div>
+          </div>
+
+          <ul
+            class="list-unstyled chat-list"
+            style="max-height: 500px; overflow-y: auto"
+          >
+            @for( contact of contacts | keyvalue; track contact.key){
+            <li
+              class="clearfix d-flex align-items-center"
+              [ngClass]="{
+                active:
+                  selectedContact && contact.key === selectedContact.username
+              }"
+              (click)="loadChat(contact.key)"
+            >
+              <img
+                [src]="
+                  contactsImages[contact.key] &&
+                  contactsImages[contact.key].hasImage
+                    ? 'http://localhost:8080/api/user/' +
+                      contactsImages[contact.key].id +
+                      '/picture'
+                    : 'assets/default-avatar.png'
+                "
+                alt="avatar"
+              />
+              <div class="about">
+                <div class="name">
+                  {{ contact.key }}
+                </div>
+                <!-- <div class="status">
+                  <i class="fa fa-circle offline"></i> left 7 mins ago
+                </div> -->
+              </div>
+            </li>
+            }
+          </ul>
+        </div>
+        <!-- end chat-list -->
+
+        <!-- this is the single chat component, so should be refactored as a separate component -->
+        <div class="chat">
+          @if (selectedChat) {
+          <app-single-chat
+            [chat]="selectedChat"
+            [contact]="selectedContact"
+            (sendMessage)="sendMessage($event)"
+          ></app-single-chat>
+          } @else {
+          <!-- a simpledivc with a centered text: "Select a contact to start chatting" -->
+          <div
+            style="
+              display: flex;
+              margin: 0 auto;
+              height: 85vh;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <h6 class="text-center">Select a contact to start chatting</h6>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

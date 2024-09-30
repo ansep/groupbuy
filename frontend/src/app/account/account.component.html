@@ -1,130 +1,154 @@
 <h1 class="page-title">Group Buy - Edit account</h1>
-<div class="col-4 mx-auto mt-5">
-  <form
-    class="needs-validation"
-    [class.was-validated]="submitted"
-    [formGroup]="editAccountForm"
-    (ngSubmit)="edit()"
-    novalidate
-  >
-    @if(errorMessage) {
-    <div class="alert alert-danger" role="alert">
-      {{ errorMessage }}
-    </div>
-    } @if (incorrect) {
-    <div class="alert alert-danger" role="alert">
-      Please check if all fields are filled in correctly
-    </div>
-    }
-    <div class="mb-3">
-      <label for="username" class="form-label">Username</label>
-      <input
-        type="text"
-        class="form-control"
-        formControlName="username"
-        id="username"
-        name="username"
-        [disabled]="true"
-      />
-    </div>
-
+<div class="row mt-5">
+  <div class="col-4">
     <div>
-      <label for="password" class="form-label">Password</label>
-      <input
-        class="form-control"
-        formControlName="password"
-        type="password"
-        id="password"
-        name="password"
-        required
-      />
-      <div class="invalid-feedback">Password is required</div>
+      <div class="d-flex justify-content-center mb-2">
+        <img
+          id="selectedAvatar"
+          [src]="imagePreview"
+          style="height: 100px; object-fit: cover; cursor: pointer"
+          onclick="document.getElementById('customFile2').click()"
+        />
+      </div>
+      <div class="d-flex justify-content-center">
+        <div data-mdb-ripple-init type="button" class="btn btn-primary btn-sm">
+          <label class="form-label text-white m-1" for="customFile2"
+            >Choose an image</label
+          >
+          <input
+            type="file"
+            class="form-control d-none"
+            id="customFile2"
+            (change)="onFileSelected($event)"
+            accept="image/*"
+          />
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div>
-      <label for="confirmPassword" class="form-label">Confirm Password</label>
-      <input
-        class="form-control"
-        formControlName="passwordConfirm"
-        type="password"
-        id="confirmPassword"
-        name="confirmPassword"
-        required
-      />
-      <div class="invalid-feedback">Confirm Password is required</div>
-    </div>
+  <div class="col-4">
+    <form
+      class="needs-validation"
+      [class.was-validated]="submitted"
+      [formGroup]="editAccountForm"
+      (ngSubmit)="edit()"
+      novalidate
+    >
+      @if(errorMessage) {
+      <div class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+      } @if (incorrect) {
+      <div class="alert alert-danger" role="alert">
+        Please check if all fields are filled in correctly
+      </div>
+      }
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="username"
+          id="username"
+          name="username"
+          [disabled]="true"
+        />
+      </div>
 
-    <div>
-      <label for="email" class="form-label">Email</label>
-      <input
-        class="form-control"
-        formControlName="email"
-        type="email"
-        id="email"
-        name="email"
-        required
-      />
-      <div class="invalid-feedback">Email is required</div>
-    </div>
+      <div>
+        <label for="password" class="form-label">Password</label>
+        <input
+          class="form-control"
+          formControlName="password"
+          type="password"
+          id="password"
+          name="password"
+        />
+      </div>
 
-    <div>
-      <label for="phone" class="form-label">Phone</label>
-      <input
-        class="form-control"
-        formControlName="telephoneNumber"
-        type="text"
-        id="phone"
-        name="phone"
-        required
-      />
-      <div class="invalid-feedback">Phone is required</div>
-    </div>
+      <div>
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input
+          class="form-control"
+          formControlName="passwordConfirm"
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+        />
+      </div>
 
-    <div>
-      <label for="role" class="form-label">Role</label>
-      <select
-        class="form-select"
-        formControlName="role"
-        id="role"
-        name="role"
-        required
-      >
-        <option value="" disabled selected>Select Role</option>
-        <option value="buyer">Buyer</option>
-        <option value="broker">Broker</option>
-      </select>
-      <div class="invalid-feedback">Role is required</div>
-    </div>
+      <div>
+        <label for="email" class="form-label">Email</label>
+        <input
+          class="form-control"
+          formControlName="email"
+          type="email"
+          id="email"
+          name="email"
+        />
+      </div>
 
-    <div>
-      <label for="firstName" class="form-label">First Name</label>
-      <input
-        class="form-control"
-        formControlName="firstName"
-        type="text"
-        id="firstName"
-        name="firstName"
-        required
-      />
-      <div class="invalid-feedback">First Name is required</div>
-    </div>
+      <div>
+        <label for="phone" class="form-label">Phone</label>
+        <input
+          class="form-control"
+          formControlName="telephoneNumber"
+          type="text"
+          id="phone"
+          name="phone"
+        />
+      </div>
 
-    <div>
-      <label for="lastName" class="form-label">Last Name</label>
-      <input
-        class="form-control"
-        formControlName="lastName"
-        type="text"
-        id="lastName"
-        name="lastName"
-        required
-      />
-      <div class="invalid-feedback">Last Name is required</div>
-    </div>
-    <div style="text-align: center">
-      <button type="submit" class="btn btn-primary mt-3 col-3">
-        Update account
-      </button>
-    </div>
-  </form>
+      <div>
+        <label for="role" class="form-label">Role</label>
+        <select
+          class="form-select"
+          formControlName="role"
+          id="role"
+          name="role"
+        >
+          <option value="" disabled selected>Select Role</option>
+          <option value="buyer">Buyer</option>
+          <option value="broker">Broker</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="firstName" class="form-label">First Name</label>
+        <input
+          class="form-control"
+          formControlName="firstName"
+          type="text"
+          id="firstName"
+          name="firstName"
+        />
+      </div>
+
+      <div>
+        <label for="lastName" class="form-label">Last Name</label>
+        <input
+          class="form-control"
+          formControlName="lastName"
+          type="text"
+          id="lastName"
+          name="lastName"
+        />
+      </div>
+      <div style="text-align: center">
+        <button type="submit" class="btn btn-primary mt-3 col-6">
+          Update account
+        </button>
+      </div>
+      <div style="text-align: center">
+        <button
+          type="button"
+          class="btn btn-danger mt-3 col-6"
+          (click)="deleteAccount()"
+        >
+          Delete account
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

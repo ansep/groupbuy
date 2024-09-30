@@ -1,0 +1,63 @@
+<div class="chat" style="height: 85vh">
+  <div class="chat-header clearfix">
+    <div class="row">
+      <div
+        class="col-lg-6 d-flex align-items-center"
+        style="cursor: pointer"
+        (click)="openUserProfile(contact?.username)"
+      >
+        <img
+          [src]="
+            contact && contact.hasImage
+              ? 'http://localhost:8080/api/user/' + contact.id + '/picture'
+              : 'assets/default-avatar.png'
+          "
+          alt="avatar"
+        />
+        <div class="chat-about">
+          <h6 class="m-b-0">{{ contact?.username }}</h6>
+          <!-- <small>Last seen: 2 hours ago</small> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div #chatHistory class="chat-history" style="height: 70vh; overflow-y: auto">
+    <ul class="m-b-0">
+      @for( message of chat; track message){ @if(message.from) {
+      <li class="clearfix">
+        <div class="message my-message float-right">
+          {{ message.msg }}
+        </div>
+      </li>
+      } @else {
+      <li class="clearfix">
+        <div class="message other-message">
+          {{ message.msg }}
+        </div>
+      </li>
+      } }
+    </ul>
+  </div>
+  <div class="chat-message clearfix">
+    <!-- reactive form -->
+    <form [formGroup]="sendMessageForm">
+      <div class="input-group mb-0">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter message here..."
+          formControlName="message"
+          (keydown.enter)="send()"
+        />
+        <div class="input-group-prepend">
+          <span
+            class="input-group-text"
+            style="cursor: pointer"
+            (click)="send()"
+            ><i class="fa fa-send"></i
+          ></span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

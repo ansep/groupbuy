@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,19 +17,21 @@ import { Router } from '@angular/router';
 })
 export class AccountComponent {
   oldUserInfo: {
+    id: number;
     username: string;
     email: string;
-    role: string;
     firstName: string;
     lastName: string;
     telephoneNumber: string;
+    profilePicturePath: string;
   } = {
+    id: 0,
     username: '',
     email: '',
-    role: '',
     firstName: '',
     lastName: '',
     telephoneNumber: '',
+    profilePicturePath: '',
   };
   editAccountForm = new FormGroup({
     username: new FormControl({ value: '', disabled: true }),
@@ -40,22 +42,35 @@ export class AccountComponent {
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     telephoneNumber: new FormControl('', Validators.pattern('^[0-9]*$')),
+    image: new FormControl(''),
   });
+  imagePreview: string | ArrayBuffer | null = 'assets/default-avatar-lg.png';
   submitted = false;
   incorrect = false;
   errorMessage: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.authService.getUserInfo().subscribe((user) => {
-      this.oldUserInfo = user;
-      this.editAccountForm.patchValue({
-        username: this.oldUserInfo.username,
-        email: this.oldUserInfo.email,
-        role: this.oldUserInfo.role,
-        firstName: this.oldUserInfo.firstName,
-        lastName: this.oldUserInfo.lastName,
-        telephoneNumber: this.oldUserInfo.telephoneNumber,
-      });
+    this.authService.getUserInfo(authService.getUserId()).subscribe({
+      next: (user: any) => {
+        this.oldUserInfo = user;
+        this.editAccountForm.patchValue({
+          username: this.oldUserInfo.username,
+          email: this.oldUserInfo.email,
+          role: authService.getRole(),
+          firstName: this.oldUserInfo.firstName,
+          lastName: this.oldUserInfo.lastName,
+          telephoneNumber: this.oldUserInfo.telephoneNumber,
+          image: this.oldUserInfo.profilePicturePath,
+        });
+        if (user.profilePicturePath) {
+          this.imagePreview =
+            `http://localhost:8080/api/user/${user.id}/picture?t=` +
+            new Date().getTime();
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
     });
   }
 
@@ -74,33 +89,111 @@ export class AccountComponent {
       }
       return;
     }
-    this.authService
-      .editUser(
-        this.editAccountForm.value.password || '',
-        this.editAccountForm.value.email || '',
-        this.editAccountForm.value.firstName || '',
-        this.editAccountForm.value.lastName || '',
-        this.editAccountForm.value.telephoneNumber || ''
-      )
-      .subscribe({
-        next: (data: any) => {
-          // TODO: Redirect to the correct profile page
-          // this.router.navigate(['/profile/usename'], {
-          //   queryParams: { edited: 'true' },
-          // });
-          this.router.navigate([this.oldUserInfo.role + '/account'], {
-            queryParams: { edited: 'true' },
-          });
-        },
-        error: (error) => {
-          if (error.status === 400) {
-            this.errorMessage = error.error.message;
-          } else if (error.status === 401) {
-            this.incorrect = true;
-          } else {
-            this.incorrect = true;
-          }
-        },
+    const newInformation: any = {};
+    if (this.editAccountForm.value.password) {
+      newInformation.password = this.editAccountForm.value.password;
+    }
+    if (this.editAccountForm.value.email) {
+      newInformation.email = this.editAccountForm.value.email;
+    }
+    if (this.editAccountForm.value.firstName) {
+      newInformation.firstName = this.editAccountForm.value.firstName;
+    }
+    if (this.editAccountForm.value.lastName) {
+      newInformation.lastName = this.editAccountForm.value.lastName;
+    }
+    if (this.editAccountForm.value.telephoneNumber) {
+      newInformation.telephoneNumber =
+        this.editAccountForm.value.telephoneNumber;
+    }
+    this.authService.editUser(newInformation).subscribe({
+      next: (data: any) => {
+        if (
+          this.editAccountForm.value.image &&
+          this.editAccountForm.value.image !==
+            this.oldUserInfo.profilePicturePath
+        ) {
+          this.authService
+            .uploadUserImage(this.editAccountForm.value.image)
+            .subscribe({
+              next: (imageData: any) => {
+                this.router
+                  .navigate(
+                    [
+                      this.authService.getRole(),
+                      'profile',
+                      this.oldUserInfo.username,
+                    ],
+                    {
+                      queryParams: { edited: 'true' },
+                    }
+                  )
+                  .then(() => window.location.reload());
+              },
+              error: (error) => {
+                console.error('Error uploading image:', error);
+              },
+            });
+        } else {
+          this.router.navigate(
+            [this.authService.getRole(), 'profile', this.oldUserInfo.username],
+            {
+              queryParams: { edited: 'true' },
+            }
+          );
+        }
+      },
+      error: (error) => {
+        if (error.status === 400) {
+          this.errorMessage = error.error.message;
+        } else if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          this.incorrect = true;
+        }
+      },
+    });
+  }
+
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.editAccountForm.patchValue({
+        image: file,
       });
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+      };
+      try {
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Error reading file:', error);
+      }
+    }
+  }
+
+  deleteAccount() {
+    const confirm = window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone.'
+    );
+    if (!confirm) {
+      return;
+    }
+    // TODO: Connect delete user API
+    // this.authService.deleteUser().subscribe({
+    //   next: (response) => {
+    //     this.router.navigate(['/login']);
+    //   },
+    //   error: (error) => {
+    //     console.error(error);
+    //   },
+    // });
+    // this.authService.logout();
+    // this.router.navigate(['/']);
   }
 }

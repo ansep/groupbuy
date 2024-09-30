@@ -1,82 +1,163 @@
+@if(!role) {
 <app-navbar></app-navbar>
+} @if(newGroupBuy) {
+<div class="container mt-3">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Group Buy has been created
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
+} @if(editedGroupBuy) {
+<div class="container mt-3">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Group Buy has been updated
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
+} @if (closedGroupNotification) {
+<div class="container mt-3">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Group Buy has been finalized
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
+}
 <div
-  class="card mb-3 single-list"
+  class="card mb-3 mt-3 single-list"
   style="max-width: 90%; height: auto; margin: 0 auto"
 >
-  <div class="text-center">
+  @if(item) {
+  <!-- <div class="text-center">
     <h4>Listing details</h4>
-  </div>
+  </div> -->
   <p></p>
   <div class="clearfix m-2">
     <img
-      [src]="items.image"
+      [src]="item.image"
       class="col-md-5 float-md-start mb-3 me-md-3 rounded"
-      alt="..."
-      style="margin-right: 10px; margin-left: 10px"
+      style="
+        margin-right: 10px;
+        margin-left: 10px;
+        height: 200px;
+        object-fit: scale-down;
+      "
     />
 
     <div>
-      <h3 class="card-title">{{ items.title }}</h3>
+      <h3 class="card-title">{{ item.title }}</h3>
+      <span
+        class="badge"
+        [ngClass]="{
+          'bg-success': item.status == 'OPEN',
+          'bg-danger': item.status == 'CLOSED'
+        }"
+      >
+        {{ item.status == "OPEN" ? "Group Open" : "Group Closed" }}
+      </span>
     </div>
 
     <div class="card-body">
-      <p class="card-text text-break">{{ items.description }}</p>
+      <p class="card-text text-break">{{ item.description }}</p>
     </div>
 
     <table class="table table-bordered text-center mb-3">
       <tr>
         <th scope="col">Owner</th>
         <th scope="col">Location</th>
+        <th scope="col">Category</th>
         <th scope="col">Unit Price</th>
         <th scope="col">Group Participants</th>
-        <th scope="col">
-          <div><a href="#" (click)="handleClick()">Add to wishlist</a></div>
-        </th>
+        <th scope="col"></th>
       </tr>
       <tr class="">
         <td class="text-center">
-          <a href="#" (click)="handleClick()">{{ items.brokerName }}</a>
+          <a
+            style="cursor: pointer; text-decoration: underline"
+            (click)="openBrokerProfile(brokerName)"
+            >{{ brokerName }}</a
+          >
         </td>
         <td>
-          <div>{{ items.location }}</div>
+          <div>{{ item.location }}</div>
         </td>
         <td>
-          <div>{{ items.unitPrice }} €</div>
+          <div>{{ item.category }}</div>
+        </td>
+
+        <td>
+          <div>{{ item.unitPrice }} €</div>
         </td>
         <td
           [ngClass]="{
-            'bg-green': items.subscribedPeople < items.requiredPeople,
-            'bg-red': items.subscribedPeople >= items.requiredPeople,
+            'bg-green': item.subscribedPeople < item.availablePieces,
+            'bg-red': item.subscribedPeople >= item.availablePieces,
             'bg-yellow':
-              items.requiredPeople - items.subscribedPeople <=
-              items.requiredPeople * 0.2
+              item.availablePieces - item.subscribedPeople <=
+              item.availablePieces * 0.2
           }"
         >
           <div class="bg-green bg-red bg-yellow rounded">
-            {{ items.subscribedPeople }} / {{ items.requiredPeople }}
+            {{ item.subscribedPeople }} / {{ item.availablePieces }}
           </div>
         </td>
         <td>
+          @if(role ==='buyer' && !joined){
           <a
             class="btn"
-            href="#"
             role="button"
             style="background-color: aquamarine"
+            (click)="joinGroupBuy(item.id)"
             >Join Group Buy
           </a>
+          } @else if(role === 'buyer' && joined){
+          <a
+            class="btn"
+            role="button"
+            style="background-color: rgb(255, 255, 52)"
+            (click)="leaveGroupBuy(item.id)"
+            >Leave Group Buy
+          </a>
+          }
         </td>
       </tr>
-
     </table>
-    @if (role === 'broker'){
+    @if (role === 'broker' && isOwner) {
     <div class="text-center">
       <div class="text-center">
         <app-broker-module-single-group
+          [groupBuyId]="item.id"
+          [groupBuyName]="item.title"
+          [participants]="subscribers"
+          [closedGroup]="item.status != 'OPEN'"
+          (closeGroupEmit)="closeGroupBuy()"
           class="text-center"
         ></app-broker-module-single-group>
       </div>
     </div>
-  }
+    } @else if(role !== 'broker' && role !== 'buyer') {
+    <div class="text-center">
+      <p>Log in to join the group buy</p>
+    </div>
+    }
   </div>
-
+  } @else {
+  <div class="text-center">
+    <h4>Item not found</h4>
+  </div>
+  }
 </div>

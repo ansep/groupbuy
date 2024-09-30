@@ -1,0 +1,151 @@
+<div class="card mb-3 single-list" style="max-width: 90%; margin: 0 auto">
+  <div class="text-center">
+    <h4>Edit listing</h4>
+    <!-- reactive form -->
+    <form
+      style="text-align: center"
+      [formGroup]="editListingForm"
+      (ngSubmit)="editListing()"
+    >
+      <div class="row">
+        <div class="col-4">
+          <div>
+            <div class="d-flex justify-content-center mb-2">
+              <img
+                id="selectedAvatar"
+                [src]="imagePreview || 'assets/upload-image-placeholder.png'"
+                style="height: 100px; object-fit: cover; cursor: pointer"
+                onclick="document.getElementById('customFile2').click()"
+              />
+            </div>
+            <div class="d-flex justify-content-center">
+              <div
+                data-mdb-ripple-init
+                type="button"
+                class="btn btn-primary btn-sm"
+              >
+                <label class="form-label text-white m-1" for="customFile2"
+                  >Choose an image</label
+                >
+                <input
+                  type="file"
+                  class="form-control d-none"
+                  id="customFile2"
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div>
+            <label for="titleInput" class="form-label">Title</label>
+            <input
+              placeholder="Title"
+              type="text"
+              class="form-control"
+              id="titleInput"
+              formControlName="title"
+            />
+            <div class="form-text">
+              Write something concise and descriptive.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="descriptionInput" class="form-label">Description</label>
+        <!-- limit 2000 characters -->
+        <textarea
+          placeholder="Description (max 2000 characters)"
+          class="form-control"
+          id="descriptionInput"
+          style="margin: 0 auto; height: 2cm; width: 80%"
+          formControlName="description"
+          maxlength="2000"
+        ></textarea>
+      </div>
+      <div
+        style="width: 80%; margin: 0 auto; justify-content: center"
+        class="text-center"
+      >
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="input1" class="form-label">Unit Price (€)</label>
+              <input
+                placeholder="Unit Price (€)"
+                type="text"
+                class="form-control"
+                id="input1"
+                formControlName="price"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="categoryInput" class="form-label">Category</label>
+              <select
+                class="form-select"
+                id="categoryInput"
+                formControlName="category"
+              >
+                <option value="default" selected disabled>
+                  Select a category
+                </option>
+                <option value="electronic">Electronic</option>
+                <option value="food">Food</option>
+                <option value="spares">Spare Parts</option>
+                <option value="home decors">Home Decors</option>
+                <option value="fashion">Fashion</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="availableUnitsInput" class="form-label"
+                >Amount of available units</label
+              >
+              <input
+                placeholder="Amount of available units"
+                type="number"
+                class="form-control"
+                id="input2"
+                formControlName="availablePieces"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="locationInput" class="form-label">Location</label>
+              <input
+                placeholder="Location"
+                type="text"
+                class="form-control"
+                id="locationInput"
+                style="width: 80%; margin: 0 auto"
+                formControlName="location"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!editListingForm.valid || !imagePreview"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+  <p></p>
+  <div class="clearfix m-2">
+    <div class="card-body"></div>
+  </div>
+</div>

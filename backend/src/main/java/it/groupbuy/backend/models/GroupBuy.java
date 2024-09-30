@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -20,27 +21,26 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "GroupBuy")
 public class GroupBuy {
-    
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	@ManyToMany
+    @ManyToMany
     @JoinTable(
-      name = "subscriptions", 
-      joinColumns = @JoinColumn(name = "user_id"), 
-      inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
+	       name = "subscriptions",
+	       joinColumns = @JoinColumn(name = "user_id"),
+	       inverseJoinColumns = @JoinColumn(name = "groupbuy_id"))
     private List<User> buyers;
 
-	@ManyToOne
+    @ManyToOne
     @JoinColumn(name="user_id")
     private User broker;
-    
+
     @NotNull
     private Integer maxSize;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 2001)
     private String description;
 
     @NotBlank
@@ -60,6 +60,9 @@ public class GroupBuy {
     @NotBlank
     @Size(max = 20)
     private String location;
+
+    private String postingPicturePath;
+
 
     public GroupBuy() {}
 
@@ -90,19 +93,19 @@ public class GroupBuy {
     public void setBroker(User broker) {
     	this.broker = broker;
     }
-    
+
     public List<User> getBuyers() {
     	return this.buyers;
     }
-    
+
     public void setBuyers(List<User> buyers) {
     	this.buyers = buyers;
     }
-    
+
     public void addBuyer(User buyer) {
     	this.buyers.add(buyer);
     }
-    
+
     public void delBuyer(User buyer) {
     	this.buyers.remove(buyer);
     }
@@ -163,4 +166,11 @@ public class GroupBuy {
     	this.cost = cost;
     }
 
+    public String getPostingPicturePath() {
+	return postingPicturePath;
+    }
+
+    public void setPostingPicturePath(String postingPicturePath) {
+	this.postingPicturePath = postingPicturePath;
+    }
 }
