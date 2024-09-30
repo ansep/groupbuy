@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import it.groupbuy.backend.models.ERole;
 import it.groupbuy.backend.models.EStatus;
 import it.groupbuy.backend.models.GroupBuy;
 import it.groupbuy.backend.models.User;
@@ -32,6 +33,8 @@ import it.groupbuy.backend.payload.request.PatchRequest;
 import it.groupbuy.backend.payload.response.GroupbuyResponse;
 import it.groupbuy.backend.payload.response.MessageResponse;
 import it.groupbuy.backend.payload.response.UserResponse;
+import it.groupbuy.backend.repository.GroupbuyRepository;
+import it.groupbuy.backend.repository.RoleRepository;
 import it.groupbuy.backend.repository.UserRepository;
 import it.groupbuy.backend.service.FilesStorageService;
 import jakarta.validation.Valid;
@@ -46,11 +49,24 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    GroupbuyRepository groupbuyRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
     @DeleteMapping("/user")
-    @Transactional
     ResponseEntity<?> deleteUser() {
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	List<GroupBuy> list = new ArrayList<>();
+	if(user.getRoles().contains(roleRepository.findByName(ERole.ROLE_BROKER).get()))
+	    list = user.getOwned_groupbuy();
+	if(user.getRoles().contains(roleRepository.findByName(ERole.ROLE_BUYER).get()))
+	    list = user.getSubscribed_groupbuy();
+	for (GroupBuy groupBuy : list) {
+	    groupbuyRepository.delete(groupBuy);
+	}
 	userRepository.deleteById(user.getId());
 	return ResponseEntity.ok(new MessageResponse("User deleted successfully"));
     }
