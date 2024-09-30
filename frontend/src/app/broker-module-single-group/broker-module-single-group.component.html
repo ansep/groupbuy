@@ -79,9 +79,10 @@
     <button
       type="button"
       class="btn btn-danger btn-lg mx-3"
-      (click)="deleteGroupBuy()"
+      data-bs-toggle="modal"
+      data-bs-target="#deleteModal"
     >
-      Cancel Listing
+      Delete Listing
     </button>
     }
   </div>
@@ -184,6 +185,41 @@
           (click)="finalizeGroupBuy()"
         >
           Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="deleteModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="deleteModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Group Buy</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          #closeDeleteModal
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this group buy? This action cannot be
+        undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-danger" (click)="deleteGroupBuy()">
+          Delete
         </button>
       </div>
     </div>

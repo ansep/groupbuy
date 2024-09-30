@@ -48,6 +48,7 @@ export class BrokerModuleSingleGroupComponent {
 
   @ViewChild('closeBroadcastModal') closeBroadcastModal: ElementRef | undefined;
   @ViewChild('closeFinalizeModal') closeFinalizeModal: ElementRef | undefined;
+  @ViewChild('closeDeleteModal') closeDeleteModal: ElementRef | undefined;
 
   stompClient: any = null;
   connectedWebSocket: boolean = false;
@@ -69,14 +70,11 @@ export class BrokerModuleSingleGroupComponent {
   }
 
   deleteGroupBuy() {
-    const confirm = window.confirm(
-      'Are you sure you want to delete this group buy?'
-    );
-    if (!confirm) {
-      return;
-    }
     this.apiService.deleteGroupBuy(this.groupBuyId).subscribe({
       next: (response) => {
+        if (this.closeDeleteModal) {
+          this.closeDeleteModal.nativeElement.click();
+        }
         this.router.navigate([this.authService.getRole(), 'home'], {
           queryParams: { deleted: true },
         });
