@@ -115,10 +115,10 @@ public class UserController {
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	try {
-	authenticationManager
-	    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), passwordRequest.getCurrentPassword()));
+	    authenticationManager
+		.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), passwordRequest.getCurrentPassword()));
 	} catch(Exception e) {
-	    ResponseEntity.badRequest().body(new MessageResponse("Error: wrong current password", user.getId()));
+	    return ResponseEntity.badRequest().body(new MessageResponse("Error: wrong current password", user.getId()));
 	}
 	if(!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword()))
 		return ResponseEntity.badRequest().body(new MessageResponse("Error: password confirmation mismatch", user.getId()));
