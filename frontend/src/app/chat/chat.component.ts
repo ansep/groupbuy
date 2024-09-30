@@ -182,10 +182,16 @@ export class ChatComponent implements OnInit {
       'auto-delete': 'false',
     };
 
+    let loading = true;
+    setTimeout(() => {
+      loading = false;
+    }, 1000);
+
     // Subscribe with the additional headers
     this.stompClient.subscribe(
       userQueue,
       (message: any) => {
+        if (loading) return;
         console.log('Received message from queue:', message.body);
         const parsedMessage = JSON.parse(message.body);
         const contact = parsedMessage.fromWho;
@@ -194,7 +200,7 @@ export class ChatComponent implements OnInit {
           from: false,
           msg: messageText,
         });
-        // message.ack(); // Acknowledge the message manually
+        message.ack(); // Acknowledge the message manually
       },
       headers
     );
