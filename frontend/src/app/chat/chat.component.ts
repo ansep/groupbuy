@@ -8,6 +8,7 @@ import { KeyValuePipe, NgClass } from '@angular/common';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { NavbarBuyerComponent } from '../navbar-buyer/navbar-buyer.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
@@ -20,6 +21,7 @@ import { NavbarBuyerComponent } from '../navbar-buyer/navbar-buyer.component';
     NgClass,
     NavbarBuyerComponent,
     KeyValuePipe,
+    ReactiveFormsModule,
   ],
 })
 export class ChatComponent implements OnInit {
@@ -34,6 +36,12 @@ export class ChatComponent implements OnInit {
   authToken: string = '';
   username: string = '';
   paramUser: string = '';
+  searchForm = new FormGroup({
+    search: new FormControl(null),
+  });
+  displayedChats:
+    | { [key: string]: { from: boolean; msg: string }[] }
+    | undefined;
 
   constructor(
     private apiservice: ApiService,
@@ -53,6 +61,25 @@ export class ChatComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.paramUser = params['user'];
     });
+  }
+
+  ngAfterViewInit() {
+    this.searchForm.get('search')?.valueChanges.subscribe((searchTerm) => {
+      this.filterChats(searchTerm);
+    });
+  }
+
+  filterChats(term: string | null) {
+    if (!term) {
+      this.displayedChats = this.contacts;
+      return;
+    }
+    this.displayedChats = {};
+    for (const contact of Object.keys(this.contacts)) {
+      if (contact.includes(term)) {
+        this.displayedChats[contact] = this.contacts[contact];
+      }
+    }
   }
 
   connectWebSocket() {
@@ -82,6 +109,7 @@ export class ChatComponent implements OnInit {
         // Start filtering the message history for viewing
         console.log('Retrieved chat history:', response);
         this.contacts = this.processChatHistory(response, this.username);
+        this.displayedChats = this.contacts;
         // If user is not in the chat history, process as new chat
         let isInHistory = false;
         if (this.paramUser) {

@@ -9,19 +9,21 @@
       <div class="card chat-app">
         <div id="plist" class="people-list">
           <div class="input-group mb-2">
-            <input type="text" class="form-control" placeholder="Search..." />
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="fa fa-search"></i>
-              </span>
-            </div>
+            <form [formGroup]="searchForm" class="d-flex w-100">
+              <input
+                id="search-input"
+                class="form-control"
+                placeholder="Search chat"
+                formControlName="search"
+              />
+            </form>
           </div>
 
           <ul
             class="list-unstyled chat-list"
             style="max-height: 500px; overflow-y: auto"
           >
-            @for( contact of contacts | keyvalue; track contact.key){
+            @for( contact of displayedChats | keyvalue; track contact.key){
             <li
               class="clearfix d-flex align-items-center"
               [ngClass]="{
