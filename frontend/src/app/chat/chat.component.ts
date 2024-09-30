@@ -188,9 +188,13 @@ export class ChatComponent implements OnInit {
       (message: any) => {
         console.log('Received message from queue:', message.body);
         const parsedMessage = JSON.parse(message.body);
-        // You can add the logic to display the message
-        //this.displayMessage(parsedMessage.fromWho, parsedMessage.message);
-        message.ack(); // Acknowledge the message manually
+        const contact = parsedMessage.fromWho;
+        const messageText = parsedMessage.message;
+        this.contacts[contact].push({
+          from: false,
+          msg: messageText,
+        });
+        // message.ack(); // Acknowledge the message manually
       },
       headers
     );
@@ -206,5 +210,26 @@ export class ChatComponent implements OnInit {
       hasImage: this.contactsImages[contactName].hasImage,
     };
     this.selectedChat = this.contacts[contactName];
+  }
+
+  sendMessage(message: string) {
+    if (this.selectedContact) {
+      const messageToSend = {
+        fromWho: this.username,
+        toWhom: this.selectedContact.username,
+        message: message,
+      };
+      if (this.stompClient) {
+        this.stompClient.send(
+          '/app/message',
+          {},
+          JSON.stringify(messageToSend)
+        );
+        this.contacts[this.selectedContact.username].push({
+          from: true,
+          msg: message,
+        });
+      }
+    }
   }
 }

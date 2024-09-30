@@ -21,17 +21,17 @@
       </div>
     </div>
   </div>
-  <div class="chat-history" style="max-height: 430px; overflow-y: auto">
+  <div #chatHistory class="chat-history" style="height: 70vh; overflow-y: auto">
     <ul class="m-b-0">
       @for( message of chat; track message){ @if(message.from) {
       <li class="clearfix">
-        <div class="message other-message float-right">
+        <div class="message my-message float-right">
           {{ message.msg }}
         </div>
       </li>
       } @else {
       <li class="clearfix">
-        <div class="message other-message my-message">
+        <div class="message other-message">
           {{ message.msg }}
         </div>
       </li>

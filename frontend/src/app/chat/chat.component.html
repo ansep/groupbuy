@@ -61,6 +61,7 @@
           <app-single-chat
             [chat]="selectedChat"
             [contact]="selectedContact"
+            (sendMessage)="sendMessage($event)"
           ></app-single-chat>
           } @else {
           <!-- a simpledivc with a centered text: "Select a contact to start chatting" -->
