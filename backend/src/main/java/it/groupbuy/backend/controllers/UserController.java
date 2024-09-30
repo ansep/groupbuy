@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,15 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @DeleteMapping("/user")
+    @Transactional
+    ResponseEntity<?> deleteUser() {
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	userRepository.deleteById(user.getId());
+	return ResponseEntity.ok(new MessageResponse("User deleted successfully"));
+    }
 
     @GetMapping("/user/{id}")
     public UserResponse getUserResponse(@PathVariable Long id) {
@@ -122,9 +132,9 @@ public class UserController {
     @PreAuthorize("hasRole('BROKER')")
     @Transactional
     public ResponseEntity<?> get_owned_groupbuy(@PathVariable Long id) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
-    	List<GroupbuyResponse> res = new ArrayList<>();
+	List<GroupbuyResponse> res = new ArrayList<>();
 	List<GroupBuy> groupbuys = user.getOwned_groupbuy();
 	int n = groupbuys.size();
 	for (int i=0; i<n; i++) {
@@ -132,7 +142,7 @@ public class UserController {
 	    GroupbuyResponse response =
 		new GroupbuyResponse(g.getId(), g.getMaxSize(),
 				     g.getDescription(), g.getCategory(), g.getProduct(),g.getCost(), g.getStatus(),
-							     g.getLocation(), g.getPostingPicturePath());
+				     g.getLocation(), g.getPostingPicturePath());
 	    res.add(response);
 	}
 	return ResponseEntity.accepted().body(res);
@@ -142,9 +152,9 @@ public class UserController {
     @PreAuthorize("hasRole('BUYER')")
     @Transactional
     public ResponseEntity<?> get_subscribed_groupbuy(@PathVariable Long id) {
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
-    	List<GroupbuyResponse> res = new ArrayList<>();
+	List<GroupbuyResponse> res = new ArrayList<>();
 	List<GroupBuy> groupbuys = user.getSubscribed_groupbuy();
 	int n = groupbuys.size();
 	for (int i=0; i<n; i++) {
@@ -152,7 +162,7 @@ public class UserController {
 	    GroupbuyResponse response =
 		new GroupbuyResponse(g.getId(), g.getMaxSize(),
 				     g.getDescription(), g.getCategory(), g.getProduct(),g.getCost(), g.getStatus(),
-							     g.getLocation(), g.getPostingPicturePath());
+				     g.getLocation(), g.getPostingPicturePath());
 	    res.add(response);
 	}
 	return ResponseEntity.accepted().body(res);
