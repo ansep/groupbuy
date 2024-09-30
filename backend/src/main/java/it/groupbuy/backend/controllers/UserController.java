@@ -10,8 +10,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +33,7 @@ import it.groupbuy.backend.models.ERole;
 import it.groupbuy.backend.models.EStatus;
 import it.groupbuy.backend.models.GroupBuy;
 import it.groupbuy.backend.models.User;
+import it.groupbuy.backend.payload.request.PasswordRequest;
 import it.groupbuy.backend.payload.request.PatchRequest;
 import it.groupbuy.backend.payload.response.GroupbuyResponse;
 import it.groupbuy.backend.payload.response.MessageResponse;
@@ -55,7 +60,14 @@ public class UserController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    PasswordEncoder encoder;
+
     @DeleteMapping("/user")
+    @Transactional
     ResponseEntity<?> deleteUser() {
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	User user = userRepository.findByUsername(userDetails.getUsername()).get();
@@ -68,7 +80,7 @@ public class UserController {
 	    groupbuyRepository.delete(groupBuy);
 	}
 	userRepository.deleteById(user.getId());
-	return ResponseEntity.ok(new MessageResponse("User deleted successfully"));
+	return ResponseEntity.ok(new MessageResponse("User deleted successfully", user.getId()));
     }
 
     @GetMapping("/user/{id}")
@@ -95,6 +107,20 @@ public class UserController {
 					     user.getTelephoneNumber(),
 					     user.getProfilePicturePath());
 	return ret;
+    }
+
+    @PutMapping("/user/password")
+    @PreAuthorize("hasRole('BUYER') or hasRole('BROKER')")
+    public ResponseEntity<?> putPassword(@RequestBody PasswordRequest passwordRequest) {
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	User user = userRepository.findByUsername(userDetails.getUsername()).get();
+	authenticationManager
+	    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), passwordRequest.getCurrentPassword()));
+	if(!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword()))
+	    return ResponseEntity.badRequest().body(new MessageResponse("Error: password confirmation mismatch", user.getId()));
+	user.setPassword(encoder.encode(passwordRequest.getNewPassword()));
+	userRepository.save(user);
+	return ResponseEntity.ok(new MessageResponse("Password changed succesfully", user.getId()));
     }
 
     @PatchMapping("/user")
