@@ -11,7 +11,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { SingleGroupListingComponent } from './single-group-listing/single-group-listing.component';
 import { AccountComponent } from './account/account.component';
 import { ProfileComponent } from './profile/profile.component';
-import { BuyerChatComponent } from './buyer-chat/buyer-chat.component';
+import { ChatComponent } from './chat/chat.component';
 import { BrokerNewListingComponent } from './broker-new-listing/broker-new-listing.component';
 import { BrokerMyGroupsComponent } from './broker-my-groups/broker-my-groups.component';
 import { BuyerJoinedListingsComponent } from './buyer-joined-listings/buyer-joined-listings.component';
@@ -37,7 +37,7 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       { path: 'group/:id', component: SingleGroupListingComponent },
-      { path: 'messages', component: BuyerChatComponent, pathMatch: 'full' },
+      { path: 'messages', component: ChatComponent, pathMatch: 'full' },
       {
         path: 'profile/:username',
         component: ProfileComponent,
@@ -63,7 +63,7 @@ export const routes: Routes = [
         component: SingleGroupListingComponent,
         pathMatch: 'full',
       },
-      { path: 'messages', component: BuyerChatComponent, pathMatch: 'full' },
+      { path: 'messages', component: ChatComponent, pathMatch: 'full' },
       {
         path: 'profile/:username',
         component: ProfileComponent,

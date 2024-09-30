@@ -10,10 +10,10 @@ import SockJS from 'sockjs-client';
 import { NavbarBuyerComponent } from '../navbar-buyer/navbar-buyer.component';
 
 @Component({
-  selector: 'app-buyer-chat',
+  selector: 'app-chat',
   standalone: true,
-  templateUrl: './buyer-chat.component.html',
-  styleUrl: './buyer-chat.component.scss',
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.scss',
   imports: [
     NavbarComponent,
     SingleChatComponent,
@@ -22,7 +22,7 @@ import { NavbarBuyerComponent } from '../navbar-buyer/navbar-buyer.component';
     KeyValuePipe,
   ],
 })
-export class BuyerChatComponent implements OnInit {
+export class ChatComponent implements OnInit {
   stompClient: any;
   selectedChat: { from: boolean; msg: string }[] | null = null;
   selectedContact: { username: string; id: number; hasImage: boolean } | null =

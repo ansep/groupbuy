@@ -23,10 +23,10 @@
         <tr class="text-center">
           <td style="width: 15%">
             <a
-            style="cursor: pointer; text-decoration: underline"
-            (click)="openBuyerProfile(participant.username)"
-            >{{ participant.username }}</a
-          >
+              style="cursor: pointer; text-decoration: underline"
+              (click)="openBuyerProfile(participant.username)"
+              >{{ participant.username }}</a
+            >
           </td>
           <td style="width: 20%">{{ participant.firstName }}</td>
           <td style="width: 20%">{{ participant.lastName }}</td>
@@ -52,12 +52,19 @@
 <div style="height: 20px"></div>
 <div class="m-1 container">
   <div class="d-flex justify-content-center" style="width: 70%; margin: 0 auto">
-    <button type="button" class="btn btn-primary btn-lg mx-3">
+    <button
+      type="button"
+      class="btn btn-primary btn-lg mx-3"
+      data-bs-toggle="modal"
+      data-bs-target="#broadcastModal"
+    >
       Broadcast Message
     </button>
     @if(!closedGroup) {
-    <button type="button" class="btn btn-warning btn-lg mx-3"
-    (click)="editGroupBuy()"
+    <button
+      type="button"
+      class="btn btn-warning btn-lg mx-3"
+      (click)="editGroupBuy()"
     >
       Edit Listing
     </button>
@@ -76,5 +83,56 @@
       Cancel Listing
     </button>
     }
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="broadcastModal"
+  tabindex="-1"
+  aria-labelledby="broadcastModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="broadcastModalLabel">
+          Broadcast message
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          #closeBroadcastModal
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="broadcastForm" [formGroup]="broadcastMessageForm">
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea
+              class="form-control"
+              id="message-text"
+              formControlName="message"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          [disabled]="
+            !broadcastMessageForm.valid || broadcastMessageForm.disabled
+          "
+          type="button"
+          class="btn btn-primary"
+          (click)="broadcastMessage()"
+        >
+          Send message
+        </button>
+      </div>
+    </div>
   </div>
 </div>

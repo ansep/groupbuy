@@ -136,6 +136,7 @@
       <div class="text-center">
         <app-broker-module-single-group
           [groupBuyId]="item.id"
+          [groupBuyName]="item.title"
           [participants]="subscribers"
           [closedGroup]="item.status != 'OPEN'"
           (closeGroupEmit)="closeGroupBuy()"

@@ -1,17 +1,33 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ApiService } from '../services/api.service';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Stomp } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 @Component({
   selector: 'app-broker-module-single-group',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './broker-module-single-group.component.html',
   styleUrl: './broker-module-single-group.component.scss',
 })
 export class BrokerModuleSingleGroupComponent {
   @Input() groupBuyId: number = 0;
+  @Input() groupBuyName: string = '';
   @Input() closedGroup: boolean = true;
   @Input() participants: {
     id: number;
@@ -23,6 +39,13 @@ export class BrokerModuleSingleGroupComponent {
     profilePicturePath: string;
   }[] = [];
   @Output() closeGroupEmit = new EventEmitter<void>();
+  broadcastMessageForm = new FormGroup({
+    message: new FormControl('', Validators.required),
+  });
+
+  @ViewChild('closeBroadcastModal') closeBroadcastModal: ElementRef | undefined;
+  stompClient: any = null;
+  connectedWebSocket: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -77,5 +100,66 @@ export class BrokerModuleSingleGroupComponent {
 
   openBuyerProfile(username: string) {
     this.router.navigate(['broker/profile', username]);
+  }
+
+  async broadcastMessage() {
+    if (!this.broadcastMessageForm.value.message) {
+      return;
+    }
+    this.broadcastMessageForm.disable();
+    console.log(
+      'Broadcasting message:',
+      this.broadcastMessageForm.value.message
+    );
+    this.connectWebSocket();
+    let attempts = 0;
+    while (!this.connectedWebSocket && attempts < 20) {
+      console.log('Waiting for WebSocket connection...');
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    if (!this.connectedWebSocket) {
+      console.error('Failed to connect to WebSocket');
+      this.disconnectWebSocket();
+      this.broadcastMessageForm.enable();
+      return;
+    }
+    this.sendBroadcastMessage(
+      this.groupBuyName + ': ' + this.broadcastMessageForm.value.message
+    );
+    this.disconnectWebSocket();
+    if (this.closeBroadcastModal) {
+      this.closeBroadcastModal.nativeElement.click();
+    }
+  }
+
+  async connectWebSocket() {
+    const socket = new SockJS('http://localhost:8080/websocket-chat');
+    this.stompClient = Stomp.over(socket);
+    this.stompClient.connect(
+      { Authorization: 'Bearer ' + this.authService.getToken() },
+      (frame: any) => {
+        console.log('Connected to WebSocket:', frame);
+        this.connectedWebSocket = true;
+      }
+    );
+  }
+  disconnectWebSocket() {
+    this.connectedWebSocket = false;
+    if (this.stompClient !== null) {
+      this.stompClient.disconnect();
+    }
+  }
+
+  sendBroadcastMessage(message: string) {
+    this.participants.forEach((participant) => {
+      const payload = {
+        toWhom: participant.username,
+        fromWho: this.authService.getUsername(),
+        message: message,
+      };
+      if (this.stompClient) {
+        this.stompClient.send('/app/message', {}, JSON.stringify(payload));
+      }
+    });
   }
 }
