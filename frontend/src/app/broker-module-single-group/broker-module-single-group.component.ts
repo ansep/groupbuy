@@ -42,8 +42,13 @@ export class BrokerModuleSingleGroupComponent {
   broadcastMessageForm = new FormGroup({
     message: new FormControl('', Validators.required),
   });
+  finalizeForm = new FormGroup({
+    message: new FormControl(''),
+  });
 
   @ViewChild('closeBroadcastModal') closeBroadcastModal: ElementRef | undefined;
+  @ViewChild('closeFinalizeModal') closeFinalizeModal: ElementRef | undefined;
+
   stompClient: any = null;
   connectedWebSocket: boolean = false;
 
@@ -82,20 +87,44 @@ export class BrokerModuleSingleGroupComponent {
     });
   }
 
-  finalizeGroupBuy() {
-    const confirm = window.confirm(
-      'Are you sure you want to finalize this group buy?'
-    );
-    if (!confirm) {
-      return;
-    }
+  async finalizeGroupBuy() {
+    const message =
+      'Group buy ' +
+      this.groupBuyName +
+      ' has been closed' +
+      (this.finalizeForm.value.message
+        ? ' with message: ' + this.finalizeForm.value.message
+        : '');
+    this.finalizeForm.disable();
     this.apiService.finalizeGroupBuy(this.groupBuyId).subscribe({
-      next: (response) => {
+      next: async (response) => {
+        console.log('Group buy finalized:', response);
+
+        this.connectWebSocket();
+        let attempts = 0;
+        while (!this.connectedWebSocket && attempts < 20) {
+          console.log('Waiting for WebSocket connection...');
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
+        if (!this.connectedWebSocket) {
+          console.error('Failed to connect to WebSocket');
+          this.disconnectWebSocket();
+          this.finalizeForm.enable();
+          return;
+        }
+        this.sendBroadcastMessage(message);
+        this.disconnectWebSocket();
+        this.finalizeForm.reset();
+        this.finalizeForm.enable();
         this.closedGroup = true;
         this.closeGroupEmit.emit();
+        if (this.closeFinalizeModal) {
+          this.closeFinalizeModal.nativeElement.click();
+        }
       },
       error: (error) => {
-        console.error(error);
+        console.error('Failed to finalize group buy:', error);
       },
     });
   }
@@ -118,6 +147,7 @@ export class BrokerModuleSingleGroupComponent {
     while (!this.connectedWebSocket && attempts < 20) {
       console.log('Waiting for WebSocket connection...');
       await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
     }
     if (!this.connectedWebSocket) {
       console.error('Failed to connect to WebSocket');
@@ -136,7 +166,7 @@ export class BrokerModuleSingleGroupComponent {
     this.broadcastMessageForm.enable();
   }
 
-  async connectWebSocket() {
+  connectWebSocket() {
     const socket = new SockJS('http://localhost:8080/websocket-chat');
     this.stompClient = Stomp.over(socket);
     this.stompClient.connect(

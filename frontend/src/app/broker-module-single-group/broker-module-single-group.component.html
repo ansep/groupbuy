@@ -71,7 +71,8 @@
     <button
       type="button"
       class="btn btn-success btn-lg mx-3"
-      (click)="finalizeGroupBuy()"
+      data-bs-toggle="modal"
+      data-bs-target="#finalizeModal"
     >
       Finalize Listing
     </button>
@@ -131,6 +132,58 @@
           (click)="broadcastMessage()"
         >
           Send message
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="finalizeModal"
+  tabindex="-1"
+  aria-labelledby="finalizeModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="finalizeModalLabel">
+          Finalize group buy
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          #closeFinalizeModal
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="broadcastForm" [formGroup]="finalizeForm">
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label"
+              >You can add an optional message to broadcast to all
+              subscribers:</label
+            >
+            <textarea
+              class="form-control"
+              id="message-text"
+              formControlName="message"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          [disabled]="finalizeForm.disabled"
+          type="button"
+          class="btn btn-primary"
+          (click)="finalizeGroupBuy()"
+        >
+          Confirm
         </button>
       </div>
     </div>
