@@ -258,7 +258,7 @@ public class GroupBuyController {
 	    User user = userRepository.findByUsername(userDetails.getUsername()).get();
 	    GroupBuy groupbuy = repository.findById(id).orElseThrow(() -> new GroupBuyNotFoundException(id));
 	    if (!user.getOwned_groupbuy().contains(groupbuy)) {
-		ResponseEntity.badRequest().body("Groupbuy not owned");
+		return ResponseEntity.badRequest().body("Groupbuy not owned");
 	    }
 	    List<UserResponse> res = new ArrayList<>();
 	    List<User> buyers = groupbuy.getBuyers();
@@ -268,7 +268,7 @@ public class GroupBuyController {
 		UserResponse response = new UserResponse(buyer.getId(),  buyer.getUsername(), buyer.getEmail(), buyer.getFirstName(), buyer.getLastName(), buyer.getTelephoneNumber(), buyer.getProfilePicturePath());
 		res.add(response);
 	    }
-	    return ResponseEntity.accepted().body(res);
+	    return ResponseEntity.ok().body(res);
 	}
 
 	@PostMapping("/groupbuy/{id}/picture")
